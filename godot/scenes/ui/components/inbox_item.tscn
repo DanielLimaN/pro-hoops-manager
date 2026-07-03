@@ -1,0 +1,58 @@
+[gd_scene format=3 uid="uid://dcioxyd8stj7s"]
+
+[ext_resource type="Script" path="res://scenes/ui/components/inbox_item.gd" id="1_vy2gm"]
+
+[node name="InboxItem" type="PanelContainer"]
+custom_minimum_size = Vector2(0, 60)
+size_flags_horizontal = 3
+script = ExtResource("1_vy2gm")
+
+[node name="HBox" type="HBoxContainer" parent="."]
+layout_mode = 2
+offset_left = 16.0
+offset_top = 12.0
+offset_right = 784.0
+offset_bottom = 48.0
+theme_override_constants/separation = 16
+
+[node name="IconBox" type="PanelContainer" parent="HBox"]
+custom_minimum_size = Vector2(36, 36)
+size_flags_vertical = 4
+
+[node name="IconLabel" type="Label" parent="HBox/IconBox"]
+layout_mode = 2
+offset_left = 6.0
+offset_top = 6.0
+offset_right = 30.0
+offset_bottom = 30.0
+theme_override_font_sizes/font_size = 16
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextCol" type="VBoxContainer" parent="HBox"]
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/separation = 4
+
+[node name="Title" type="Label" parent="HBox/TextCol"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+
+[node name="Body" type="Label" parent="HBox/TextCol"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.603, 0.525, 0.721, 1)
+theme_override_font_sizes/font_size = 11
+autowrap_mode = 2
+
+[node name="TagBox" type="PanelContainer" parent="HBox"]
+custom_minimum_size = Vector2(0, 22)
+size_flags_vertical = 4
+
+[node name="TagLabel" type="Label" parent="HBox/TagBox"]
+layout_mode = 2
+offset_left = 8.0
+offset_right = 8.0
+offset_top = 4.0
+offset_bottom = 18.0
+theme_override_font_sizes/font_size = 9
+horizontal_alignment = 1

@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://sim_modal_001"]
+
+[ext_resource type="Script" path="res://scenes/screens/calendar/components/simulation_modal.gd" id="1_script"]
+
+[node name="SimulationModal" type="ColorRect"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0235294, 0.0117647, 0.054902, 0.8)
+script = ExtResource("1_script")

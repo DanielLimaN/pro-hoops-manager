@@ -1,0 +1,468 @@
+[gd_scene format=3 uid="uid://ckm653iudhjho"]
+
+[ext_resource type="Script" uid="uid://be5rnp2p3m40a" path="res://scripts/team.gd" id="1_team"]
+[ext_resource type="Script" uid="uid://cb3e4nobrng1c" path="res://scripts/menu_court.gd" id="menu_court_script"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_Header"]
+bg_color = Color(0.06, 0.04, 0.11, 1)
+border_width_bottom = 2
+border_color = Color(0.35, 0.2, 0.8, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_CourtContainer"]
+bg_color = Color(0.09, 0.07, 0.14, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.2, 0.15, 0.4, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_Panel"]
+bg_color = Color(0.09, 0.07, 0.14, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.18, 0.18, 0.24, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_SliderBg"]
+bg_color = Color(0.08, 0.08, 0.1, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+expand_margin_top = 4.0
+expand_margin_bottom = 4.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_SliderGrabber"]
+bg_color = Color(0.5, 0.25, 1, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+expand_margin_top = 4.0
+expand_margin_bottom = 4.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_BtnApply"]
+content_margin_top = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.45, 0.2, 0.95, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_BtnApplyHover"]
+bg_color = Color(0.55, 0.3, 1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_Modal"]
+bg_color = Color(0.15, 0.15, 0.2, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.3, 0.3, 0.4, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(0, 0, 0, 0.8)
+shadow_size = 20
+
+[node name="Team" type="Control" unique_id=1997243732]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_team")
+
+
+[node name="MainScroll" type="ScrollContainer" parent="." unique_id=791372905]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_scroll_mode = 0
+
+[node name="VBoxMain" type="VBoxContainer" parent="MainScroll" unique_id=1795626979]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+
+[node name="HeaderPanel" type="PanelContainer" parent="MainScroll/VBoxMain" unique_id=352143721]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_Header")
+
+[node name="Margin" type="MarginContainer" parent="MainScroll/VBoxMain/HeaderPanel" unique_id=815611663]
+layout_mode = 2
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 16
+
+[node name="HBox" type="HBoxContainer" parent="MainScroll/VBoxMain/HeaderPanel/Margin" unique_id=197658416]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="MainScroll/VBoxMain/HeaderPanel/Margin/HBox" unique_id=526716383]
+layout_mode = 2
+
+[node name="HeaderTitle" type="Label" parent="MainScroll/VBoxMain/HeaderPanel/Margin/HBox/VBox" unique_id=549786994]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 28
+text = "Gestao de Elenco"
+
+[node name="HeaderSubtitle" type="Label" parent="MainScroll/VBoxMain/HeaderPanel/Margin/HBox/VBox" unique_id=553269462]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.6, 0.7, 1)
+theme_override_font_sizes/font_size = 14
+text = "Ajuste titulares, banco e instrucoes taticas."
+
+[node name="Spacer" type="Control" parent="MainScroll/VBoxMain/HeaderPanel/Margin/HBox" unique_id=1772225746]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Margin" type="MarginContainer" parent="MainScroll/VBoxMain" unique_id=297094122]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 24
+
+[node name="HBox" type="HBoxContainer" parent="MainScroll/VBoxMain/Margin" unique_id=1740679420]
+layout_mode = 2
+theme_override_constants/separation = 32
+
+[node name="LeftCol" type="VBoxContainer" parent="MainScroll/VBoxMain/Margin/HBox" unique_id=1490308962]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.45
+theme_override_constants/separation = 24
+
+[node name="ViewToggle" type="HBoxContainer" parent="MainScroll/VBoxMain/Margin/HBox/LeftCol" unique_id=183828805]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="BtnViewOffense" type="Button" parent="MainScroll/VBoxMain/Margin/HBox/LeftCol/ViewToggle" unique_id=2142056111]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.9, 0.7, 0.1, 1)
+text = "VER ATAQUE"
+
+[node name="BtnViewDefense" type="Button" parent="MainScroll/VBoxMain/Margin/HBox/LeftCol/ViewToggle" unique_id=1926694399]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.4, 0.4, 0.5, 1)
+text = "VER DEFESA"
+
+[node name="CourtPanel" type="PanelContainer" parent="MainScroll/VBoxMain/Margin/HBox/LeftCol" unique_id=250056162]
+clip_children = 2
+custom_minimum_size = Vector2(0, 280)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_CourtContainer")
+
+[node name="CourtBackground" type="Control" parent="MainScroll/VBoxMain/Margin/HBox/LeftCol/CourtPanel" unique_id=1105479421]
+layout_mode = 2
+script = ExtResource("menu_court_script")
+
+[node name="Margin" type="MarginContainer" parent="MainScroll/VBoxMain/Margin/HBox/LeftCol/CourtPanel" unique_id=2093878506]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="StartersContainer" type="Control" parent="MainScroll/VBoxMain/Margin/HBox/LeftCol/CourtPanel/Margin" unique_id=175435929]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="TacticsPanel" type="PanelContainer" parent="MainScroll/VBoxMain/Margin/HBox/LeftCol" unique_id=1321683736]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_Panel")
+
+[node name="Margin" type="MarginContainer" parent="MainScroll/VBoxMain/Margin/HBox/LeftCol/TacticsPanel" unique_id=1731554075]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 24
+
+[node name="TacticsVBox" type="VBoxContainer" parent="MainScroll/VBoxMain/Margin/HBox/LeftCol/TacticsPanel/Margin" unique_id=300214879]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Title" type="Label" parent="MainScroll/VBoxMain/Margin/HBox/LeftCol/TacticsPanel/Margin/TacticsVBox" unique_id=1061374008]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.85, 0.9, 1)
+theme_override_font_sizes/font_size = 18
+text = "Configuracoes Taticas"
+
+[node name="HSeparator" type="HSeparator" parent="MainScroll/VBoxMain/Margin/HBox/LeftCol/TacticsPanel/Margin/TacticsVBox" unique_id=1803332629]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Grid" type="GridContainer" parent="MainScroll/VBoxMain/Margin/HBox/LeftCol/TacticsPanel/Margin/TacticsVBox" unique_id=1747033416]
+layout_mode = 2
+theme_override_constants/h_separation = 24
+theme_override_constants/v_separation = 12
+columns = 2
+
+[node name="OffLabel" type="Label" parent="MainScroll/VBoxMain/Margin/HBox/LeftCol/TacticsPanel/Margin/TacticsVBox/Grid" unique_id=1944313055]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.75, 0.8, 1)
+theme_override_font_sizes/font_size = 14
+text = "Esquema Ofensivo"
+
+[node name="OffensiveSelect" type="OptionButton" parent="MainScroll/VBoxMain/Margin/HBox/LeftCol/TacticsPanel/Margin/TacticsVBox/Grid" unique_id=778430412]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DefLabel" type="Label" parent="MainScroll/VBoxMain/Margin/HBox/LeftCol/TacticsPanel/Margin/TacticsVBox/Grid" unique_id=91204981]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.75, 0.8, 1)
+theme_override_font_sizes/font_size = 14
+text = "Defesa Coletiva"
+
+[node name="DefensiveSelect" type="OptionButton" parent="MainScroll/VBoxMain/Margin/HBox/LeftCol/TacticsPanel/Margin/TacticsVBox/Grid" unique_id=1678675411]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PaceLabel" type="Label" parent="MainScroll/VBoxMain/Margin/HBox/LeftCol/TacticsPanel/Margin/TacticsVBox/Grid" unique_id=189036849]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.75, 0.8, 1)
+theme_override_font_sizes/font_size = 14
+text = "Ritmo (Pace)"
+
+[node name="PaceHBox" type="HBoxContainer" parent="MainScroll/VBoxMain/Margin/HBox/LeftCol/TacticsPanel/Margin/TacticsVBox/Grid" unique_id=1499767190]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 12
+
+[node name="PaceSlider" type="HSlider" parent="MainScroll/VBoxMain/Margin/HBox/LeftCol/TacticsPanel/Margin/TacticsVBox/Grid/PaceHBox" unique_id=769545960]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_styles/slider = SubResource("StyleBoxFlat_SliderBg")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_SliderGrabber")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_SliderGrabber")
+
+[node name="PaceVal" type="Label" parent="MainScroll/VBoxMain/Margin/HBox/LeftCol/TacticsPanel/Margin/TacticsVBox/Grid/PaceHBox" unique_id=494628889]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(45, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.85, 1, 1)
+theme_override_font_sizes/font_size = 13
+text = "50"
+horizontal_alignment = 2
+
+[node name="ThreeFreqLabel" type="Label" parent="MainScroll/VBoxMain/Margin/HBox/LeftCol/TacticsPanel/Margin/TacticsVBox/Grid" unique_id=638227926]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.75, 0.8, 1)
+theme_override_font_sizes/font_size = 14
+text = "Tiros de 3"
+
+[node name="ThreeHBox" type="HBoxContainer" parent="MainScroll/VBoxMain/Margin/HBox/LeftCol/TacticsPanel/Margin/TacticsVBox/Grid" unique_id=2045574408]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 12
+
+[node name="ThreeFreqSlider" type="HSlider" parent="MainScroll/VBoxMain/Margin/HBox/LeftCol/TacticsPanel/Margin/TacticsVBox/Grid/ThreeHBox" unique_id=814664031]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_styles/slider = SubResource("StyleBoxFlat_SliderBg")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_SliderGrabber")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_SliderGrabber")
+
+[node name="ThreeFreqVal" type="Label" parent="MainScroll/VBoxMain/Margin/HBox/LeftCol/TacticsPanel/Margin/TacticsVBox/Grid/ThreeHBox" unique_id=559019320]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(45, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.85, 1, 1)
+theme_override_font_sizes/font_size = 13
+text = "35"
+horizontal_alignment = 2
+
+[node name="PhysLabel" type="Label" parent="MainScroll/VBoxMain/Margin/HBox/LeftCol/TacticsPanel/Margin/TacticsVBox/Grid" unique_id=1394425532]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.75, 0.8, 1)
+theme_override_font_sizes/font_size = 14
+text = "Fisico"
+
+[node name="PhysHBox" type="HBoxContainer" parent="MainScroll/VBoxMain/Margin/HBox/LeftCol/TacticsPanel/Margin/TacticsVBox/Grid" unique_id=1637668623]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 12
+
+[node name="PhysicalitySlider" type="HSlider" parent="MainScroll/VBoxMain/Margin/HBox/LeftCol/TacticsPanel/Margin/TacticsVBox/Grid/PhysHBox" unique_id=1293663909]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_styles/slider = SubResource("StyleBoxFlat_SliderBg")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_SliderGrabber")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_SliderGrabber")
+
+[node name="PhysVal" type="Label" parent="MainScroll/VBoxMain/Margin/HBox/LeftCol/TacticsPanel/Margin/TacticsVBox/Grid/PhysHBox" unique_id=1971298160]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(45, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.85, 1, 1)
+theme_override_font_sizes/font_size = 13
+text = "50"
+horizontal_alignment = 2
+
+[node name="Spacer2" type="Control" parent="MainScroll/VBoxMain/Margin/HBox/LeftCol/TacticsPanel/Margin/TacticsVBox" unique_id=1890043836]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ApplyButton" type="Button" parent="MainScroll/VBoxMain/Margin/HBox/LeftCol/TacticsPanel/Margin/TacticsVBox" unique_id=989760054]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("StyleBoxFlat_BtnApply")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_BtnApply")
+theme_override_styles/hover = SubResource("StyleBoxFlat_BtnApplyHover")
+theme_override_styles/focus = SubResource("StyleBoxFlat_BtnApply")
+text = "APLICAR MUDANCAS"
+
+[node name="RightCol" type="VBoxContainer" parent="MainScroll/VBoxMain/Margin/HBox" unique_id=377735676]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.55
+
+[node name="RosterPanel" type="PanelContainer" parent="MainScroll/VBoxMain/Margin/HBox/RightCol" unique_id=2075710131]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_Panel")
+
+[node name="Margin" type="MarginContainer" parent="MainScroll/VBoxMain/Margin/HBox/RightCol/RosterPanel" unique_id=1038404116]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 24
+
+[node name="VBox" type="VBoxContainer" parent="MainScroll/VBoxMain/Margin/HBox/RightCol/RosterPanel/Margin" unique_id=1543985812]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="HBox" type="HBoxContainer" parent="MainScroll/VBoxMain/Margin/HBox/RightCol/RosterPanel/Margin/VBox" unique_id=1916421062]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="MainScroll/VBoxMain/Margin/HBox/RightCol/RosterPanel/Margin/VBox/HBox" unique_id=1255262258]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.95, 1)
+theme_override_font_sizes/font_size = 20
+text = "Plantel Principal"
+
+[node name="Scroll" type="ScrollContainer" parent="MainScroll/VBoxMain/Margin/HBox/RightCol/RosterPanel/Margin/VBox" unique_id=1304487985]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="BenchTable" type="VBoxContainer" parent="MainScroll/VBoxMain/Margin/HBox/RightCol/RosterPanel/Margin/VBox/Scroll" unique_id=2071115050]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ConfirmModal" type="ColorRect" parent="." unique_id=927304033]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.7)
+
+[node name="PanelContainer" type="PanelContainer" parent="ConfirmModal" unique_id=360485336]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -220.0
+offset_top = -180.0
+offset_right = 220.0
+offset_bottom = 180.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_Modal")
+
+[node name="Margin" type="MarginContainer" parent="ConfirmModal/PanelContainer" unique_id=1425464119]
+layout_mode = 2
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 32
+
+[node name="VBox" type="VBoxContainer" parent="ConfirmModal/PanelContainer/Margin" unique_id=355573529]
+layout_mode = 2
+theme_override_constants/separation = 24
+
+[node name="ModalTitle" type="Label" parent="ConfirmModal/PanelContainer/Margin/VBox" unique_id=135309899]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "Revisao de Taticas"
+horizontal_alignment = 1
+
+[node name="ModalSummary" type="Label" parent="ConfirmModal/PanelContainer/Margin/VBox" unique_id=1899720545]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0.75, 0.75, 0.8, 1)
+theme_override_constants/line_spacing = 6
+text = "Resumo..."
+autowrap_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="ConfirmModal/PanelContainer/Margin/VBox" unique_id=2107217122]
+layout_mode = 2
+theme_override_constants/separation = 24
+alignment = 1
+
+[node name="BtnCancel" type="Button" parent="ConfirmModal/PanelContainer/Margin/VBox/HBox" unique_id=1779319752]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(130, 40)
+layout_mode = 2
+text = "Cancelar"
+
+[node name="BtnConfirm" type="Button" parent="ConfirmModal/PanelContainer/Margin/VBox/HBox" unique_id=432498918]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(130, 40)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_BtnApply")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_BtnApply")
+theme_override_styles/hover = SubResource("StyleBoxFlat_BtnApplyHover")
+text = "Confirmar"

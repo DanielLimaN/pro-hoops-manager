@@ -1,0 +1,430 @@
+[gd_scene load_steps=12 format=3 uid="uid://match_modal_1234"]
+
+[ext_resource type="Script" path="res://scenes/screens/calendar/components/match_action_popover.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://addons/at-icons/control/play.svg" id="2_icon_play"]
+[ext_resource type="Texture2D" path="res://addons/at-icons/control/fast_forward.svg" id="3_icon_ffwd"]
+[ext_resource type="Texture2D" path="res://addons/at-icons/control/text.svg" id="4_icon_file"]
+[ext_resource type="Texture2D" path="res://addons/at-icons/control/magnifying_glass.svg" id="5_icon_search"]
+[ext_resource type="Texture2D" path="res://addons/at-icons/control/calendar.svg" id="6_icon_cal"]
+
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bg"]
+bg_color = Color(0, 0, 0, 0.75)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_modal"]
+bg_color = Color(0.06, 0.05, 0.12, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 0.75, 0.14, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_header"]
+bg_color = Color(1, 0.75, 0.14, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_close"]
+bg_color = Color(0, 0, 0, 0.2)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_circle_home"]
+bg_color = Color(0.5, 0.2, 1.0, 1)
+corner_radius_top_left = 40
+corner_radius_top_right = 40
+corner_radius_bottom_right = 40
+corner_radius_bottom_left = 40
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_circle_away"]
+bg_color = Color(0.1, 0.5, 0.6, 1)
+corner_radius_top_left = 40
+corner_radius_top_right = 40
+corner_radius_bottom_right = 40
+corner_radius_bottom_left = 40
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_prediction"]
+bg_color = Color(0.0, 0.3, 0.2, 0.2)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.1, 0.7, 0.4, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_play"]
+bg_color = Color(0.1, 0.7, 0.4, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_sim"]
+bg_color = Color(0.15, 0.1, 0.25, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.3, 0.2, 0.5, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_outline"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.3, 0.2, 0.5, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="MatchModal" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Overlay" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bg")
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ModalPanel" type="PanelContainer" parent="CenterContainer"]
+custom_minimum_size = Vector2(400, 520)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_modal")
+
+[node name="VBox" type="VBoxContainer" parent="CenterContainer/ModalPanel"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Header" type="PanelContainer" parent="CenterContainer/ModalPanel/VBox"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_header")
+
+[node name="Margin" type="MarginContainer" parent="CenterContainer/ModalPanel/VBox/Header"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_right = 16
+
+[node name="HBox" type="HBoxContainer" parent="CenterContainer/ModalPanel/VBox/Header/Margin"]
+layout_mode = 2
+
+[node name="TitleIcon" type="TextureRect" parent="CenterContainer/ModalPanel/VBox/Header/Margin/HBox"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+texture = ExtResource("6_icon_cal")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Title" type="Label" parent="CenterContainer/ModalPanel/VBox/Header/Margin/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 14
+text = "MATCH SELECIONADO"
+vertical_alignment = 1
+
+[node name="CloseBtn" type="Button" parent="CenterContainer/ModalPanel/VBox/Header/Margin/HBox"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_close")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_close")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_close")
+text = "X"
+
+[node name="Body" type="MarginContainer" parent="CenterContainer/ModalPanel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 24
+
+[node name="VBox" type="VBoxContainer" parent="CenterContainer/ModalPanel/VBox/Body"]
+layout_mode = 2
+theme_override_constants/separation = 24
+
+[node name="Matchup" type="HBoxContainer" parent="CenterContainer/ModalPanel/VBox/Body/VBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="HomeCircle" type="PanelContainer" parent="CenterContainer/ModalPanel/VBox/Body/VBox/Matchup"]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_circle_home")
+
+[node name="Center" type="CenterContainer" parent="CenterContainer/ModalPanel/VBox/Body/VBox/Matchup/HomeCircle"]
+layout_mode = 2
+
+[node name="HomeLbl" type="Label" parent="CenterContainer/ModalPanel/VBox/Body/VBox/Matchup/HomeCircle/Center"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "PHX"
+
+[node name="VSBox" type="VBoxContainer" parent="CenterContainer/ModalPanel/VBox/Body/VBox/Matchup"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="VSLbl" type="Label" parent="CenterContainer/ModalPanel/VBox/Body/VBox/Matchup/VSBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.5, 0.8, 1)
+theme_override_font_sizes/font_size = 24
+text = "VS"
+horizontal_alignment = 1
+
+[node name="LocLbl" type="Label" parent="CenterContainer/ModalPanel/VBox/Body/VBox/Matchup/VSBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.7, 0.9, 1)
+theme_override_font_sizes/font_size = 12
+text = "EM CASA"
+horizontal_alignment = 1
+
+[node name="AwayCircle" type="PanelContainer" parent="CenterContainer/ModalPanel/VBox/Body/VBox/Matchup"]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_circle_away")
+
+[node name="Center" type="CenterContainer" parent="CenterContainer/ModalPanel/VBox/Body/VBox/Matchup/AwayCircle"]
+layout_mode = 2
+
+[node name="AwayLbl" type="Label" parent="CenterContainer/ModalPanel/VBox/Body/VBox/Matchup/AwayCircle/Center"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "REC"
+
+[node name="InfoGrid" type="HBoxContainer" parent="CenterContainer/ModalPanel/VBox/Body/VBox"]
+layout_mode = 2
+
+[node name="DateBox" type="VBoxContainer" parent="CenterContainer/ModalPanel/VBox/Body/VBox/InfoGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="L1" type="Label" parent="CenterContainer/ModalPanel/VBox/Body/VBox/InfoGrid/DateBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.5, 0.7, 1)
+theme_override_font_sizes/font_size = 10
+text = "DATA"
+
+[node name="DateLbl" type="Label" parent="CenterContainer/ModalPanel/VBox/Body/VBox/InfoGrid/DateBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Ter, 18 Nov"
+
+[node name="TimeBox" type="VBoxContainer" parent="CenterContainer/ModalPanel/VBox/Body/VBox/InfoGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="L1" type="Label" parent="CenterContainer/ModalPanel/VBox/Body/VBox/InfoGrid/TimeBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.5, 0.7, 1)
+theme_override_font_sizes/font_size = 10
+text = "HORÁRIO"
+
+[node name="TimeLbl" type="Label" parent="CenterContainer/ModalPanel/VBox/Body/VBox/InfoGrid/TimeBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "20h00"
+
+[node name="GamesBox" type="VBoxContainer" parent="CenterContainer/ModalPanel/VBox/Body/VBox/InfoGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="L1" type="Label" parent="CenterContainer/ModalPanel/VBox/Body/VBox/InfoGrid/GamesBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.5, 0.7, 1)
+theme_override_font_sizes/font_size = 10
+text = "JOGOS ATÉ LÁ"
+
+[node name="GamesLbl" type="Label" parent="CenterContainer/ModalPanel/VBox/Body/VBox/InfoGrid/GamesBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.1, 0.7, 0.4, 1)
+theme_override_font_sizes/font_size = 16
+text = "0"
+
+[node name="Prediction" type="PanelContainer" parent="CenterContainer/ModalPanel/VBox/Body/VBox"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_prediction")
+
+[node name="Center" type="CenterContainer" parent="CenterContainer/ModalPanel/VBox/Body/VBox/Prediction"]
+layout_mode = 2
+
+[node name="PredLbl" type="Label" parent="CenterContainer/ModalPanel/VBox/Body/VBox/Prediction/Center"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.1, 0.7, 0.4, 1)
+theme_override_font_sizes/font_size = 14
+text = "PREVISÃO: 78% VITÓRIA"
+
+[node name="HSeparator" type="ColorRect" parent="CenterContainer/ModalPanel/VBox/Body/VBox"]
+custom_minimum_size = Vector2(0, 1)
+layout_mode = 2
+color = Color(0.2, 0.15, 0.3, 1)
+
+[node name="ActionsLbl" type="Label" parent="CenterContainer/ModalPanel/VBox/Body/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.5, 0.8, 1)
+theme_override_font_sizes/font_size = 12
+text = "AÇÕES DISPONÍVEIS"
+
+[node name="PlayBtn" type="Button" parent="CenterContainer/ModalPanel/VBox/Body/VBox"]
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_play")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_play")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_play")
+
+[node name="HBox" type="HBoxContainer" parent="CenterContainer/ModalPanel/VBox/Body/VBox/PlayBtn"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 16
+
+[node name="Margin1" type="MarginContainer" parent="CenterContainer/ModalPanel/VBox/Body/VBox/PlayBtn/HBox"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+
+[node name="Icon" type="TextureRect" parent="CenterContainer/ModalPanel/VBox/Body/VBox/PlayBtn/HBox"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("2_icon_play")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="VBox" type="VBoxContainer" parent="CenterContainer/ModalPanel/VBox/Body/VBox/PlayBtn/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="T1" type="Label" parent="CenterContainer/ModalPanel/VBox/Body/VBox/PlayBtn/HBox/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "JOGAR AGORA"
+
+[node name="T2" type="Label" parent="CenterContainer/ModalPanel/VBox/Body/VBox/PlayBtn/HBox/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "Entrar na simulação ao vivo"
+
+[node name="Arrow" type="Label" parent="CenterContainer/ModalPanel/VBox/Body/VBox/PlayBtn/HBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "->"
+
+[node name="Margin2" type="MarginContainer" parent="CenterContainer/ModalPanel/VBox/Body/VBox/PlayBtn/HBox"]
+layout_mode = 2
+theme_override_constants/margin_right = 16
+
+[node name="SimBtn" type="Button" parent="CenterContainer/ModalPanel/VBox/Body/VBox"]
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_sim")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_sim")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_sim")
+
+[node name="HBox" type="HBoxContainer" parent="CenterContainer/ModalPanel/VBox/Body/VBox/SimBtn"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 16
+
+[node name="Margin1" type="MarginContainer" parent="CenterContainer/ModalPanel/VBox/Body/VBox/SimBtn/HBox"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+
+[node name="Icon" type="TextureRect" parent="CenterContainer/ModalPanel/VBox/Body/VBox/SimBtn/HBox"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("3_icon_ffwd")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="VBox" type="VBoxContainer" parent="CenterContainer/ModalPanel/VBox/Body/VBox/SimBtn/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="T1" type="Label" parent="CenterContainer/ModalPanel/VBox/Body/VBox/SimBtn/HBox/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "SIMULAR ATÉ AQUI"
+
+[node name="T2" type="Label" parent="CenterContainer/ModalPanel/VBox/Body/VBox/SimBtn/HBox/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.5, 0.8, 1)
+theme_override_font_sizes/font_size = 10
+text = "Avançar tempo até esta data"
+
+[node name="Arrow" type="Label" parent="CenterContainer/ModalPanel/VBox/Body/VBox/SimBtn/HBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.5, 0.8, 1)
+theme_override_font_sizes/font_size = 20
+text = "->"
+
+[node name="Margin2" type="MarginContainer" parent="CenterContainer/ModalPanel/VBox/Body/VBox/SimBtn/HBox"]
+layout_mode = 2
+theme_override_constants/margin_right = 16
+
+[node name="BottomRow" type="HBoxContainer" parent="CenterContainer/ModalPanel/VBox/Body/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="DetailsBtn" type="Button" parent="CenterContainer/ModalPanel/VBox/Body/VBox/BottomRow"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_outline")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_outline")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_outline")
+text = " DETALHES"
+icon = ExtResource("4_icon_file")
+
+[node name="AnalyseBtn" type="Button" parent="CenterContainer/ModalPanel/VBox/Body/VBox/BottomRow"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_outline")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_outline")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_outline")
+text = " ANALISAR REC"
+icon = ExtResource("5_icon_search")
+

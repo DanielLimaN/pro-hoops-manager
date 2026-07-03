@@ -1,0 +1,42 @@
+[gd_scene load_steps=3 format=3 uid="uid://clogo00000000"]
+
+[ext_resource type="Script" path="res://scenes/components/logo.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/images/logo_mark_default.svg" id="2_mark"]
+
+[node name="Logo" type="BoxContainer"]
+offset_right = 200.0
+offset_bottom = 64.0
+theme_override_constants/separation = 14
+alignment = 1
+script = ExtResource("1_script")
+variant = "horizontal"
+theme_name = "light"
+logo_size = 64.0
+show_text = true
+
+[node name="Mark" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_mark")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 0
+alignment = 1
+
+[node name="Title" type="Label" parent="TextContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.0431373, 0.0196078, 0.0784314, 1)
+theme_override_constants/line_spacing = -2
+theme_override_font_sizes/font_size = 18
+text = "PRO HOOPS"
+uppercase = true
+
+[node name="Subtitle" type="Label" parent="TextContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.0431373, 0.0196078, 0.0784314, 1)
+theme_override_font_sizes/font_size = 18
+text = "MANAGER"
+uppercase = true

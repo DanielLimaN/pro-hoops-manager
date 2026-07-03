@@ -1,0 +1,104 @@
+[gd_scene load_steps=4 format=3 uid="uid://sidebar_comp_001"]
+
+[ext_resource type="Script" path="res://scenes/components/sidebar.gd" id="1_script"]
+[ext_resource type="Theme" path="res://ui_theme.tres" id="2_theme"]
+[ext_resource type="PackedScene" path="res://scenes/components/logo.tscn" id="3_logo_scene"]
+
+[node name="Sidebar" type="Panel"]
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 240.0
+custom_minimum_size = Vector2(240, 0)
+grow_vertical = 2
+mouse_filter = 1
+theme = ExtResource("2_theme")
+script = ExtResource("1_script")
+
+[node name="SidebarVBox" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 24.0
+offset_right = -16.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 8
+
+[node name="Logo" parent="SidebarVBox" instance=ExtResource("3_logo_scene")]
+layout_mode = 2
+variant = "vertical"
+theme_name = "mono-white"
+logo_size = 80.0
+show_text = true
+
+[node name="MenuContainer" type="VBoxContainer" parent="SidebarVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 4
+
+[node name="DashboardBtn" type="Button" parent="SidebarVBox/MenuContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Dashboard"
+
+[node name="TeamBtn" type="Button" parent="SidebarVBox/MenuContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Elenco"
+
+[node name="CalendarBtn" type="Button" parent="SidebarVBox/MenuContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Calendário"
+
+[node name="TacticBtn" type="Button" parent="SidebarVBox/MenuContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Tática"
+
+[node name="TrainingBtn" type="Button" parent="SidebarVBox/MenuContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Treinos"
+
+[node name="InboxBtn" type="Button" parent="SidebarVBox/MenuContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Caixa de Entrada"
+
+[node name="TransferBtn" type="Button" parent="SidebarVBox/MenuContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Transferências"
+
+[node name="FinanceBtn" type="Button" parent="SidebarVBox/MenuContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Finanças"
+
+[node name="StatsBtn" type="Button" parent="SidebarVBox/MenuContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Estatísticas"
+
+[node name="TrophyBtn" type="Button" parent="SidebarVBox/MenuContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Conquistas"
+
+[node name="Spacer" type="Control" parent="SidebarVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="RestartBtn" type="Button" parent="SidebarVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Reiniciar"
+
+[node name="SettingsBtn" type="Button" parent="SidebarVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Configurações"

@@ -1,0 +1,73 @@
+[gd_scene load_steps=4 format=3 uid="uid://header_filter_001"]
+
+[ext_resource type="Script" path="res://scenes/ui/components/header_filter.gd" id="1_script"]
+[ext_resource type="PackedScene" uid="uid://icon_button_001" path="res://scenes/ui/components/icon_button.tscn" id="2_ibtn"]
+[ext_resource type="PackedScene" uid="uid://primary_button_001" path="res://scenes/ui/components/primary_button.tscn" id="3_pbtn"]
+
+[node name="HeaderFilter" type="HBoxContainer"]
+theme_override_constants/separation = 16
+script = ExtResource("1_script")
+
+[node name="SearchPanel" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="SearchPanel"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="IconMargin" type="MarginContainer" parent="SearchPanel/HBox"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+
+[node name="SearchIcon" type="TextureRect" parent="SearchPanel/HBox/IconMargin"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+size_flags_vertical = 4
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SearchEdit" type="LineEdit" parent="SearchPanel/HBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+placeholder_text = "Buscar..."
+
+[node name="FilterBtn" parent="." instance=ExtResource("2_ibtn")]
+unique_name_in_owner = true
+layout_mode = 2
+text = "FILTRAR"
+
+[node name="ActionBtn" parent="." instance=ExtResource("3_pbtn")]
+unique_name_in_owner = true
+layout_mode = 2
+text = "NOVO"
+
+[node name="UnreadBadge" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+
+[node name="BadgeMargin" type="MarginContainer" parent="UnreadBadge"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_right = 12
+
+[node name="BadgeHBox" type="HBoxContainer" parent="UnreadBadge/BadgeMargin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="BadgeIcon" type="TextureRect" parent="UnreadBadge/BadgeMargin/BadgeHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(12, 12)
+layout_mode = 2
+size_flags_vertical = 4
+expand_mode = 1
+stretch_mode = 5
+
+[node name="BadgeText" type="Label" parent="UnreadBadge/BadgeMargin/BadgeHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "5 NÃO LIDAS"

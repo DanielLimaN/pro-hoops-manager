@@ -1,0 +1,180 @@
+[gd_scene load_steps=7 format=3 uid="uid://player_row_001"]
+
+[ext_resource type="Script" path="res://scenes/ui/components/player_row.gd" id="1_script"]
+[ext_resource type="PackedScene" uid="uid://attribute_badge_001" path="res://scenes/ui/components/attribute_badge.tscn" id="2_badge"]
+[ext_resource type="Texture2D" uid="uid://star_icon_001" path="res://addons/at-icons/control/star.svg" id="3_star"]
+
+[sub_resource type="Gradient" id="Gradient_001"]
+colors = PackedColorArray(0.654902, 0.545098, 0.980392, 0.2, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_001"]
+gradient = SubResource("Gradient_001")
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_Avatar"]
+bg_color = Color(0.654902, 0.545098, 0.980392, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+
+[node name="PlayerRow" type="PanelContainer"]
+script = ExtResource("1_script")
+
+[node name="Gradient" type="TextureRect" parent="."]
+visible = false
+layout_mode = 2
+texture = SubResource("GradientTexture2D_001")
+expand_mode = 1
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 16
+
+[node name="HBox" type="HBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="PosBadge" parent="Margin/HBox" instance=ExtResource("2_badge")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="NameBox" type="HBoxContainer" parent="Margin/HBox"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 12
+
+[node name="AvatarPanel" type="PanelContainer" parent="Margin/HBox/NameBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(36, 36)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_Avatar")
+
+[node name="Initials" type="Label" parent="Margin/HBox/NameBox/AvatarPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 12
+text = "MS"
+horizontal_alignment = 1
+
+[node name="VBox" type="VBoxContainer" parent="Margin/HBox/NameBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="NameLbl" type="Label" parent="Margin/HBox/NameBox/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Marcus Silva"
+
+[node name="SubLbl" type="Label" parent="Margin/HBox/NameBox/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "The Maestro"
+
+[node name="AgeLbl" type="Label" parent="Margin/HBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+text = "28"
+vertical_alignment = 1
+
+[node name="OvrBadge" parent="Margin/HBox" instance=ExtResource("2_badge")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Spacer" type="Control" parent="Margin/HBox"]
+custom_minimum_size = Vector2(12, 0)
+layout_mode = 2
+
+[node name="Stars" type="HBoxContainer" parent="Margin/HBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_constants/separation = 2
+alignment = 1
+
+[node name="Star1" type="TextureRect" parent="Margin/HBox/Stars"]
+custom_minimum_size = Vector2(10, 10)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("3_star")
+expand_mode = 1
+
+[node name="Star2" type="TextureRect" parent="Margin/HBox/Stars"]
+custom_minimum_size = Vector2(10, 10)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("3_star")
+expand_mode = 1
+
+[node name="Star3" type="TextureRect" parent="Margin/HBox/Stars"]
+custom_minimum_size = Vector2(10, 10)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("3_star")
+expand_mode = 1
+
+[node name="Star4" type="TextureRect" parent="Margin/HBox/Stars"]
+custom_minimum_size = Vector2(10, 10)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("3_star")
+expand_mode = 1
+
+[node name="Star5" type="TextureRect" parent="Margin/HBox/Stars"]
+custom_minimum_size = Vector2(10, 10)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("3_star")
+expand_mode = 1
+
+[node name="EnergyBox" type="VBoxContainer" parent="Margin/HBox"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="EnergyBar" type="ColorRect" parent="Margin/HBox/EnergyBox"]
+custom_minimum_size = Vector2(60, 4)
+layout_mode = 2
+size_flags_horizontal = 4
+color = Color(0.101961, 0.0431373, 0.180392, 1)
+
+[node name="EnergyFill" type="ColorRect" parent="Margin/HBox/EnergyBox/EnergyBar"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(60, 4)
+layout_mode = 0
+color = Color(0.0627451, 0.72549, 0.505882, 1)
+
+[node name="EnergyLbl" type="Label" parent="Margin/HBox/EnergyBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.0627451, 0.72549, 0.505882, 1)
+theme_override_font_sizes/font_size = 10
+text = "100%"
+horizontal_alignment = 1
+
+[node name="ContractLbl" type="Label" parent="Margin/HBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "2 anos"
+vertical_alignment = 1
+
+[node name="SalaryLbl" type="Label" parent="Margin/HBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "R$ 2.4M"
+vertical_alignment = 1
+
+[node name="StatusBadge" parent="Margin/HBox" instance=ExtResource("2_badge")]
+unique_name_in_owner = true
+layout_mode = 2

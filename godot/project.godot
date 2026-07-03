@@ -1,0 +1,51 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
+
+[application]
+
+config/name="Pro Hoops Simulator"
+config/version="0.1.0"
+run/main_scene="res://scenes/start_screen.tscn"
+config/features=PackedStringArray("4.7", "Forward Plus")
+config/icon="res://icon.svg"
+
+[autoload]
+
+GameManager="*res://scripts/autoload/game_manager.gd"
+ThemeConfig="*res://scripts/autoload/theme_config.gd"
+EventBus="*res://scripts/autoload/event_bus.gd"
+SimulationController="*res://scripts/autoload/simulation_controller.gd"
+SimulationBridge="*res://scripts/autoload/simulation_bridge.gd"
+EventManager="*res://scripts/autoload/event_manager.gd"
+MCPRuntimeProbe="*res://addons/godot_mcp/runtime/mcp_runtime_probe.gd"
+
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+window/size/mode=2
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/godot_mcp/plugin.cfg")
+
+[gui]
+
+theme/custom="res://theme.tres"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"

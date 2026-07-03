@@ -1,0 +1,46 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/dashboard/components/standings_table.gd" id="1_st"]
+
+[node name="StandingsTable" type="PanelContainer"]
+script = ExtResource("1_st")
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Header" type="HBoxContainer" parent="VBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Pos" type="Label" parent="VBox/Header"]
+layout_mode = 2
+custom_minimum_size = Vector2(30, 0)
+text = "#"
+theme_override_colors/font_color = Color(0.6, 0.6, 0.6, 1)
+
+[node name="Team" type="Label" parent="VBox/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "TIME"
+theme_override_colors/font_color = Color(0.6, 0.6, 0.6, 1)
+
+[node name="W" type="Label" parent="VBox/Header"]
+layout_mode = 2
+custom_minimum_size = Vector2(30, 0)
+text = "V"
+theme_override_colors/font_color = Color(0.6, 0.6, 0.6, 1)
+
+[node name="L" type="Label" parent="VBox/Header"]
+layout_mode = 2
+custom_minimum_size = Vector2(30, 0)
+text = "D"
+theme_override_colors/font_color = Color(0.6, 0.6, 0.6, 1)
+
+[node name="PCT" type="Label" parent="VBox/Header"]
+layout_mode = 2
+custom_minimum_size = Vector2(50, 0)
+text = "PCT"
+theme_override_colors/font_color = Color(0.6, 0.6, 0.6, 1)
+
+[node name="Rows" type="VBoxContainer" parent="VBox"]
+layout_mode = 2

@@ -1,0 +1,59 @@
+[gd_scene load_steps=3 format=3 uid="uid://mini_standings_001"]
+
+[ext_resource type="Script" path="res://scenes/screens/calendar/components/mini_standings.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://arrow_right_svg" path="res://addons/at-icons/control/arrow_right.svg" id="2_arrow"]
+
+[node name="MiniStandings" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Header" type="PanelContainer" parent="VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="HeaderHBox" type="HBoxContainer" parent="VBox/Header"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="VBox/Header/HeaderHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "TOP 6 · CONF. SUL"
+
+[node name="ViewAllWrap" type="HBoxContainer" parent="VBox/Header/HeaderHBox"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="ViewAll" type="Label" parent="VBox/Header/HeaderHBox/ViewAllWrap"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "VER TUDO"
+
+[node name="ChevronIcon" type="TextureRect" parent="VBox/Header/HeaderHBox/ViewAllWrap"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(11, 11)
+layout_mode = 2
+texture = ExtResource("2_arrow")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ListMargin" type="MarginContainer" parent="VBox"]
+unique_name_in_owner = false
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="ListContainer" type="VBoxContainer" parent="VBox/ListMargin"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 0

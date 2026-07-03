@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "godot": {
+      "command": "uvx",
+      "args": [
+        "--python",
+        "3.12",
+        "godot-mcp"
+      ],
+      "env": {
+        "GODOT_PROJECT_PATH": "/Users/daniellimadonascimento/development/games/basket-manager-godot/godot"
+      }
+    }
+  }
+}

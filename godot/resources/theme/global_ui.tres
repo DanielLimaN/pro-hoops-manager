@@ -1,0 +1,10 @@
+[gd_resource type="Theme" format=3 uid="uid://global_ui_theme_01"]
+
+[resource]
+ScreenMargin/base_type = &"MarginContainer"
+ScreenMargin/constants/margin_bottom = 40
+ScreenMargin/constants/margin_left = 32
+ScreenMargin/constants/margin_right = 32
+ScreenMargin/constants/margin_top = 40
+ScreenVBox/base_type = &"VBoxContainer"
+ScreenVBox/constants/separation = 24

@@ -1,0 +1,102 @@
+[gd_scene format=3 uid="uid://ctaj8f5ekvylc"]
+
+[ext_resource type="Script" uid="uid://cvvqv5cig7cay" path="res://scenes/screens/calendar/components/month_navigator.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://bpv50gtga1omn" path="res://addons/at-icons/control/previous.svg" id="2_prev"]
+[ext_resource type="Texture2D" uid="uid://denxgfakeugri" path="res://addons/at-icons/control/next.svg" id="3_next"]
+[ext_resource type="Texture2D" uid="uid://xsbvvgst4e3k" path="res://addons/at-icons/control/target.svg" id="4_target"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nav"]
+content_margin_left = 6.0
+content_margin_right = 6.0
+bg_color = Color(0.15, 0.15, 0.17, 0.6)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.35, 0.35, 0.38, 0.5)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nav_pressed"]
+content_margin_left = 6.0
+content_margin_right = 6.0
+bg_color = Color(0.1, 0.1, 0.12, 0.8)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.35, 0.35, 0.38, 0.5)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nav_hover"]
+content_margin_left = 6.0
+content_margin_right = 6.0
+bg_color = Color(0.25, 0.25, 0.28, 0.7)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.45, 0.45, 0.48, 0.6)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[node name="MonthNavigator" type="HBoxContainer" unique_id=1655511298]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="PrevBtn" type="Button" parent="." unique_id=565538428]
+custom_minimum_size = Vector2(36, 36)
+layout_mode = 2
+theme_override_colors/icon_normal_color = Color(0.85, 0.85, 0.85, 1)
+theme_override_colors/icon_focus_color = Color(0.85, 0.85, 0.85, 1)
+theme_override_colors/icon_pressed_color = Color(0.85, 0.85, 0.85, 1)
+theme_override_colors/icon_hover_color = Color(0.85, 0.85, 0.85, 1)
+theme_override_constants/icon_max_width = 14
+theme_override_styles/normal = SubResource("StyleBoxFlat_nav")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_nav_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_nav_hover")
+icon = ExtResource("2_prev")
+expand_icon = true
+
+[node name="MonthLbl" type="Label" parent="." unique_id=2107785820]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Novembro 2026"
+horizontal_alignment = 1
+
+[node name="NextBtn" type="Button" parent="." unique_id=1512806472]
+custom_minimum_size = Vector2(36, 36)
+layout_mode = 2
+theme_override_colors/icon_normal_color = Color(0.85, 0.85, 0.85, 1)
+theme_override_colors/icon_focus_color = Color(0.85, 0.85, 0.85, 1)
+theme_override_colors/icon_pressed_color = Color(0.85, 0.85, 0.85, 1)
+theme_override_colors/icon_hover_color = Color(0.85, 0.85, 0.85, 1)
+theme_override_constants/icon_max_width = 14
+theme_override_styles/normal = SubResource("StyleBoxFlat_nav")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_nav_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_nav_hover")
+icon = ExtResource("3_next")
+expand_icon = true
+
+[node name="TodayBtn" type="Button" parent="." unique_id=1953688408]
+layout_mode = 2
+theme_override_colors/icon_normal_color = Color(0.85, 0.85, 0.85, 1)
+theme_override_colors/icon_focus_color = Color(0.85, 0.85, 0.85, 1)
+theme_override_colors/icon_pressed_color = Color(0.85, 0.85, 0.85, 1)
+theme_override_colors/icon_hover_color = Color(0.85, 0.85, 0.85, 1)
+theme_override_constants/h_separation = 6
+theme_override_constants/icon_max_width = 14
+text = "HOJE"
+icon = ExtResource("4_target")
+expand_icon = true

@@ -1,0 +1,5 @@
+[gd_resource type="SystemFont" format=3 uid="uid://b7xqwe12345"]
+
+[resource]
+font_names = PackedStringArray("Helvetica Neue", "Inter", "Arial", "sans-serif")
+subpixel_positioning = 0

@@ -1,0 +1,222 @@
+[gd_scene load_steps=3 format=3 uid="uid://next_match_001"]
+
+[ext_resource type="Script" path="res://scenes/screens/calendar/components/next_match_card.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://calendar_svg_icon" path="res://addons/at-icons/control/calendar.svg" id="2_calendar_icon"]
+
+[node name="NextMatchCard" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="VBox" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="DateBar" type="HBoxContainer" parent="Margin/VBox"]
+layout_mode = 2
+
+[node name="DateWrap" type="HBoxContainer" parent="Margin/VBox/DateBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="DateIcon" type="TextureRect" parent="Margin/VBox/DateBar/DateWrap"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(13, 13)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("2_calendar_icon")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="DateLbl" type="Label" parent="Margin/VBox/DateBar/DateWrap"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+text = "Sex, 7 de Outubro • 20h30"
+
+[node name="CompTag" type="PanelContainer" parent="Margin/VBox/DateBar"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="TagText" type="Label" parent="Margin/VBox/DateBar/CompTag"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_right = 8
+text = "LIGA"
+horizontal_alignment = 1
+
+[node name="MatchupRow" type="HBoxContainer" parent="Margin/VBox"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 12
+
+[node name="HomeTeam" type="VBoxContainer" parent="Margin/VBox/MatchupRow"]
+alignment = 1
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="HomeBadge" type="PanelContainer" parent="Margin/VBox/MatchupRow/HomeTeam"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+
+[node name="HomeAbbr" type="Label" parent="Margin/VBox/MatchupRow/HomeTeam/HomeBadge"]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_alignment = 1
+vertical_alignment = 1
+text = "PHX"
+
+[node name="HomeName" type="Label" parent="Margin/VBox/MatchupRow/HomeTeam"]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_alignment = 1
+text = "PRO HOOPS"
+
+[node name="HomeRecord" type="Label" parent="Margin/VBox/MatchupRow/HomeTeam"]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_alignment = 1
+text = "8-2 - 1o"
+
+[node name="VSWrap" type="VBoxContainer" parent="Margin/VBox/MatchupRow"]
+unique_name_in_owner = true
+alignment = 1
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="HomeAwayBadge" type="PanelContainer" parent="Margin/VBox/MatchupRow/VSWrap"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="BadgeText" type="Label" parent="Margin/VBox/MatchupRow/VSWrap/HomeAwayBadge"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_right = 6
+text = "CASA"
+horizontal_alignment = 1
+
+[node name="VSLbl" type="Label" parent="Margin/VBox/MatchupRow/VSWrap"]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_alignment = 1
+text = "VS"
+
+[node name="AwayTeam" type="VBoxContainer" parent="Margin/VBox/MatchupRow"]
+alignment = 1
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="AwayBadge" type="PanelContainer" parent="Margin/VBox/MatchupRow/AwayTeam"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+
+[node name="AwayAbbr" type="Label" parent="Margin/VBox/MatchupRow/AwayTeam/AwayBadge"]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_alignment = 1
+vertical_alignment = 1
+text = "GNC"
+
+[node name="AwayName" type="Label" parent="Margin/VBox/MatchupRow/AwayTeam"]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_alignment = 1
+text = "GENESIS"
+
+[node name="AwayRecord" type="Label" parent="Margin/VBox/MatchupRow/AwayTeam"]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_alignment = 1
+text = "5-5 - 6o"
+
+[node name="PredictionRow" type="PanelContainer" parent="Margin/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="PredMargin" type="MarginContainer" parent="Margin/VBox/PredictionRow"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 10
+
+[node name="PredHBox" type="HBoxContainer" parent="Margin/VBox/PredictionRow/PredMargin"]
+layout_mode = 2
+
+[node name="PredLeft" type="VBoxContainer" parent="Margin/VBox/PredictionRow/PredMargin/PredHBox"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="PredLabel" type="Label" parent="Margin/VBox/PredictionRow/PredMargin/PredHBox/PredLeft"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "PREVISAO"
+
+[node name="PredValue" type="Label" parent="Margin/VBox/PredictionRow/PredMargin/PredHBox/PredLeft"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Vitoria provavel"
+
+[node name="DifficultyBars" type="HBoxContainer" parent="Margin/VBox/PredictionRow/PredMargin/PredHBox"]
+alignment = 2
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 3
+
+[node name="Bar0" type="ColorRect" parent="Margin/VBox/PredictionRow/PredMargin/PredHBox/DifficultyBars"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(4, 6)
+layout_mode = 2
+size_flags_vertical = 4
+color = Color(0.0667, 0.7255, 0.5059, 1)
+
+[node name="Bar1" type="ColorRect" parent="Margin/VBox/PredictionRow/PredMargin/PredHBox/DifficultyBars"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(4, 9)
+layout_mode = 2
+size_flags_vertical = 4
+color = Color(0.0667, 0.7255, 0.5059, 1)
+
+[node name="Bar2" type="ColorRect" parent="Margin/VBox/PredictionRow/PredMargin/PredHBox/DifficultyBars"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(4, 12)
+layout_mode = 2
+size_flags_vertical = 4
+color = Color(0.1765, 0.1059, 0.3059, 1)
+
+[node name="Bar3" type="ColorRect" parent="Margin/VBox/PredictionRow/PredMargin/PredHBox/DifficultyBars"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(4, 8)
+layout_mode = 2
+size_flags_vertical = 4
+color = Color(0.1765, 0.1059, 0.3059, 1)
+
+[node name="Bar4" type="ColorRect" parent="Margin/VBox/PredictionRow/PredMargin/PredHBox/DifficultyBars"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(4, 5)
+layout_mode = 2
+size_flags_vertical = 4
+color = Color(0.1765, 0.1059, 0.3059, 1)
+
+[node name="PlayBtn" type="Button" parent="Margin/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+text = "JOGAR AGORA"

@@ -1,0 +1,116 @@
+[gd_scene load_steps=4 format=3 uid="uid://dscouting0000000000001"]
+
+[ext_resource type="Script" path="res://scripts/scouting.gd" id="1_scout"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_Header"]
+bg_color = Color(0.1, 0.1, 0.15, 1)
+border_width_bottom = 2
+border_color = Color(0.35, 0.2, 0.8, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_Panel"]
+bg_color = Color(0.12, 0.12, 0.16, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.18, 0.18, 0.24, 1)
+
+[node name="Scouting" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_scout")
+
+[node name="MainScroll" type="ScrollContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_scroll_mode = 0
+
+[node name="VBoxMain" type="VBoxContainer" parent="MainScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+
+[node name="HeaderPanel" type="PanelContainer" parent="MainScroll/VBoxMain"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_Header")
+
+[node name="Margin" type="MarginContainer" parent="MainScroll/VBoxMain/HeaderPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 16
+
+[node name="HBox" type="HBoxContainer" parent="MainScroll/VBoxMain/HeaderPanel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 24
+alignment = 0
+
+[node name="TitleLabel" type="Label" parent="MainScroll/VBoxMain/HeaderPanel/Margin/HBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Centro de Scouting"
+
+[node name="VSeparator" type="VSeparator" parent="MainScroll/VBoxMain/HeaderPanel/Margin/HBox"]
+layout_mode = 2
+theme_override_constants/separation = 24
+
+[node name="SubtitleLabel" type="Label" parent="MainScroll/VBoxMain/HeaderPanel/Margin/HBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(0.6, 0.85, 1.0, 1)
+text = "Busque e analise talentos"
+
+[node name="Margin" type="MarginContainer" parent="MainScroll/VBoxMain"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 24
+
+[node name="ScoutPanel" type="PanelContainer" parent="MainScroll/VBoxMain/Margin"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_Panel")
+
+[node name="Margin" type="MarginContainer" parent="MainScroll/VBoxMain/Margin/ScoutPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 24
+
+[node name="VBox" type="VBoxContainer" parent="MainScroll/VBoxMain/Margin/ScoutPanel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="ScoutTitle" type="Label" parent="MainScroll/VBoxMain/Margin/ScoutPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(0.85, 0.85, 0.9, 1)
+text = "Top 50 Jogadores da Liga"
+
+[node name="Scroll" type="ScrollContainer" parent="MainScroll/VBoxMain/Margin/ScoutPanel/Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ScoutTable" type="VBoxContainer" parent="MainScroll/VBoxMain/Margin/ScoutPanel/Margin/VBox/Scroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3

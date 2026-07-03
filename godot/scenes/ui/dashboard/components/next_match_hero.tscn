@@ -1,0 +1,111 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/dashboard/components/next_match_hero.gd" id="1_nmh"]
+
+[node name="NextMatchHero" type="PanelContainer"]
+custom_minimum_size = Vector2(0, 240)
+script = ExtResource("1_nmh")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 24
+
+[node name="VBox" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+
+[node name="Top" type="HBoxContainer" parent="Margin/VBox"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Margin/VBox/Top"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "PRÓXIMO JOGO"
+theme_override_colors/font_color = Color(0.65, 0.54, 0.98, 1)
+
+[node name="DateLabel" type="Label" parent="Margin/VBox/Top"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.65, 0.7, 1)
+
+[node name="HAStatus" type="Label" parent="Margin/VBox/Top"]
+layout_mode = 2
+
+[node name="Matchup" type="HBoxContainer" parent="Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 1
+
+[node name="HomeCircle" type="PanelContainer" parent="Margin/VBox/Matchup"]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+
+[node name="Abbr" type="Label" parent="Margin/VBox/Matchup/HomeCircle"]
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="HomeInfo" type="VBoxContainer" parent="Margin/VBox/Matchup"]
+layout_mode = 2
+alignment = 1
+
+[node name="Name" type="Label" parent="Margin/VBox/Matchup/HomeInfo"]
+layout_mode = 2
+
+[node name="Record" type="Label" parent="Margin/VBox/Matchup/HomeInfo"]
+layout_mode = 2
+
+[node name="VSBox" type="VBoxContainer" parent="Margin/VBox/Matchup"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="VS" type="Label" parent="Margin/VBox/Matchup/VSBox"]
+layout_mode = 2
+text = "VS"
+horizontal_alignment = 1
+theme_override_colors/font_color = Color(0.4, 0.4, 0.45, 1)
+
+[node name="Prediction" type="Label" parent="Margin/VBox/Matchup/VSBox"]
+layout_mode = 2
+horizontal_alignment = 1
+theme_override_colors/font_color = Color(0.2, 0.8, 0.5, 1)
+
+[node name="AwayInfo" type="VBoxContainer" parent="Margin/VBox/Matchup"]
+layout_mode = 2
+alignment = 1
+
+[node name="Name" type="Label" parent="Margin/VBox/Matchup/AwayInfo"]
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="Record" type="Label" parent="Margin/VBox/Matchup/AwayInfo"]
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="AwayCircle" type="PanelContainer" parent="Margin/VBox/Matchup"]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+
+[node name="Abbr" type="Label" parent="Margin/VBox/Matchup/AwayCircle"]
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="Bottom" type="HBoxContainer" parent="Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="EscalacaoBtn" type="Button" parent="Margin/VBox/Bottom"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "DEFINIR ESCALAÇÃO"
+
+[node name="AnaliseBtn" type="Button" parent="Margin/VBox/Bottom"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "ANALISAR ADVERSÁRIO"
+
+[node name="SimBtn" type="Button" parent="Margin/VBox/Bottom"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "ASSISTIR SIMULAÇÃO"
