@@ -1,104 +1,262 @@
-[gd_scene load_steps=4 format=3 uid="uid://sidebar_comp_001"]
+[gd_scene format=3 uid="uid://devmt44wi0gae"]
 
-[ext_resource type="Script" path="res://scenes/components/sidebar.gd" id="1_script"]
-[ext_resource type="Theme" path="res://ui_theme.tres" id="2_theme"]
-[ext_resource type="PackedScene" path="res://scenes/components/logo.tscn" id="3_logo_scene"]
+[ext_resource type="Script" uid="uid://cv5r2ii3jslun" path="res://scenes/components/sidebar.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://cnnqkjlbsqth7" path="res://addons/at-icons/control/cog.svg" id="2_cog"]
+[ext_resource type="Texture2D" uid="uid://da0jid0ldkwof" path="res://addons/at-icons/control/rotate.svg" id="3_rotate"]
+[ext_resource type="Texture2D" uid="uid://dsd8jdpasgd7q" path="res://assets/ui/logo-basketball.png" id="4_logo"]
 
-[node name="Sidebar" type="Panel"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sidebar"]
+bg_color = Color(0.043, 0.02, 0.078, 1)
+border_width_right = 1
+border_color = Color(0.122, 0.078, 0.196, 1)
+
+[sub_resource type="Gradient" id="Gradient_avatar"]
+colors = PackedColorArray(0.655, 0.545, 0.98, 1, 0.486, 0.227, 0.929, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_avatar"]
+gradient = SubResource("Gradient_avatar")
+width = 38
+height = 38
+fill_to = Vector2(1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_avatarcircle"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.357, 0.106, 0.714, 1)
+corner_radius_top_left = 19
+corner_radius_top_right = 19
+corner_radius_bottom_right = 19
+corner_radius_bottom_left = 19
+
+[node name="Sidebar" type="Panel" unique_id=1487644711]
+custom_minimum_size = Vector2(240, 0)
 anchors_preset = 9
 anchor_bottom = 1.0
 offset_right = 240.0
-custom_minimum_size = Vector2(240, 0)
 grow_vertical = 2
 mouse_filter = 1
-theme = ExtResource("2_theme")
+theme_override_styles/panel = SubResource("StyleBoxFlat_sidebar")
 script = ExtResource("1_script")
 
-[node name="SidebarVBox" type="VBoxContainer" parent="."]
+[node name="Sidebar#Logo" type="Sprite2D" parent="." unique_id=1632628922]
+position = Vector2(15, 88)
+scale = Vector2(0.250625, 0.24625003)
+texture = ExtResource("4_logo")
+
+[node name="VBox" type="VBoxContainer" parent="." unique_id=1626794462]
+layout_mode = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+
+[node name="Header" type="MarginContainer" parent="VBox" unique_id=1395399919]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 20
+
+[node name="HeaderHBox" type="HBoxContainer" parent="VBox/Header" unique_id=1945241264]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="TitleVBox" type="VBoxContainer" parent="VBox/Header/HeaderHBox" unique_id=1571652296]
+layout_mode = 2
+theme_override_constants/separation = 0
+alignment = 1
+
+[node name="T1" type="Label" parent="VBox/Header/HeaderHBox/TitleVBox" unique_id=429121660]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "PRO HOOPS"
+
+[node name="T2" type="Label" parent="VBox/Header/HeaderHBox/TitleVBox" unique_id=447838523]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "MANAGER"
+
+[node name="Div1" type="ColorRect" parent="VBox" unique_id=2124008264]
+custom_minimum_size = Vector2(0, 1)
+layout_mode = 2
+color = Color(0.122, 0.078, 0.196, 1)
+
+[node name="Manager" type="MarginContainer" parent="VBox" unique_id=289944256]
+layout_mode = 2
+
+[node name="ManagerBg" type="ColorRect" parent="VBox/Manager" unique_id=1140841643]
+layout_mode = 2
+mouse_filter = 2
+color = Color(0.0824, 0.0314, 0.149, 1)
+
+[node name="MgrMargin" type="MarginContainer" parent="VBox/Manager" unique_id=686949493]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 14
+
+[node name="MgrHBox" type="HBoxContainer" parent="VBox/Manager/MgrMargin" unique_id=2012741741]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="AvatarContainer" type="Control" parent="VBox/Manager/MgrMargin/MgrHBox" unique_id=242154129]
+custom_minimum_size = Vector2(38, 38)
+layout_mode = 2
+
+[node name="AvatarGrad" type="TextureRect" parent="VBox/Manager/MgrMargin/MgrHBox/AvatarContainer" unique_id=1159710621]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 16.0
-offset_top = 24.0
-offset_right = -16.0
-offset_bottom = -24.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 8
+texture = SubResource("GradientTexture2D_avatar")
+expand_mode = 1
 
-[node name="Logo" parent="SidebarVBox" instance=ExtResource("3_logo_scene")]
+[node name="AvatarCircle" type="PanelContainer" parent="VBox/Manager/MgrMargin/MgrHBox/AvatarContainer" unique_id=305213775]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_avatarcircle")
+
+[node name="Initials" type="Label" parent="VBox/Manager/MgrMargin/MgrHBox/AvatarContainer/AvatarCircle" unique_id=114916524]
+unique_name_in_owner = true
 layout_mode = 2
-variant = "vertical"
-theme_name = "mono-white"
-logo_size = 80.0
-show_text = true
+size_flags_horizontal = 3
+size_flags_vertical = 3
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="MenuContainer" type="VBoxContainer" parent="SidebarVBox"]
+[node name="InfoVBox" type="VBoxContainer" parent="VBox/Manager/MgrMargin/MgrHBox" unique_id=1713156825]
+layout_mode = 2
+theme_override_constants/separation = 1
+alignment = 1
+
+[node name="NameLbl" type="Label" parent="VBox/Manager/MgrMargin/MgrHBox/InfoVBox" unique_id=1608951335]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="TeamLbl" type="Label" parent="VBox/Manager/MgrMargin/MgrHBox/InfoVBox" unique_id=349315513]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Div2" type="ColorRect" parent="VBox" unique_id=1670727307]
+custom_minimum_size = Vector2(0, 1)
+layout_mode = 2
+color = Color(0.122, 0.078, 0.196, 1)
+
+[node name="NavMargin" type="MarginContainer" parent="VBox" unique_id=1814527495]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_constants/separation = 4
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 0
 
-[node name="DashboardBtn" type="Button" parent="SidebarVBox/MenuContainer"]
+[node name="NavContainer" type="VBoxContainer" parent="VBox/NavMargin" unique_id=975017511]
 unique_name_in_owner = true
-layout_mode = 2
-text = "Dashboard"
-
-[node name="TeamBtn" type="Button" parent="SidebarVBox/MenuContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Elenco"
-
-[node name="CalendarBtn" type="Button" parent="SidebarVBox/MenuContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Calendário"
-
-[node name="TacticBtn" type="Button" parent="SidebarVBox/MenuContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Tática"
-
-[node name="TrainingBtn" type="Button" parent="SidebarVBox/MenuContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Treinos"
-
-[node name="InboxBtn" type="Button" parent="SidebarVBox/MenuContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Caixa de Entrada"
-
-[node name="TransferBtn" type="Button" parent="SidebarVBox/MenuContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Transferências"
-
-[node name="FinanceBtn" type="Button" parent="SidebarVBox/MenuContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Finanças"
-
-[node name="StatsBtn" type="Button" parent="SidebarVBox/MenuContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Estatísticas"
-
-[node name="TrophyBtn" type="Button" parent="SidebarVBox/MenuContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Conquistas"
-
-[node name="Spacer" type="Control" parent="SidebarVBox"]
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_constants/separation = 2
 
-[node name="RestartBtn" type="Button" parent="SidebarVBox"]
-unique_name_in_owner = true
+[node name="Div3" type="ColorRect" parent="VBox" unique_id=2002977878]
+custom_minimum_size = Vector2(0, 1)
 layout_mode = 2
-text = "Reiniciar"
+color = Color(0.122, 0.078, 0.196, 1)
 
-[node name="SettingsBtn" type="Button" parent="SidebarVBox"]
-unique_name_in_owner = true
+[node name="Footer" type="MarginContainer" parent="VBox" unique_id=549638785]
 layout_mode = 2
+
+[node name="FooterBg" type="ColorRect" parent="VBox/Footer" unique_id=213590264]
+layout_mode = 2
+mouse_filter = 2
+color = Color(0.043, 0.02, 0.078, 1)
+
+[node name="FooterMargin" type="MarginContainer" parent="VBox/Footer" unique_id=1889141051]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 14
+
+[node name="FooterHBox" type="HBoxContainer" parent="VBox/Footer/FooterMargin" unique_id=2123867817]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="SettingsIcon" type="TextureRect" parent="VBox/Footer/FooterMargin/FooterHBox" unique_id=1989903802]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+texture = ExtResource("2_cog")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SettingsLbl" type="Label" parent="VBox/Footer/FooterMargin/FooterHBox" unique_id=1190169637]
+layout_mode = 2
+size_flags_horizontal = 3
 text = "Configurações"
+
+[node name="SettingsArea" type="Control" parent="VBox/Footer/FooterMargin/FooterHBox" unique_id=318045955]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+
+[node name="SettingsClick" type="Button" parent="VBox/Footer/FooterMargin/FooterHBox/SettingsArea" unique_id=1413854561]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
+
+[node name="RestartArea" type="Control" parent="VBox/Footer/FooterMargin/FooterHBox" unique_id=260628841]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+
+[node name="RestartIcon" type="TextureRect" parent="VBox/Footer/FooterMargin/FooterHBox/RestartArea" unique_id=1210873899]
+modulate = Color(0.42, 0.357, 0.584, 1)
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 0
+texture = ExtResource("3_rotate")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="RestartClick" type="Button" parent="VBox/Footer/FooterMargin/FooterHBox/RestartArea" unique_id=14275382]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
+
+[node name="LogoutArea" type="Control" parent="VBox/Footer/FooterMargin/FooterHBox" unique_id=1526838996]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+
+[node name="LogoutIcon" type="TextureRect" parent="VBox/Footer/FooterMargin/FooterHBox/LogoutArea" unique_id=1986262]
+modulate = Color(0.42, 0.357, 0.584, 1)
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 0
+texture = ExtResource("3_rotate")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LogoutClick" type="Button" parent="VBox/Footer/FooterMargin/FooterHBox/LogoutArea" unique_id=1483987943]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true

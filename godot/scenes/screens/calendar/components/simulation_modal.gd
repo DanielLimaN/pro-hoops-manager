@@ -46,13 +46,58 @@ func _on_time_advanced(progress: float):
 	update_progress(progress)
 
 func _build_ui():
+	# Center glow
+	var glow = ColorRect.new()
+	glow.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	glow.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var gt = GradientTexture2D.new()
+	var g_grad = Gradient.new()
+	g_grad.set_color(0, Color("#A78BFA22"))
+	g_grad.set_color(1, Color("#A78BFA00"))
+	gt.gradient = g_grad
+	gt.fill = GradientTexture2D.FILL_RADIAL
+	gt.fill_from = Vector2(0.5, 0.3)
+	gt.fill_to = Vector2(0.8, 0.5)
+	var glow_rect = TextureRect.new()
+	glow_rect.texture = gt
+	glow_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	glow_rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	glow.add_child(glow_rect)
+	add_child(glow)
+
+	# Decorative particles
+	var particle_positions = [
+		Vector2(711, 33), Vector2(813, 877), Vector2(735, 432), Vector2(196, 98),
+		Vector2(507, 791), Vector2(7, 649), Vector2(910, 203), Vector2(1230, 780),
+		Vector2(123, 420), Vector2(920, 600), Vector2(480, 150), Vector2(1120, 310),
+		Vector2(200, 750), Vector2(1340, 450), Vector2(620, 810), Vector2(330, 330),
+		Vector2(1080, 130), Vector2(50, 820), Vector2(1250, 550), Vector2(40, 200),
+	]
+	var particle_opacities = [0.46, 0.47, 0.65, 0.39, 0.36, 0.74, 0.52, 0.48, 0.31, 0.55, 0.42, 0.61, 0.38, 0.44, 0.67, 0.33, 0.58, 0.51, 0.62, 0.35]
+	var particle_sizes = [Vector2(3.4, 3.1), Vector2(4.6, 3.6), Vector2(4.2, 3.6), Vector2(3.1, 3.1), Vector2(4.2, 2.5), Vector2(4.4, 2.9), Vector2(3.8, 3.8), Vector2(2.5, 2.5), Vector2(4.0, 3.0), Vector2(3.2, 3.2), Vector2(4.8, 2.8), Vector2(2.8, 2.8), Vector2(3.6, 3.6), Vector2(3.0, 4.0), Vector2(4.0, 4.0), Vector2(2.0, 2.0), Vector2(4.2, 3.0), Vector2(3.0, 3.0), Vector2(3.5, 3.5), Vector2(4.0, 2.0)]
+	for i in range(particle_positions.size()):
+		var particle = ColorRect.new()
+		particle.position = particle_positions[i]
+		particle.size = particle_sizes[i]
+		particle.color = Color("#A78BFA")
+		particle.modulate = Color(1, 1, 1, particle_opacities[i])
+		particle.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		add_child(particle)
+
 	var center = CenterContainer.new()
 	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(center)
 	
 	var panel = PanelContainer.new()
 	panel.custom_minimum_size = Vector2(800, 640)
-	var p_style = StyleBoxFlat.new(); p_style.bg_color = ThemeConfig.BG_APP; p_style.corner_radius_top_left=16; p_style.corner_radius_bottom_right=16; p_style.corner_radius_bottom_left=16; p_style.corner_radius_top_right=16; p_style.border_width_left=1; p_style.border_width_right=1; p_style.border_width_top=1; p_style.border_width_bottom=1; p_style.border_color=ThemeConfig.BORDER_SUBTLE
+	var p_style = StyleBoxFlat.new()
+	p_style.bg_color = ThemeConfig.BG_SURFACE
+	p_style.corner_radius_top_left=20; p_style.corner_radius_bottom_right=20; p_style.corner_radius_bottom_left=20; p_style.corner_radius_top_right=20
+	p_style.border_width_left=2; p_style.border_width_right=2; p_style.border_width_top=2; p_style.border_width_bottom=2
+	p_style.border_color = ThemeConfig.BRAND_PRIMARY
+	p_style.shadow_color = Color("#A78BFA66")
+	p_style.shadow_size = 60
+	p_style.shadow_offset = Vector2(0, 16)
 	panel.add_theme_stylebox_override("panel", p_style)
 	center.add_child(panel)
 	
@@ -64,37 +109,46 @@ func _build_ui():
 	panel.add_child(margin)
 	
 	var vbox = VBoxContainer.new()
-	vbox.add_theme_constant_override("separation", 24)
+	vbox.add_theme_constant_override("separation", 20)
 	margin.add_child(vbox)
 	
 	# HEADER
 	var header = VBoxContainer.new()
 	header.alignment = BoxContainer.ALIGNMENT_CENTER
-	header.add_theme_constant_override("separation", 8)
+	header.add_theme_constant_override("separation", 12)
+	header.custom_minimum_size = Vector2(0, 0)
 	
 	var live_pill = PanelContainer.new()
 	live_pill.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	var lp_style = StyleBoxFlat.new(); lp_style.bg_color = ThemeConfig.BRAND_PRIMARY.lerp(Color.TRANSPARENT, 0.8); lp_style.border_width_left=1; lp_style.border_width_right=1; lp_style.border_width_top=1; lp_style.border_width_bottom=1; lp_style.border_color = ThemeConfig.BRAND_PRIMARY; lp_style.corner_radius_top_left=12; lp_style.corner_radius_bottom_right=12; lp_style.corner_radius_bottom_left=12; lp_style.corner_radius_top_right=12; lp_style.content_margin_left=12; lp_style.content_margin_right=12; lp_style.content_margin_top=4; lp_style.content_margin_bottom=4
+	var lp_style = StyleBoxFlat.new()
+	lp_style.bg_color = Color("#A78BFA22")
+	lp_style.border_width_left=1; lp_style.border_width_right=1; lp_style.border_width_top=1; lp_style.border_width_bottom=1
+	lp_style.border_color = ThemeConfig.BRAND_PRIMARY
+	lp_style.corner_radius_top_left=50; lp_style.corner_radius_bottom_right=50; lp_style.corner_radius_bottom_left=50; lp_style.corner_radius_top_right=50
+	lp_style.content_margin_left=12; lp_style.content_margin_right=12; lp_style.content_margin_top=4; lp_style.content_margin_bottom=4
 	live_pill.add_theme_stylebox_override("panel", lp_style)
 	var live_lbl = Label.new()
-	live_lbl.text = "● SIMULANDO EM TEMPO REAL"
+	live_lbl.text = "AO VIVO"
 	live_lbl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
 	live_lbl.add_theme_font_size_override("font_size", 10)
-	live_lbl.add_theme_color_override("font_color", Color.WHITE)
+	live_lbl.add_theme_color_override("font_color", ThemeConfig.BRAND_PRIMARY)
 	live_pill.add_child(live_lbl)
 	header.add_child(live_pill)
 	
 	title_lbl = Label.new()
 	title_lbl.text = "Avançando o tempo..."
-	title_lbl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
-	title_lbl.add_theme_font_size_override("font_size", 32)
+	title_lbl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BLACK)
+	title_lbl.add_theme_font_size_override("font_size", 38)
+	title_lbl.add_theme_color_override("font_color", Color.WHITE)
+	title_lbl.add_theme_constant_override("letter_spacing", -0.5)
 	title_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	header.add_child(title_lbl)
 	
 	subtitle_lbl = Label.new()
 	subtitle_lbl.text = "Simulando 5 dias..."
 	subtitle_lbl.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED)
-	subtitle_lbl.add_theme_font_size_override("font_size", 14)
+	subtitle_lbl.add_theme_font_size_override("font_size", 13)
+	subtitle_lbl.add_theme_font_override("font", ThemeConfig.FONT_INTER)
 	subtitle_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	header.add_child(subtitle_lbl)
 	
@@ -103,20 +157,30 @@ func _build_ui():
 	# TIMELINE
 	timeline_container = HBoxContainer.new()
 	timeline_container.alignment = BoxContainer.ALIGNMENT_CENTER
-	timeline_container.add_theme_constant_override("separation", 16)
-	timeline_container.custom_minimum_size = Vector2(0, 100)
-	vbox.add_child(timeline_container)
+	timeline_container.add_theme_constant_override("separation", 8)
+	timeline_container.custom_minimum_size = Vector2(0, 120)
+	var tl_margin = MarginContainer.new()
+	tl_margin.add_theme_constant_override("margin_left", 60)
+	tl_margin.add_theme_constant_override("margin_right", 60)
+	tl_margin.add_theme_constant_override("margin_top", 12)
+	tl_margin.add_theme_constant_override("margin_bottom", 24)
+	tl_margin.add_child(timeline_container)
+	vbox.add_child(tl_margin)
 	
 	# PROGRESS
 	var prog_vbox = VBoxContainer.new()
-	prog_vbox.add_theme_constant_override("separation", 8)
+	prog_vbox.add_theme_constant_override("separation", 12)
+	
+	var prog_margin = MarginContainer.new()
+	prog_margin.add_theme_constant_override("margin_left", 60)
+	prog_margin.add_theme_constant_override("margin_right", 60)
 	
 	var prog_hbox = HBoxContainer.new()
 	progress_lbl = Label.new()
 	progress_lbl.text = "DIA 3 DE 5 · 60% CONCLUÍDO"
 	progress_lbl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
-	progress_lbl.add_theme_font_size_override("font_size", 12)
-	progress_lbl.add_theme_color_override("font_color", ThemeConfig.BRAND_PRIMARY)
+	progress_lbl.add_theme_font_size_override("font_size", 11)
+	progress_lbl.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED)
 	prog_hbox.add_child(progress_lbl)
 	
 	var spacer = Control.new(); spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL; prog_hbox.add_child(spacer)
@@ -124,71 +188,100 @@ func _build_ui():
 	prog_vbox.add_child(prog_hbox)
 	
 	progress_bar = ProgressBar.new()
-	progress_bar.custom_minimum_size = Vector2(0, 8)
+	progress_bar.custom_minimum_size = Vector2(0, 10)
 	progress_bar.show_percentage = false
-	var pb_bg = StyleBoxFlat.new(); pb_bg.bg_color = ThemeConfig.BG_SURFACE; pb_bg.corner_radius_top_left=4; pb_bg.corner_radius_bottom_right=4; pb_bg.corner_radius_bottom_left=4; pb_bg.corner_radius_top_right=4
-	var pb_fg = StyleBoxFlat.new(); pb_fg.bg_color = ThemeConfig.BRAND_PRIMARY; pb_fg.corner_radius_top_left=4; pb_fg.corner_radius_bottom_right=4; pb_fg.corner_radius_bottom_left=4; pb_fg.corner_radius_top_right=4
+	var pb_bg = StyleBoxFlat.new(); pb_bg.bg_color = Color("#1F1432"); pb_bg.corner_radius_top_left=5; pb_bg.corner_radius_bottom_right=5; pb_bg.corner_radius_bottom_left=5; pb_bg.corner_radius_top_right=5
+	var pb_fg = StyleBoxFlat.new(); pb_fg.bg_color = ThemeConfig.BRAND_PRIMARY; pb_fg.corner_radius_top_left=5; pb_fg.corner_radius_bottom_right=5; pb_fg.corner_radius_bottom_left=5; pb_fg.corner_radius_top_right=5
 	progress_bar.add_theme_stylebox_override("background", pb_bg)
 	progress_bar.add_theme_stylebox_override("fill", pb_fg)
 	prog_vbox.add_child(progress_bar)
 	
-	vbox.add_child(prog_vbox)
+	prog_margin.add_child(prog_vbox)
+	vbox.add_child(prog_margin)
 	
 	# RECENT EVENTS
+	var ev_margin = MarginContainer.new()
+	ev_margin.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	ev_margin.add_theme_constant_override("margin_left", 60)
+	ev_margin.add_theme_constant_override("margin_right", 60)
+	
+	var ev_vbox = VBoxContainer.new()
+	ev_vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	ev_vbox.add_theme_constant_override("separation", 6)
+	
 	_ev_title = Label.new()
 	_ev_title.text = "EVENTOS RECENTES"
-	_ev_title.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
-	_ev_title.add_theme_font_size_override("font_size", 12)
-	_ev_title.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED)
-	vbox.add_child(_ev_title)
+	_ev_title.add_theme_font_override("font", ThemeConfig.FONT_INTER_EXTRABOLD)
+	_ev_title.add_theme_font_size_override("font_size", 9)
+	_ev_title.add_theme_color_override("font_color", Color("#6B5B95"))
+	_ev_title.add_theme_constant_override("letter_spacing", 1.5)
+	ev_vbox.add_child(_ev_title)
 	
 	scroll_container = ScrollContainer.new()
 	scroll_container.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scroll_container.custom_minimum_size = Vector2(0, 180)
-	
 	event_log = VBoxContainer.new()
 	event_log.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	event_log.add_theme_constant_override("separation", 8)
+	event_log.add_theme_constant_override("separation", 6)
 	scroll_container.add_child(event_log)
-	vbox.add_child(scroll_container)
+	ev_vbox.add_child(scroll_container)
+	ev_margin.add_child(ev_vbox)
+	vbox.add_child(ev_margin)
 	
 	# FOOTER
+	var footer_panel = PanelContainer.new()
+	var fps = StyleBoxFlat.new()
+	fps.bg_color = Color("#0B0514")
+	fps.border_color = Color("#1F1432")
+	fps.border_width_top = 1
+	footer_panel.add_theme_stylebox_override("panel", fps)
+	
+	var footer_margin = MarginContainer.new()
+	footer_margin.add_theme_constant_override("margin_left", 32)
+	footer_margin.add_theme_constant_override("margin_right", 32)
+	footer_margin.add_theme_constant_override("margin_top", 16)
+	footer_margin.add_theme_constant_override("margin_bottom", 16)
+	
 	_footer = HBoxContainer.new()
 	_footer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	
-	var cancel_btn = _create_action_btn("CANCELAR", Color("#EF4444"), false)
+	var cancel_btn = _create_action_btn("CANCELAR", Color("#94A3B8"), false)
 	cancel_btn.pressed.connect(_on_cancel)
 	_footer.add_child(cancel_btn)
 	
-	pause_btn = _create_action_btn("PAUSAR", Color.WHITE, false)
+	pause_btn = _create_action_btn("PAUSAR", Color("#94A3B8"), false)
 	pause_btn.pressed.connect(_on_pause_toggle)
 	_footer.add_child(pause_btn)
 	
 	var footer_spacer = Control.new(); footer_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL; _footer.add_child(footer_spacer)
 	
-	skip_btn = _create_action_btn("PULAR PARA O JOGO", Color("#FBBF24"), true)
+	skip_btn = _create_action_btn("PULAR", Color("#FBBF24"), true)
 	skip_btn.pressed.connect(_on_skip)
 	_footer.add_child(skip_btn)
 	
-	vbox.add_child(_footer)
+	footer_margin.add_child(_footer)
+	footer_panel.add_child(footer_margin)
+	vbox.add_child(footer_panel)
 
 func _create_action_btn(text: String, color: Color, filled: bool) -> Button:
 	var b = Button.new()
 	b.text = text
-	b.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
-	b.add_theme_font_size_override("font_size", 14)
+	b.add_theme_font_override("font", ThemeConfig.FONT_INTER)
+	b.add_theme_font_size_override("font_size", 11)
 	var s = StyleBoxFlat.new()
 	s.corner_radius_top_left=8; s.corner_radius_bottom_right=8; s.corner_radius_bottom_left=8; s.corner_radius_top_right=8
-	s.content_margin_left=24; s.content_margin_right=24; s.content_margin_top=12; s.content_margin_bottom=12
+	s.content_margin_left=18; s.content_margin_right=18; s.content_margin_top=12; s.content_margin_bottom=12
 	if filled:
 		s.bg_color = color
-		b.add_theme_color_override("font_color", ThemeConfig.BG_APP)
-		s.shadow_color = color.lerp(Color.TRANSPARENT, 0.7)
-		s.shadow_size = 12
+		var dark_bg = Color(0.06, 0.02, 0.09, 1)
+		b.add_theme_color_override("font_color", dark_bg)
+		s.shadow_color = Color("#FBBF2466")
+		s.shadow_size = 16
+		s.shadow_offset = Vector2(0, 4)
+		b.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
 	else:
-		s.bg_color = Color(0,0,0,0)
+		s.bg_color = Color("#0F0720")
 		s.border_width_left=1; s.border_width_right=1; s.border_width_top=1; s.border_width_bottom=1
-		s.border_color = color
+		s.border_color = Color("#2D1B4E")
 		b.add_theme_color_override("font_color", color)
 	b.add_theme_stylebox_override("normal", s)
 	b.add_theme_stylebox_override("hover", s)
@@ -235,44 +328,48 @@ func _build_timeline(days: int):
 	for i in range(upcoming.size()):
 		if i > 0:
 			var line = ColorRect.new()
-			line.custom_minimum_size = Vector2(16, 2)
-			line.color = ThemeConfig.BORDER_SUBTLE
+			line.custom_minimum_size = Vector2(12, 2)
+			line.color = ThemeConfig.BORDER_DEFAULT
 			line.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 			timeline_container.add_child(line)
 
 		var evt = upcoming[i]
 		var event_type = evt.get("event_type", "match")
 		var d = {"year": evt.get("year", season), "month": evt.get("month", 1), "day": evt.get("day", 1)}
+		var is_match_day = event_type == "match"
 
 		var box = PanelContainer.new()
-		box.custom_minimum_size = Vector2(72, 90)
+		box.custom_minimum_size = Vector2(96, 110)
+		box.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 		var s = StyleBoxFlat.new()
-		s.bg_color = ThemeConfig.BG_APP
+		s.bg_color = Color("#150826")
 		s.border_width_left=2; s.border_width_right=2; s.border_width_top=2; s.border_width_bottom=2
-		s.corner_radius_top_left=8; s.corner_radius_bottom_right=8; s.corner_radius_bottom_left=8; s.corner_radius_top_right=8
-		s.border_color = ThemeConfig.BORDER_SUBTLE
+		s.corner_radius_top_left=10; s.corner_radius_bottom_right=10; s.corner_radius_bottom_left=10; s.corner_radius_top_right=10
+		s.border_color = Color("#2D1B4E")
 		box.add_theme_stylebox_override("panel", s)
 
 		var m = MarginContainer.new()
 		m.add_theme_constant_override("margin_left", 8)
 		m.add_theme_constant_override("margin_right", 8)
-		m.add_theme_constant_override("margin_top", 12)
-		m.add_theme_constant_override("margin_bottom", 12)
+		m.add_theme_constant_override("margin_top", 8)
+		m.add_theme_constant_override("margin_bottom", 8)
 		box.add_child(m)
 
 		var vb = VBoxContainer.new()
 		vb.alignment = BoxContainer.ALIGNMENT_CENTER
+		vb.add_theme_constant_override("separation", 4)
 
 		var l_month = Label.new()
 		l_month.text = month_abbr[d.month - 1]
-		l_month.add_theme_font_size_override("font_size", 10)
+		l_month.add_theme_font_size_override("font_size", 9)
 		l_month.add_theme_color_override("font_color", ThemeConfig.BRAND_PRIMARY)
 		l_month.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 
 		var l_day = Label.new()
 		l_day.text = str(d.day)
-		l_day.add_theme_font_size_override("font_size", 20)
+		l_day.add_theme_font_size_override("font_size", 22)
 		l_day.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
+		l_day.add_theme_color_override("font_color", Color.WHITE)
 		l_day.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 
 		var l_desc = Label.new()
@@ -293,8 +390,8 @@ func _build_timeline(days: int):
 			"interview":
 				l_desc.text = "ENTREV."
 
-		l_desc.add_theme_font_size_override("font_size", 10)
-		l_desc.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED)
+		l_desc.add_theme_font_size_override("font_size", 9)
+		l_desc.add_theme_color_override("font_color", Color("#94A3B8"))
 		l_desc.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 
 		vb.add_child(l_month)
@@ -307,46 +404,44 @@ func _build_timeline(days: int):
 func log_event(text: String, date_dict: Dictionary = {}, is_critical: bool = false, is_win: bool = false):
 	var p = PanelContainer.new()
 	var s = StyleBoxFlat.new()
-	s.bg_color = ThemeConfig.BG_SURFACE
-	s.corner_radius_top_left=8; s.corner_radius_bottom_right=8; s.corner_radius_bottom_left=8; s.corner_radius_top_right=8
-	s.border_width_left=1; s.border_width_right=1; s.border_width_top=1; s.border_width_bottom=1
-	s.border_color = ThemeConfig.BORDER_SUBTLE
+	s.corner_radius_top_left=6; s.corner_radius_bottom_right=6; s.corner_radius_bottom_left=6; s.corner_radius_top_right=6
+	s.content_margin_left=10; s.content_margin_right=10; s.content_margin_top=6; s.content_margin_bottom=6
+
+	if is_critical or event_log.get_child_count() == 0:
+		s.bg_color = Color("#A78BFA22")
+		s.border_color = ThemeConfig.BRAND_PRIMARY
+		s.border_width_left = 1; s.border_width_right = 1; s.border_width_top = 1; s.border_width_bottom = 1
+	else:
+		s.bg_color = Color("#150826")
+
 	p.add_theme_stylebox_override("panel", s)
 	
-	var m = MarginContainer.new()
-	m.add_theme_constant_override("margin_left", 16)
-	m.add_theme_constant_override("margin_right", 16)
-	m.add_theme_constant_override("margin_top", 12)
-	m.add_theme_constant_override("margin_bottom", 12)
-	p.add_child(m)
-	
 	var h = HBoxContainer.new()
-	h.add_theme_constant_override("separation", 16)
-	m.add_child(h)
+	h.add_theme_constant_override("separation", 10)
+	p.add_child(h)
 	
 	var month_abbr = ["JAN", "FEV", "MAR", "ABR", "MAI", "JUN", "JUL", "AGO", "SET", "OUT", "NOV", "DEZ"]
 	var date_str = month_abbr[date_dict.get("month", 1) - 1] + " " + str(date_dict.get("day", 1)) if not date_dict.is_empty() else "--"
-	var date = Label.new(); date.text = date_str; date.add_theme_font_size_override("font_size", 12); date.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED); date.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
+	var date = Label.new(); date.text = date_str; date.add_theme_font_size_override("font_size", 11); date.add_theme_color_override("font_color", Color("#6B5B95")); date.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
 	h.add_child(date)
 	
-	var desc = Label.new(); desc.text = text; desc.add_theme_font_size_override("font_size", 14); desc.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var desc = Label.new(); desc.text = text; desc.add_theme_font_size_override("font_size", 12); desc.size_flags_horizontal = Control.SIZE_EXPAND_FILL; desc.add_theme_color_override("font_color", Color.WHITE)
 	h.add_child(desc)
 	
 	if is_win:
-		var badge = Label.new(); badge.text = "VITÓRIA"; badge.add_theme_font_size_override("font_size", 10); badge.add_theme_color_override("font_color", ThemeConfig.SUCCESS); badge.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
+		var badge = Label.new(); badge.text = "VITÓRIA"; badge.add_theme_font_size_override("font_size", 9); badge.add_theme_color_override("font_color", ThemeConfig.SUCCESS); badge.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
 		h.add_child(badge)
 		
 	if is_critical:
-		s.border_color = Color("#FBBF24")
-		s.shadow_color = Color("#FBBF24").lerp(Color.TRANSPARENT, 0.7)
-		s.shadow_size = 8
 		_set_ui_speed(0) # Pausa a simulação localmente
 		
 	event_log.add_child(p)
+	p.move_to_front()
 	
 	# Scroll
 	await get_tree().process_frame
-	scroll_container.scroll_vertical = scroll_container.get_v_scroll_bar().max_value
+	if scroll_container.get_v_scroll_bar():
+		scroll_container.scroll_vertical = scroll_container.get_v_scroll_bar().max_value
 
 func update_progress(p: float):
 	current_progress = p
@@ -357,21 +452,45 @@ func update_progress(p: float):
 	_update_timeline_visuals(current_day)
 
 func _update_timeline_visuals(current_day: int):
-	var i = 1
+	var card_idx = 0
 	for child in timeline_container.get_children():
 		if child is PanelContainer:
+			card_idx += 1
 			var sb = child.get_theme_stylebox("panel") as StyleBoxFlat
-			if i < current_day:
-				sb.border_color = Color("#10B981") # Green
+			if not sb:
+				continue
+
+			var is_match = false
+			for c in child.find_children("*", "Label", true, false):
+				if c is Label and c.text.begins_with("vs"):
+					is_match = true
+					break
+
+			if card_idx < current_day:
+				sb.bg_color = Color("#10B98122")
+				sb.border_color = Color("#10B981")
 				sb.shadow_size = 0
-			elif i == current_day:
+			elif card_idx == current_day:
+				sb.bg_color = Color("#A78BFA22")
 				sb.border_color = ThemeConfig.BRAND_PRIMARY
-				sb.shadow_color = ThemeConfig.BRAND_PRIMARY.lerp(Color.TRANSPARENT, 0.7)
-				sb.shadow_size = 8
+				sb.shadow_color = Color("#A78BFA88")
+				sb.shadow_size = 20
+			elif is_match:
+				sb.bg_color = Color("#FBBF2422")
+				sb.border_color = Color("#FBBF24")
+				sb.shadow_color = Color("#FBBF2466")
+				sb.shadow_size = 16
 			else:
-				sb.border_color = ThemeConfig.BORDER_SUBTLE
+				sb.bg_color = Color("#150826")
+				sb.border_color = Color("#2D1B4E")
 				sb.shadow_size = 0
-			i += 1
+		elif child is ColorRect:
+			if card_idx < current_day:
+				child.color = Color("#10B981")
+			elif card_idx == current_day:
+				child.color = Color("#A78BFA")
+			else:
+				child.color = Color("#2D1B4E")
 
 func _on_day_completed(summary: Dictionary):
 	_completed_days += 1

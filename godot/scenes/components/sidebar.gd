@@ -3,239 +3,214 @@ extends Panel
 @export var active_tab: String = ""
 signal menu_item_selected(path: String)
 
+const NAV_ITEMS := [
+	{name = "Dashboard",    icon = "grid_coarse",          path = "res://scenes/ui/dashboard/dashboard.tscn",               screen = "Dashboard"},
+	{name = "Elenco",       icon = "human",                path = "res://scenes/team.tscn",                                 screen = "Team"},
+	{name = "Calendário",   icon = "calendar",             path = "res://scenes/screens/calendar/calendar_screen.tscn",      screen = "CalendarScreen"},
+	{name = "Tática",       icon = "clipboard",            path = "res://scenes/tactics.tscn",                               screen = "Tactics"},
+	{name = "Treinos",      icon = "weight",               path = "res://scenes/training.tscn",                              screen = "Training"},
+	{name = "Caixa de Entrada", icon = "envelope",         path = "res://scenes/inbox.tscn",                                 screen = "Inbox"},
+	{name = "Transferências", icon = "arrow_right_arrow_left", path = "res://scenes/ui/dashboard/dashboard.tscn",           screen = ""},
+	{name = "Finanças",     icon = "coins",                path = "res://scenes/finance.tscn",                               screen = "Finance"},
+	{name = "Estatísticas", icon = "bar_graph",            path = "res://scenes/ui/dashboard/dashboard.tscn",               screen = ""},
+	{name = "Conquistas",   icon = "trophy",               path = "res://scenes/ui/dashboard/dashboard.tscn",               screen = ""},
+]
+
+var _nav_buttons: Array[Button] = []
+var _nav_data: Array[Dictionary] = []
+
+const COLOR_ACTIVE_BG := Color("#A78BFA22")
+const COLOR_ACTIVE_ACCENT := Color("#A78BFA66")
+const COLOR_ACTIVE_TEXT := Color("#FFFFFF")
+const COLOR_INACTIVE_ICON := Color("#A78BFA")
+const COLOR_INACTIVE_TEXT := Color("#CBD5E1")
+const COLOR_BRAND := Color("#A78BFA")
+const COLOR_BRAND_DEEP := Color("#7C3AED")
+const COLOR_FOOTER_ICON := Color("#6B5B95")
+const COLOR_FOOTER_TEXT := Color("#94A3B8")
+const COLOR_BADGE_PURPLE := Color("#A78BFA")
+const COLOR_BADGE_RED := Color("#EF4444")
+
+@onready var nav_container: VBoxContainer = %NavContainer
+@onready var initials_lbl: Label = %Initials
+@onready var name_lbl: Label = %NameLbl
+@onready var team_lbl: Label = %TeamLbl
+@onready var settings_area: Control = %SettingsArea
+@onready var restart_area: Control = %RestartArea
+@onready var logout_area: Control = %LogoutArea
+
 func _ready():
-	_setup_sidebar_visuals()
-	_setup_sidebar_icons()
-	_connect_buttons()
+	_init_labels()
+	_init_footer()
+	_build_nav_items()
 	if active_tab != "":
 		set_active_tab(active_tab)
 
-func _connect_buttons():
-	%DashboardBtn.pressed.connect(func(): emit_signal("menu_item_selected", "res://scenes/ui/dashboard/dashboard.tscn"))
-	%TeamBtn.pressed.connect(func(): emit_signal("menu_item_selected", "res://scenes/team.tscn"))
-	%CalendarBtn.pressed.connect(func(): emit_signal("menu_item_selected", "res://scenes/screens/calendar/calendar_screen.tscn"))
-	%TacticBtn.pressed.connect(func(): emit_signal("menu_item_selected", "res://scenes/tactics.tscn"))
-	%TrainingBtn.pressed.connect(func(): emit_signal("menu_item_selected", "res://scenes/training.tscn"))
-	%InboxBtn.pressed.connect(func(): emit_signal("menu_item_selected", "res://scenes/inbox.tscn"))
-	%TransferBtn.pressed.connect(func(): emit_signal("menu_item_selected", "res://scenes/ui/dashboard/dashboard.tscn"))
-	%FinanceBtn.pressed.connect(func(): emit_signal("menu_item_selected", "res://scenes/finance.tscn"))
-	%StatsBtn.pressed.connect(func(): emit_signal("menu_item_selected", "res://scenes/ui/dashboard/dashboard.tscn"))
-	%TrophyBtn.pressed.connect(func(): emit_signal("menu_item_selected", "res://scenes/ui/dashboard/dashboard.tscn"))
-	%RestartBtn.pressed.connect(_on_restart)
-	%SettingsBtn.pressed.connect(func(): emit_signal("menu_item_selected", "res://scenes/ui/dashboard/dashboard.tscn"))
+func _init_labels():
+	var t1 = $VBox/Header/HeaderHBox/TitleVBox/T1
+	t1.add_theme_font_override("font", ThemeConfig.FONT_INTER_EXTRABOLD)
+	t1.add_theme_font_size_override("font_size", 20)
+	t1.add_theme_color_override("font_color", COLOR_ACTIVE_TEXT)
+	t1.add_theme_constant_override("letter_spacing", 1)
 
-func set_active_tab(screen_name: String):
-	var active_style = StyleBoxFlat.new()
-	active_style.bg_color = ThemeConfig.BG_ELEVATED
-	active_style.corner_radius_top_left = 8; active_style.corner_radius_top_right = 8
-	active_style.corner_radius_bottom_left = 8; active_style.corner_radius_bottom_right = 8
-	active_style.content_margin_left = 12
-	active_style.content_margin_right = 12
-	active_style.content_margin_top = 10
-	active_style.content_margin_bottom = 10
-	
-	var default_style = StyleBoxEmpty.new()
-	default_style.content_margin_left = 12
-	default_style.content_margin_right = 12
-	default_style.content_margin_top = 10
-	default_style.content_margin_bottom = 10
-	
-	var all_btns = [
-		%DashboardBtn, %TeamBtn, %CalendarBtn, %TacticBtn, %TrainingBtn,
-		%InboxBtn, %TransferBtn, %FinanceBtn, %StatsBtn, %TrophyBtn,
-		%RestartBtn, %SettingsBtn
-	]
-	
-	for btn in all_btns:
-		btn.add_theme_stylebox_override("normal", default_style)
-	
-	var target = null
-	match screen_name:
-		"Dashboard": target = %DashboardBtn
-		"Team": target = %TeamBtn
-		"CalendarScreen": target = %CalendarBtn
-		"Tactics": target = %TacticBtn
-		"Training": target = %TrainingBtn
-		"Inbox": target = %InboxBtn
-		"Finance": target = %FinanceBtn
-	
-	if target:
-		target.add_theme_stylebox_override("normal", active_style)
-
-func _on_restart():
-	GameManager.reset_career()
-	get_tree().change_scene_to_file("res://scenes/main.tscn")
-
-func _setup_sidebar_visuals():
-	var sidebar_style = StyleBoxFlat.new()
-	sidebar_style.bg_color = Color("#0B0514")
-	sidebar_style.border_color = Color("#1A0B2E")
-	sidebar_style.border_width_right = 1
-	sidebar_style.content_margin_left = 16
-	sidebar_style.content_margin_right = 16
-	add_theme_stylebox_override("panel", sidebar_style)
-	
-	$SidebarVBox.add_theme_constant_override("separation", 4)
-	$SidebarVBox/Logo.visible = false
-	
-	var header = Control.new()
-	header.custom_minimum_size = Vector2(240, 80)
-	header.clip_contents = true
-	
-	var ball = TextureRect.new()
-	ball.texture = load("res://assets/images/basketball_glow.svg")
-	ball.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	ball.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	ball.custom_minimum_size = Vector2(120, 120)
-	ball.position = Vector2(-42, 14)
-	header.add_child(ball)
-	
-	var text_vbox = VBoxContainer.new()
-	text_vbox.position = Vector2(55, 22)
-	text_vbox.size = Vector2(160, 50)
-	text_vbox.alignment = BoxContainer.ALIGNMENT_CENTER
-	text_vbox.add_theme_constant_override("separation", -4)
-	
-	var t1 = Label.new()
-	t1.text = "PRO HOOPS"
-	t1.add_theme_font_override("font", ThemeConfig.FONT_INTER_BLACK)
-	t1.add_theme_font_size_override("font_size", 18)
-	t1.add_theme_color_override("font_color", Color.WHITE)
-	t1.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	
-	var t2 = Label.new()
-	t2.text = "MANAGER"
+	var t2 = $VBox/Header/HeaderHBox/TitleVBox/T2
 	t2.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
-	t2.add_theme_font_size_override("font_size", 13)
-	t2.add_theme_color_override("font_color", ThemeConfig.BRAND_PRIMARY)
-	t2.add_theme_constant_override("letter_spacing", 3)
-	t2.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	
-	text_vbox.add_child(t1)
-	text_vbox.add_child(t2)
-	header.add_child(text_vbox)
-	
-	$SidebarVBox.add_child(header)
-	$SidebarVBox.move_child(header, 0)
-	
-	var profile = HBoxContainer.new()
-	profile.name = "ProfileBox"
-	profile.add_theme_constant_override("separation", 12)
-	
-	var avatar = PanelContainer.new()
-	avatar.custom_minimum_size = Vector2(40, 40)
-	var av_style = StyleBoxFlat.new()
-	av_style.bg_color = ThemeConfig.BRAND_DEEP
-	av_style.corner_radius_top_left = 20; av_style.corner_radius_top_right = 20
-	av_style.corner_radius_bottom_left = 20; av_style.corner_radius_bottom_right = 20
-	avatar.add_theme_stylebox_override("panel", av_style)
-	
-	var av_lbl = Label.new()
-	av_lbl.text = "GM"
-	av_lbl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
-	av_lbl.add_theme_font_size_override("font_size", 16)
-	av_lbl.add_theme_color_override("font_color", Color.WHITE)
-	av_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	av_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	avatar.add_child(av_lbl)
-	
-	var p_info = VBoxContainer.new()
-	p_info.alignment = BoxContainer.ALIGNMENT_CENTER
-	p_info.add_theme_constant_override("separation", -2)
-	
-	var p_name = Label.new()
-	p_name.text = "Daniel Lima"
-	p_name.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
-	p_name.add_theme_font_size_override("font_size", 14)
-	p_name.add_theme_color_override("font_color", Color.WHITE)
-	
-	var p_role = Label.new()
-	p_role.text = "General Manager"
-	p_role.add_theme_font_override("font", ThemeConfig.FONT_INTER)
-	p_role.add_theme_font_size_override("font_size", 12)
-	p_role.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED)
-	
-	p_info.add_child(p_name)
-	p_info.add_child(p_role)
-	
-	profile.add_child(avatar)
-	profile.add_child(p_info)
-	
-	var p_pad = MarginContainer.new()
-	p_pad.add_theme_constant_override("margin_top", 16)
-	p_pad.add_theme_constant_override("margin_bottom", 16)
-	p_pad.add_child(profile)
-	
-	$SidebarVBox.add_child(p_pad)
+	t2.add_theme_font_size_override("font_size", 20)
+	t2.add_theme_color_override("font_color", COLOR_BRAND)
+	t2.add_theme_constant_override("letter_spacing", 2)
 
-func _setup_sidebar_icons():
-	var btn_config = [
-		{"n": %DashboardBtn, "i": "grid_coarse", "b": 3},
-		{"n": %TeamBtn, "i": "human", "b": 0},
-		{"n": %CalendarBtn, "i": "calendar", "b": 1},
-		{"n": %TacticBtn, "i": "clipboard", "b": 0},
-		{"n": %TrainingBtn, "i": "weight", "b": 0},
-		{"n": %InboxBtn, "i": "envelope", "b": 12},
-		{"n": %TransferBtn, "i": "arrow_right_arrow_left", "b": 0},
-		{"n": %FinanceBtn, "i": "coins", "b": 0},
-		{"n": %StatsBtn, "i": "bar_graph", "b": 0},
-		{"n": %TrophyBtn, "i": "trophy", "b": 0},
-		{"n": %RestartBtn, "i": "rotate", "b": 0},
-		{"n": %SettingsBtn, "i": "cog", "b": 0}
-	]
-	
-	for c in btn_config:
-		var b = c["n"]
-		b.icon = load("res://addons/at-icons/control/" + c["i"] + ".svg")
-		b.expand_icon = true
-		b.add_theme_constant_override("icon_max_width", 22)
-		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		b.add_theme_font_override("font", ThemeConfig.FONT_INTER)
-		b.add_theme_font_size_override("font_size", 16)
-		b.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED)
-		b.add_theme_color_override("font_hover_color", Color.WHITE)
-		b.add_theme_color_override("font_pressed_color", ThemeConfig.BRAND_PRIMARY)
-		b.add_theme_color_override("font_focus_color", Color.WHITE)
-		b.add_theme_constant_override("h_separation", 12)
-		
-		if c["b"] > 0:
-			_add_badge(b, c["b"])
+	initials_lbl.text = _get_initials()
+	initials_lbl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BLACK)
+	initials_lbl.add_theme_font_size_override("font_size", 13)
+	initials_lbl.add_theme_color_override("font_color", COLOR_ACTIVE_TEXT)
 
-func _add_badge(btn: Button, count: int):
-	var badge = PanelContainer.new()
+	name_lbl.text = _get_coach_name()
+	name_lbl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
+	name_lbl.add_theme_font_size_override("font_size", 15)
+	name_lbl.add_theme_color_override("font_color", COLOR_ACTIVE_TEXT)
+
+	team_lbl.text = _get_team_name()
+	team_lbl.add_theme_font_override("font", ThemeConfig.FONT_INTER)
+	team_lbl.add_theme_font_size_override("font_size", 13)
+	team_lbl.add_theme_color_override("font_color", COLOR_BRAND)
+	if team_lbl.text.length() > 22:
+		team_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+
+func _init_footer():
+	var settings_icon = $VBox/Footer/FooterMargin/FooterHBox/SettingsIcon
+	settings_icon.modulate = COLOR_FOOTER_ICON
+
+	var settings_lbl = $VBox/Footer/FooterMargin/FooterHBox/SettingsLbl
+	settings_lbl.add_theme_font_override("font", ThemeConfig.FONT_INTER)
+	settings_lbl.add_theme_font_size_override("font_size", 14)
+	settings_lbl.add_theme_color_override("font_color", COLOR_FOOTER_TEXT)
+
+	var settings_click = settings_area.get_node("SettingsClick")
+	settings_click.pressed.connect(func(): menu_item_selected.emit("settings"))
+
+	var restart_click = restart_area.get_node("RestartClick")
+	restart_click.pressed.connect(_on_restart)
+
+	var logout_click = logout_area.get_node("LogoutClick")
+	logout_click.pressed.connect(func(): menu_item_selected.emit("logout"))
+
+func _build_nav_items():
+	for i in range(NAV_ITEMS.size()):
+		var item = NAV_ITEMS[i]
+		var btn = Button.new()
+		btn.text = "  " + item.name
+		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		btn.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		btn.add_theme_constant_override("h_separation", 12)
+		btn.add_theme_constant_override("icon_max_width", 18)
+		btn.expand_icon = true
+		btn.icon = load("res://addons/at-icons/control/" + item.icon + ".svg")
+		btn.add_theme_font_override("font", ThemeConfig.FONT_INTER)
+		btn.add_theme_font_size_override("font_size", 15)
+
+		set_nav_style(btn, false)
+
+		var path = item.path
+		btn.pressed.connect(func():
+			emit_signal("menu_item_selected", path)
+		)
+
+		_nav_buttons.append(btn)
+		_nav_data.append(item)
+		nav_container.add_child(btn)
+
+		if item.name == "Elenco":
+			_add_badge(btn, "", COLOR_BADGE_PURPLE)
+		elif item.name == "Caixa de Entrada":
+			_add_badge(btn, "", COLOR_BADGE_RED)
+
+func set_nav_style(btn: Button, active: bool):
+	var s = StyleBoxFlat.new()
+	if active:
+		s.bg_color = COLOR_ACTIVE_BG
+		s.border_color = COLOR_ACTIVE_ACCENT
+		s.border_width_left = 2
+		btn.add_theme_color_override("font_color", COLOR_ACTIVE_TEXT)
+		btn.add_theme_color_override("font_hover_color", COLOR_ACTIVE_TEXT)
+		btn.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
+		btn.modulate = Color.WHITE
+	else:
+		s.bg_color = Color.TRANSPARENT
+		btn.add_theme_color_override("font_color", COLOR_INACTIVE_TEXT)
+		btn.add_theme_color_override("font_hover_color", COLOR_ACTIVE_TEXT)
+		btn.add_theme_font_override("font", ThemeConfig.FONT_INTER)
+		btn.modulate = COLOR_INACTIVE_ICON
+	s.corner_radius_top_left = 8
+	s.corner_radius_top_right = 8
+	s.corner_radius_bottom_left = 8
+	s.corner_radius_bottom_right = 8
+	s.content_margin_left = 12
+	s.content_margin_right = 12
+	s.content_margin_top = 12
+	s.content_margin_bottom = 12
+	btn.add_theme_stylebox_override("normal", s)
+	btn.add_theme_stylebox_override("hover", s)
+	btn.add_theme_stylebox_override("pressed", s)
+	btn.add_theme_stylebox_override("focus", s)
+
+func _add_badge(btn: Button, text: String, color: Color):
+	var container = PanelContainer.new()
+	container.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var bs = StyleBoxFlat.new()
-	bs.bg_color = ThemeConfig.BRAND_PRIMARY
-	bs.corner_radius_top_left = 10; bs.corner_radius_top_right = 10
-	bs.corner_radius_bottom_left = 10; bs.corner_radius_bottom_right = 10
-	badge.add_theme_stylebox_override("panel", bs)
-	
+	bs.bg_color = color
+	bs.corner_radius_top_left = 5
+	bs.corner_radius_top_right = 5
+	bs.corner_radius_bottom_left = 5
+	bs.corner_radius_bottom_right = 5
+	container.add_theme_stylebox_override("panel", bs)
+
 	var lbl = Label.new()
-	lbl.text = str(count)
+	lbl.text = text
 	lbl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
-	lbl.add_theme_font_size_override("font_size", 10)
-	lbl.add_theme_color_override("font_color", Color.WHITE)
+	lbl.add_theme_font_size_override("font_size", 11)
+	lbl.add_theme_color_override("font_color", COLOR_ACTIVE_TEXT)
 	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	
-	var m = MarginContainer.new()
-	m.add_theme_constant_override("margin_left", 6)
-	m.add_theme_constant_override("margin_right", 6)
-	m.add_theme_constant_override("margin_top", 2)
-	m.add_theme_constant_override("margin_bottom", 2)
-	m.add_child(lbl)
-	
-	badge.add_child(m)
-	
-	var h = HBoxContainer.new()
-	h.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	h.alignment = BoxContainer.ALIGNMENT_END
-	h.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	
-	var pm = MarginContainer.new()
-	pm.add_theme_constant_override("margin_right", 8)
-	pm.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	pm.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	pm.add_child(badge)
-	
-	h.add_child(pm)
-	btn.add_child(h)
+
+	var margin = MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 5)
+	margin.add_theme_constant_override("margin_right", 5)
+	margin.add_theme_constant_override("margin_top", 3)
+	margin.add_theme_constant_override("margin_bottom", 3)
+	margin.add_child(lbl)
+	container.add_child(margin)
+
+	container.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT, Control.PRESET_MODE_KEEP_SIZE, 10)
+	btn.add_child(container)
+
+func _get_initials() -> String:
+	if GameManager.league.is_empty() or not GameManager.league.has("coach_name"):
+		return "GM"
+	var name = GameManager.league.coach_name
+	var parts = name.split(" ", false)
+	if parts.size() >= 2:
+		return parts[0][0] + parts[1][0]
+	return name.left(2).to_upper()
+
+func _get_coach_name() -> String:
+	if GameManager.league.is_empty() or not GameManager.league.has("coach_name"):
+		return "General Manager"
+	return GameManager.league.coach_name
+
+func _get_team_name() -> String:
+	if GameManager.league.is_empty() or not GameManager.league.has("user_team_name"):
+		return "Meu Time"
+	return GameManager.league.user_team_name
+
+func _on_restart():
+	menu_item_selected.emit("restart")
+
+func set_active_tab(screen_name: String):
+	for i in range(_nav_buttons.size()):
+		var btn = _nav_buttons[i]
+		var data = _nav_data[i]
+		var is_active = data.screen == screen_name
+		set_nav_style(btn, is_active)
+		if is_active:
+			btn.modulate = Color.WHITE

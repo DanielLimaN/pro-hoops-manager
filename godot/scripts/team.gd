@@ -1,388 +1,1266 @@
 extends Control
 
+signal player_selected(player_data: Dictionary)
+signal quick_action_requested(player_data: Dictionary, global_pos: Vector2)
+signal edit_rotation_requested
+signal save_rotation_requested
+signal cancel_rotation_requested
+
+const COL_BG := Color("#06030E")
+const COL_TOPBAR_BG := Color("#0B0514")
+const COL_BORDER := Color("#1F1432")
+const COL_SURFACE := Color("#0F0720")
+const COL_SURFACE_ALT := Color("#150826")
+const COL_BRAND := Color("#A78BFA")
+const COL_BRAND_SOFT := Color("#A78BFA22")
+const COL_BRAND_ACCENT := Color("#A78BFA66")
+const COL_BRAND_DEEP := Color("#7C3AED")
+const COL_SUCCESS := Color("#10B981")
+const COL_WARNING := Color("#FBBF24")
+const COL_DANGER := Color("#EF4444")
+const COL_TEXT := Color("#FFFFFF")
+const COL_TEXT_SEC := Color("#E0E7FF")
+const COL_TEXT_MUTED := Color("#94A3B8")
+const COL_TEXT_DISABLED := Color("#6B5B95")
+const COL_INFO := Color("#60A5FA")
+const COL_HIGHLIGHT := Color("#F472B6")
+
+var _active_filter: String = "TODOS"
+var _edit_mode: bool = false
+var _selected_player_idx: int = -1
+
+var _player_data_cache: Array = []
+
+var _player_rows: Array = []
+var _filter_btns = {}
+var _kpi_labels: Array = []
+var _detail_panel: Control
+
+var _quick_actions_popover: PanelContainer = null
+
+const _QA_POPOVER = preload("res://scenes/screens/team/components/quick_actions_popover.tscn")
+const _EDIT_BANNER = preload("res://scenes/screens/team/components/edit_banner.tscn")
+const _CANDIDATE_SELECTOR = preload("res://scenes/screens/team/components/candidate_selector_popover.tscn")
+
 func _ready():
 	for c in get_children():
 		c.queue_free()
-		
+
 	var bg = ColorRect.new()
-	bg.color = ThemeConfig.BG_APP
+	bg.color = COL_BG
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(bg)
-	
+
+	var vbox = VBoxContainer.new()
+	vbox.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	vbox.add_theme_constant_override("separation", 0)
+	add_child(vbox)
+
+	_build_topbar(vbox)
+	_build_content(vbox)
+
+	_load_roster()
+	quick_action_requested.connect(_on_quick_action_requested)
+	edit_rotation_requested.connect(_on_edit_rotation_requested)
+	cancel_rotation_requested.connect(_on_cancel_rotation_requested)
+	save_rotation_requested.connect(_on_save_rotation_requested)
+	if _player_data_cache.size() > 0:
+		_selected_player_idx = 0
+		_refresh_all()
+
+# ─── Topbar ──────────────────────────────────────────────────────────────────
+
+func _build_topbar(parent: VBoxContainer):
+	var topbar = preload("res://scenes/components/topbar.tscn").instantiate()
+	topbar.screen_title = "ELENCO"
+	parent.add_child(topbar)
+
+# ─── Content ─────────────────────────────────────────────────────────────────
+
+func _build_content(parent: VBoxContainer):
 	var margin = MarginContainer.new()
-	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	margin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	margin.add_theme_constant_override("margin_left", 32)
-	margin.add_theme_constant_override("margin_top", 32)
-	margin.add_theme_constant_override("margin_right", 32)
-	margin.add_theme_constant_override("margin_bottom", 32)
-	add_child(margin)
-	
+	margin.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	margin.add_theme_constant_override("margin_left", 20)
+	margin.add_theme_constant_override("margin_right", 20)
+	margin.add_theme_constant_override("margin_top", 20)
+	margin.add_theme_constant_override("margin_bottom", 20)
+
 	var vbox = VBoxContainer.new()
 	vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	vbox.add_theme_constant_override("separation", 24)
-	margin.add_child(vbox)
-	
-	_build_top_bar(vbox)
-	_build_tabs_and_search(vbox)
+	vbox.add_theme_constant_override("separation", 16)
+
+	_build_toolbar(vbox)
 	_build_kpis(vbox)
-	
-	var content = HBoxContainer.new()
-	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	content.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	content.add_theme_constant_override("separation", 24)
-	vbox.add_child(content)
-	
-	_build_player_table(content)
-	_build_player_detail(content)
+	_build_main_area(vbox)
 
-func _build_top_bar(parent: Node):
-	var topbar_scene = preload("res://scenes/components/topbar.tscn")
-	var tb = topbar_scene.instantiate()
-	tb.screen_title = "ELENCO"
-	parent.add_child(tb)
+	margin.add_child(vbox)
+	parent.add_child(margin)
 
-func _build_tabs_and_search(parent: Node):
-	var h = HBoxContainer.new()
-	h.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	
+# ─── Toolbar (Filter Tabs + Search + Action) ────────────────────────────────
+
+func _build_toolbar(parent: VBoxContainer):
+	var hbox = HBoxContainer.new()
+	hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
 	var tabs = HBoxContainer.new()
-	tabs.add_theme_constant_override("separation", 16)
+	tabs.add_theme_constant_override("separation", 8)
 	tabs.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	
-	_add_tab_pill(tabs, "TODOS", "15", true)
-	_add_tab_pill(tabs, "TITULARES", "5", false)
-	_add_tab_pill(tabs, "ROTAÇÃO", "8", false)
-	_add_tab_pill(tabs, "LESIONADOS", "2", false)
-	_add_tab_pill(tabs, "JOVENS", "3", false)
-	
-	h.add_child(tabs)
-	
+
+	var filters = ["TODOS", "TITULARES", "ROTAÇÃO", "LESIONADOS", "JOVENS"]
+	var counts = _compute_filter_counts()
+	for f in filters:
+		var count = counts.get(f, 0)
+		var btn = _make_filter_pill(f, count, f == _active_filter)
+		tabs.add_child(btn)
+		_filter_btns[f] = btn
+
+	hbox.add_child(tabs)
+
 	var right = preload("res://scenes/ui/components/header_filter.tscn").instantiate()
 	right.search_placeholder = "Buscar jogador..."
 	right.action_btn_text = "CONTRATAR"
 	if right.has_node("%ActionBtn"):
-		right.get_node("%ActionBtn").icon = load("res://addons/at-icons/control/plus.svg")
+		var ab = right.get_node("%ActionBtn")
+		ab.icon = load("res://addons/at-icons/control/plus.svg")
 		if not Engine.is_editor_hint():
-			var cs = StyleBoxFlat.new(); cs.bg_color = ThemeConfig.SUCCESS
-			cs.corner_radius_top_left=8; cs.corner_radius_bottom_right=8; cs.corner_radius_bottom_left=8; cs.corner_radius_top_right=8
-			right.get_node("%ActionBtn").add_theme_stylebox_override("normal", cs)
-	
-	h.add_child(right)
-	parent.add_child(h)
+			var cs = StyleBoxFlat.new()
+			cs.bg_color = COL_SUCCESS
+			cs.corner_radius_top_left = 8
+			cs.corner_radius_bottom_right = 8
+			cs.corner_radius_bottom_left = 8
+			cs.corner_radius_top_right = 8
+			ab.add_theme_stylebox_override("normal", cs)
 
-func _add_tab_pill(parent: Node, txt: String, num: String, active: bool):
-	var p = PanelContainer.new()
+	hbox.add_child(right)
+	parent.add_child(hbox)
+
+func _make_filter_pill(text: String, count: int, active: bool) -> Button:
+	var btn = Button.new()
+	btn.text = text + "  " + str(count)
+	btn.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	btn.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
+	btn.add_theme_font_size_override("font_size", 11)
+
 	var s = StyleBoxFlat.new()
-	s.bg_color = ThemeConfig.BRAND_PRIMARY if active else Color(0,0,0,0)
-	s.corner_radius_top_left=16; s.corner_radius_top_right=16; s.corner_radius_bottom_left=16; s.corner_radius_bottom_right=16
-	p.add_theme_stylebox_override("panel", s)
-	var m = MarginContainer.new()
-	m.add_theme_constant_override("margin_left", 16); m.add_theme_constant_override("margin_right", 16)
-	m.add_theme_constant_override("margin_top", 8); m.add_theme_constant_override("margin_bottom", 8)
-	var h = HBoxContainer.new()
-	h.add_theme_constant_override("separation", 8)
-	var l = Label.new()
-	l.text = txt
-	l.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
-	l.add_theme_color_override("font_color", Color.WHITE if active else ThemeConfig.TEXT_MUTED)
-	h.add_child(l)
-	var n = PanelContainer.new()
-	var ns = StyleBoxFlat.new(); ns.bg_color = Color(0,0,0,0.2) if active else ThemeConfig.BG_ELEVATED
-	ns.corner_radius_top_left=10; ns.corner_radius_bottom_right=10; ns.corner_radius_bottom_left=10; ns.corner_radius_top_right=10
-	n.add_theme_stylebox_override("panel", ns)
-	var nm = MarginContainer.new()
-	nm.add_theme_constant_override("margin_left",8); nm.add_theme_constant_override("margin_right",8)
-	var nl = Label.new(); nl.text = num; nl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); nl.add_theme_font_size_override("font_size", 10)
-	nl.add_theme_color_override("font_color", Color.WHITE if active else ThemeConfig.TEXT_MUTED)
-	nm.add_child(nl); n.add_child(nm); h.add_child(n)
-	m.add_child(h); p.add_child(m); parent.add_child(p)
+	if active:
+		s.bg_color = COL_BRAND
+		btn.add_theme_color_override("font_color", COL_TEXT)
+	else:
+		s.bg_color = Color(1, 1, 1, 0.05)
+		btn.add_theme_color_override("font_color", COL_TEXT_MUTED)
 
-func _build_kpis(parent: Node):
-	var h = HBoxContainer.new()
-	h.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	h.add_theme_constant_override("separation", 24)
-	
-	_add_kpi(h, "star", "OVERALL MÉDIO", "82.4", "/100", ThemeConfig.BRAND_PRIMARY)
-	_add_kpi(h, "calendar", "IDADE MÉDIA", "26.3", "anos", Color("#38BDF8"))
-	_add_kpi(h, "coins", "SALÁRIO TOTAL", "R$ 8.2", "M/mês", ThemeConfig.SUCCESS)
-	_add_kpi(h, "beaker", "QUÍMICA", "94", "/100", Color("#F43F5E"))
-	
-	parent.add_child(h)
+	s.corner_radius_top_left = 16
+	s.corner_radius_top_right = 16
+	s.corner_radius_bottom_left = 16
+	s.corner_radius_bottom_right = 16
+	s.content_margin_left = 16
+	s.content_margin_right = 16
+	s.content_margin_top = 8
+	s.content_margin_bottom = 8
+	btn.add_theme_stylebox_override("normal", s)
+	btn.add_theme_stylebox_override("hover", s)
+	btn.add_theme_stylebox_override("pressed", s)
+	btn.add_theme_stylebox_override("focus", s)
 
-func _add_kpi(parent: Node, icon: String, title: String, val: String, sub: String, c: Color):
-	var p = preload("res://scenes/ui/components/container_base.tscn").instantiate()
-	p.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var m = MarginContainer.new()
-	m.add_theme_constant_override("margin_left", 20); m.add_theme_constant_override("margin_right", 20)
-	m.add_theme_constant_override("margin_top", 16); m.add_theme_constant_override("margin_bottom", 16)
-	var h = HBoxContainer.new(); h.add_theme_constant_override("separation", 16)
-	
-	var ic = PanelContainer.new(); ic.custom_minimum_size = Vector2(40,40); ic.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	var ics = StyleBoxFlat.new(); ics.bg_color = Color(c.r, c.g, c.b, 0.1)
-	ics.corner_radius_top_left=8; ics.corner_radius_bottom_right=8; ics.corner_radius_top_right=8; ics.corner_radius_bottom_left=8
-	ic.add_theme_stylebox_override("panel", ics)
-	var il = TextureRect.new()
-	il.texture = load("res://addons/at-icons/control/" + icon + ".svg")
-	il.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	il.custom_minimum_size = Vector2(24, 24)
-	il.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	il.modulate = c
-	il.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	il.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	ic.add_child(il); h.add_child(ic)
-	
-	var v = VBoxContainer.new()
-	var t = Label.new(); t.text = title; t.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); t.add_theme_font_size_override("font_size", 10); t.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED)
-	v.add_child(t)
-	var h2 = HBoxContainer.new(); h2.add_theme_constant_override("separation", 4)
-	var vl = Label.new(); vl.text = val; vl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BLACK); vl.add_theme_font_size_override("font_size", 24)
-	h2.add_child(vl)
-	var sl = Label.new(); sl.text = sub; sl.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED); sl.size_flags_vertical = Control.SIZE_SHRINK_END; sl.add_theme_font_size_override("font_size", 12)
-	h2.add_child(sl)
-	v.add_child(h2)
-	h.add_child(v)
-	
-	m.add_child(h); p.add_child(m); parent.add_child(p)
+	btn.pressed.connect(func(): _on_filter_changed(text))
+	return btn
 
-func _build_player_table(parent: Node):
-	var p = preload("res://scenes/ui/components/container_base.tscn").instantiate()
-	p.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	p.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	p.size_flags_stretch_ratio = 2.0
-	
+# ─── KPIs ────────────────────────────────────────────────────────────────────
+
+func _build_kpis(parent: VBoxContainer):
+	var hbox = HBoxContainer.new()
+	hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	hbox.add_theme_constant_override("separation", 12)
+
+	var kpis = [
+		{icon = "star", title = "OVERALL MÉDIO", val = "82.4", sub = "/100", color = COL_BRAND},
+		{icon = "calendar", title = "IDADE MÉDIA", val = "26.3", sub = "anos", color = COL_INFO},
+		{icon = "coins", title = "SALÁRIO TOTAL", val = "R$ 8.2", sub = "M/mês", color = COL_SUCCESS},
+		{icon = "beaker", title = "QUÍMICA", val = "94", sub = "/100", color = COL_HIGHLIGHT},
+	]
+
+	for k in kpis:
+		var card = _make_kpi_card(k.icon, k.title, k.val, k.sub, k.color)
+		hbox.add_child(card)
+
+	parent.add_child(hbox)
+
+func _make_kpi_card(icon_name: String, title: String, val: String, sub: String, accent: Color) -> PanelContainer:
+	var card = PanelContainer.new()
+	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	card.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+
+	var cs = StyleBoxFlat.new()
+	cs.bg_color = COL_SURFACE
+	cs.corner_radius_top_left = 8
+	cs.corner_radius_top_right = 8
+	cs.corner_radius_bottom_left = 8
+	cs.corner_radius_bottom_right = 8
+	card.add_theme_stylebox_override("panel", cs)
+
+	var margin = MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 20)
+	margin.add_theme_constant_override("margin_right", 20)
+	margin.add_theme_constant_override("margin_top", 16)
+	margin.add_theme_constant_override("margin_bottom", 16)
+
+	var hbox = HBoxContainer.new()
+	hbox.add_theme_constant_override("separation", 16)
+
+	var icon_container = PanelContainer.new()
+	icon_container.custom_minimum_size = Vector2(40, 40)
+	icon_container.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	var icon_style = StyleBoxFlat.new()
+	icon_style.bg_color = Color(accent.r, accent.g, accent.b, 0.1)
+	icon_style.corner_radius_top_left = 8
+	icon_style.corner_radius_bottom_right = 8
+	icon_style.corner_radius_bottom_left = 8
+	icon_style.corner_radius_top_right = 8
+	icon_container.add_theme_stylebox_override("panel", icon_style)
+
+	var icon = TextureRect.new()
+	icon.texture = load("res://addons/at-icons/control/" + icon_name + ".svg")
+	icon.custom_minimum_size = Vector2(24, 24)
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.modulate = accent
+	icon.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	icon_container.add_child(icon)
+
+	var vbox = VBoxContainer.new()
+	var title_lbl = Label.new()
+	title_lbl.text = title
+	title_lbl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
+	title_lbl.add_theme_font_size_override("font_size", 10)
+	title_lbl.add_theme_color_override("font_color", COL_TEXT_MUTED)
+
+	var val_hbox = HBoxContainer.new()
+	val_hbox.add_theme_constant_override("separation", 4)
+
+	var val_lbl = Label.new()
+	val_lbl.text = val
+	val_lbl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BLACK)
+	val_lbl.add_theme_font_size_override("font_size", 24)
+	val_lbl.add_theme_color_override("font_color", COL_TEXT)
+
+	var sub_lbl = Label.new()
+	sub_lbl.text = sub
+	sub_lbl.add_theme_color_override("font_color", COL_TEXT_MUTED)
+	sub_lbl.add_theme_font_size_override("font_size", 12)
+	sub_lbl.size_flags_vertical = Control.SIZE_SHRINK_END
+
+	val_hbox.add_child(val_lbl)
+	val_hbox.add_child(sub_lbl)
+	vbox.add_child(title_lbl)
+	vbox.add_child(val_hbox)
+	hbox.add_child(icon_container)
+	hbox.add_child(vbox)
+	margin.add_child(hbox)
+	card.add_child(margin)
+	return card
+
+# ─── Main Area (Table + Detail) ─────────────────────────────────────────────
+
+func _build_main_area(parent: VBoxContainer):
+	var hbox = HBoxContainer.new()
+	hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	hbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	hbox.add_theme_constant_override("separation", 16)
+	parent.add_child(hbox)
+
+	_build_player_table(hbox)
+	_build_player_detail(hbox)
+
+# ─── Player Table ────────────────────────────────────────────────────────────
+
+func _build_player_table(parent: HBoxContainer):
+	var card = PanelContainer.new()
+	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	card.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	card.size_flags_stretch_ratio = 2.0
+
+	var cs = StyleBoxFlat.new()
+	cs.bg_color = COL_SURFACE
+	cs.corner_radius_top_left = 12
+	cs.corner_radius_bottom_right = 12
+	cs.corner_radius_bottom_left = 12
+	cs.corner_radius_top_right = 12
+	card.add_theme_stylebox_override("panel", cs)
+
 	var vb = VBoxContainer.new()
 	vb.add_theme_constant_override("separation", 0)
-	
-	# Header
+
+	# Header Row
 	var cols = [
-		{"n": "POS", "w": 48}, {"n": "JOGADOR", "w": 200}, {"n": "IDADE", "w": 60}, 
-		{"n": "OVR", "w": 40}, {"n": "FORMA", "w": 100}, {"n": "ENERGIA", "w": 120},
-		{"n": "CONTRATO", "w": 80}, {"n": "SALÁRIO", "w": 80}, {"n": "STATUS", "w": 80}
+		{n = "POS", w = 48},
+		{n = "JOGADOR", w = 0, expand = true},
+		{n = "IDADE", w = 56},
+		{n = "OVR", w = 44},
+		{n = "ENERGIA", w = 80},
+		{n = "CONTRATO", w = 76},
+		{n = "SALÁRIO", w = 80},
+		{n = "", w = 32},
 	]
-	var m = MarginContainer.new()
-	m.add_theme_constant_override("margin_left", 24); m.add_theme_constant_override("margin_right", 24)
-	m.add_theme_constant_override("margin_top", 16); m.add_theme_constant_override("margin_bottom", 16)
-	var hh = HBoxContainer.new(); hh.add_theme_constant_override("separation", 16)
+
+	var header_margin = MarginContainer.new()
+	header_margin.add_theme_constant_override("margin_left", 20)
+	header_margin.add_theme_constant_override("margin_right", 20)
+	header_margin.add_theme_constant_override("margin_top", 14)
+	header_margin.add_theme_constant_override("margin_bottom", 10)
+
+	var hh = HBoxContainer.new()
+	hh.add_theme_constant_override("separation", 12)
+
 	for c in cols:
-		var l = Label.new(); l.text = c.n; l.custom_minimum_size = Vector2(c.w, 0)
-		if c.n == "JOGADOR": l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var l = Label.new()
+		l.text = c.n
+		l.custom_minimum_size = Vector2(c.w, 0) if c.w > 0 else Vector2(0, 0)
+		if c.get("expand", false):
+			l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		l.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
 		l.add_theme_font_size_override("font_size", 10)
-		l.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED)
+		l.add_theme_color_override("font_color", COL_TEXT_DISABLED)
 		l.add_theme_constant_override("letter_spacing", 1)
+		if c.n == "POS":
+			l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		hh.add_child(l)
-	m.add_child(hh); vb.add_child(m)
-	
-	var div = ColorRect.new(); div.custom_minimum_size = Vector2(0,1); div.color = ThemeConfig.BORDER_SUBTLE
-	vb.add_child(div)
-	
+
+	header_margin.add_child(hh)
+	vb.add_child(header_margin)
+
+	var divider = ColorRect.new()
+	divider.custom_minimum_size = Vector2(0, 1)
+	divider.color = COL_BORDER
+	vb.add_child(divider)
+
 	var scroll = ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	
+
 	var list = VBoxContainer.new()
 	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	list.add_theme_constant_override("separation", 0)
-	
-	var p_data = [
-		{"pos": "PG", "in": "MS", "n": "Marcus Silva", "sub": "The Maestro", "i": 28, "ovr": 92, "en": 88, "ct": "2 anos", "sal": "R$ 2.4M", "st": "ATIVO"},
-		{"pos": "SG", "in": "JP", "n": "João Pedro", "sub": "Sniper", "i": 26, "ovr": 88, "en": 76, "ct": "3 anos", "sal": "R$ 1.8M", "st": "ATIVO"},
-		{"pos": "SF", "in": "CM", "n": "Carlos Mendez", "sub": "El Capitán", "i": 31, "ovr": 86, "en": 65, "ct": "1 ano", "sal": "R$ 1.5M", "st": "ATIVO"},
-		{"pos": "PF", "in": "AC", "n": "Anderson Costa", "sub": "The Beast", "i": 29, "ovr": 85, "en": 45, "ct": "2 anos", "sal": "R$ 1.3M", "st": "CANSADO"},
-		{"pos": "C", "in": "TW", "n": "Tyrone Walker", "sub": "The Wall", "i": 32, "ovr": 83, "en": 30, "ct": "0.5 ano", "sal": "R$ 1.1M", "st": "LESIONADO"},
-		{"pos": "PG", "in": "LA", "n": "Lucas Almeida", "sub": "Rookie", "i": 21, "ovr": 78, "en": 95, "ct": "4 anos", "sal": "R$ 480K", "st": "ATIVO"},
-		{"pos": "SG", "in": "DR", "n": "Diego Ramos", "sub": "Flash", "i": 24, "ovr": 81, "en": 82, "ct": "2 anos", "sal": "R$ 720K", "st": "ATIVO"},
-		{"pos": "SF", "in": "RS", "n": "Rafael Souza", "sub": "Iron Man", "i": 27, "ovr": 79, "en": 70, "ct": "3 anos", "sal": "R$ 650K", "st": "ATIVO"},
-		{"pos": "PF", "in": "BO", "n": "Bruno Oliveira", "sub": "Hammer", "i": 25, "ovr": 76, "en": 88, "ct": "1 ano", "sal": "R$ 540K", "st": "ATIVO"},
-		{"pos": "C", "in": "PH", "n": "Pedro Henrique", "sub": "Big Pete", "i": 23, "ovr": 74, "en": 92, "ct": "4 anos", "sal": "R$ 420K", "st": "ATIVO"}
-	]
-	
-	for d in p_data:
-		_add_player_row(list, d)
-		
+	list.name = "PlayerList"
 	scroll.add_child(list)
+
 	vb.add_child(scroll)
-	p.add_child(vb)
-	parent.add_child(p)
+	card.add_child(vb)
+	parent.add_child(card)
 
-func _add_player_row(parent: Node, d: Dictionary):
-	var row = preload("res://scenes/ui/components/player_row.tscn").instantiate()
-	row.player_data = d
-	if d.n == "Marcus Silva":
-		row.is_selected = true
-	parent.add_child(row)
+func _refresh_player_rows():
+	var list = find_child("PlayerList", true, false)
+	if not list:
+		return
+	for c in list.get_children():
+		c.queue_free()
 
-func _build_player_detail(parent: Node):
-	var p = preload("res://scenes/ui/components/container_base.tscn").instantiate()
-	p.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	p.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	p.size_flags_stretch_ratio = 1.0
-	
-	var card_grad = TextureRect.new()
-	var cg2d = GradientTexture2D.new()
-	var cg = Gradient.new()
-	cg.set_color(0, Color(ThemeConfig.BRAND_PRIMARY.r, ThemeConfig.BRAND_PRIMARY.g, ThemeConfig.BRAND_PRIMARY.b, 0.15))
-	cg.set_color(1, Color(0,0,0,0))
-	cg2d.gradient = cg
-	cg2d.fill_from = Vector2(0.5, 0)
-	cg2d.fill_to = Vector2(0.5, 0.6)
-	card_grad.texture = cg2d
-	card_grad.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	card_grad.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	p.add_child(card_grad)
-	
+	var filtered = _get_filtered_players()
+	for i in range(filtered.size()):
+		var d = filtered[i]
+		var idx = _player_data_cache.find(d)
+		var row = _make_player_row(d, idx)
+		list.add_child(row)
+		_player_rows.append(row)
+
+func _make_player_row(d: Dictionary, idx: int) -> PanelContainer:
+	var row = PanelContainer.new()
+	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+	var is_selected = idx == _selected_player_idx
+	var rs = StyleBoxFlat.new()
+	rs.bg_color = COL_BRAND_SOFT if is_selected else Color.TRANSPARENT
+	rs.corner_radius_top_left = 6
+	rs.corner_radius_top_right = 6
+	rs.corner_radius_bottom_left = 6
+	rs.corner_radius_bottom_right = 6
+	rs.content_margin_left = 16
+	rs.content_margin_right = 16
+	rs.content_margin_top = 8
+	rs.content_margin_bottom = 8
+	row.add_theme_stylebox_override("panel", rs)
+
+	var hbox = HBoxContainer.new()
+	hbox.add_theme_constant_override("separation", 12)
+	hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+	# POS
+	var pos_lbl = Label.new()
+	pos_lbl.text = d.get("pos", "PG")
+	pos_lbl.custom_minimum_size = Vector2(48, 0)
+	pos_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	pos_lbl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
+	pos_lbl.add_theme_font_size_override("font_size", 11)
+	pos_lbl.add_theme_color_override("font_color", COL_BRAND)
+
+	# Player name with initials
+	var name_hbox = HBoxContainer.new()
+	name_hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	name_hbox.add_theme_constant_override("separation", 8)
+
+	var init_circle = PanelContainer.new()
+	init_circle.custom_minimum_size = Vector2(24, 24)
+	var init_s = StyleBoxFlat.new()
+	init_s.bg_color = COL_BRAND_DEEP
+	init_s.corner_radius_top_left = 12
+	init_s.corner_radius_top_right = 12
+	init_s.corner_radius_bottom_left = 12
+	init_s.corner_radius_bottom_right = 12
+	init_circle.add_theme_stylebox_override("panel", init_s)
+
+	var init_lbl = Label.new()
+	var parts = d.get("name", "?").split(" ", false)
+	var initials = ""
+	if parts.size() >= 2:
+		initials = parts[0][0] + parts[1][0]
+	else:
+		initials = d.get("name", "?")[0]
+	init_lbl.text = initials
+	init_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	init_lbl.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	init_lbl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
+	init_lbl.add_theme_font_size_override("font_size", 9)
+	init_lbl.add_theme_color_override("font_color", COL_TEXT)
+	init_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	init_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	init_circle.add_child(init_lbl)
+
+	var name_vbox = VBoxContainer.new()
+	name_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	name_vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	name_vbox.add_theme_constant_override("separation", 0)
+
+	var name_lbl = Label.new()
+	name_lbl.text = d.get("name", "Jogador")
+	name_lbl.add_theme_font_override("font", ThemeConfig.FONT_INTER)
+	name_lbl.add_theme_font_size_override("font_size", 13)
+	name_lbl.add_theme_color_override("font_color", COL_TEXT)
+
+	var sub_lbl = Label.new()
+	sub_lbl.text = d.get("nickname", "")
+	if sub_lbl.text != "":
+		sub_lbl.text = "\"" + sub_lbl.text + "\""
+	sub_lbl.add_theme_font_size_override("font_size", 10)
+	sub_lbl.add_theme_color_override("font_color", COL_TEXT_MUTED)
+
+	if sub_lbl.text != "":
+		name_vbox.add_child(name_lbl)
+		name_vbox.add_child(sub_lbl)
+	else:
+		var align = VBoxContainer.new()
+		align.alignment = BoxContainer.ALIGNMENT_CENTER
+		align.add_child(name_lbl)
+		name_vbox.add_child(align)
+
+	name_hbox.add_child(init_circle)
+	name_hbox.add_child(name_vbox)
+
+	# Age
+	var age_lbl = Label.new()
+	age_lbl.text = str(d.get("age", 0))
+	age_lbl.custom_minimum_size = Vector2(56, 0)
+	age_lbl.add_theme_font_override("font", ThemeConfig.FONT_INTER)
+	age_lbl.add_theme_font_size_override("font_size", 13)
+	age_lbl.add_theme_color_override("font_color", COL_TEXT)
+
+	# OVR badge
+	var ovr_val = int(d.get("ovr", 50))
+	var ovr_c = _ovr_color(ovr_val)
+	var ovr_box = PanelContainer.new()
+	ovr_box.custom_minimum_size = Vector2(34, 22)
+	ovr_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var ovr_s = StyleBoxFlat.new()
+	ovr_s.bg_color = Color(ovr_c, 0.13)
+	ovr_s.border_color = ovr_c
+	ovr_s.border_width_left = 1
+	ovr_s.border_width_right = 1
+	ovr_s.border_width_top = 1
+	ovr_s.border_width_bottom = 1
+	ovr_s.corner_radius_top_left = 4
+	ovr_s.corner_radius_top_right = 4
+	ovr_s.corner_radius_bottom_left = 4
+	ovr_s.corner_radius_bottom_right = 4
+	ovr_s.set_content_margin_all(0)
+	ovr_box.add_theme_stylebox_override("panel", ovr_s)
+
+	var ovr_lbl = Label.new()
+	ovr_lbl.text = str(ovr_val)
+	ovr_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	ovr_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	ovr_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	ovr_lbl.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	ovr_lbl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BLACK)
+	ovr_lbl.add_theme_font_size_override("font_size", 11)
+	ovr_lbl.add_theme_color_override("font_color", ovr_c)
+	ovr_box.add_child(ovr_lbl)
+
+	# Energy
+	var energy_lbl = Label.new()
+	energy_lbl.text = str(d.get("energy", 100))
+	energy_lbl.custom_minimum_size = Vector2(80, 0)
+	energy_lbl.add_theme_font_override("font", ThemeConfig.FONT_INTER)
+	energy_lbl.add_theme_font_size_override("font_size", 13)
+	energy_lbl.add_theme_color_override("font_color", _energy_color(d.get("energy", 100)))
+
+	# Contract
+	var contract_lbl = Label.new()
+	contract_lbl.text = d.get("contract", "-")
+	contract_lbl.custom_minimum_size = Vector2(76, 0)
+	contract_lbl.add_theme_font_override("font", ThemeConfig.FONT_INTER)
+	contract_lbl.add_theme_font_size_override("font_size", 13)
+	contract_lbl.add_theme_color_override("font_color", COL_TEXT)
+
+	# Salary
+	var salary_lbl = Label.new()
+	salary_lbl.text = d.get("salary", "-")
+	salary_lbl.custom_minimum_size = Vector2(80, 0)
+	salary_lbl.add_theme_font_override("font", ThemeConfig.FONT_INTER)
+	salary_lbl.add_theme_font_size_override("font_size", 13)
+	salary_lbl.add_theme_color_override("font_color", COL_TEXT)
+
+	# Quick Action button
+	var qa_btn = PanelContainer.new()
+	qa_btn.custom_minimum_size = Vector2(32, 24)
+	qa_btn.mouse_filter = Control.MOUSE_FILTER_STOP
+	var qas = StyleBoxFlat.new()
+	qas.bg_color = Color.TRANSPARENT
+	qas.corner_radius_top_left = 4
+	qas.corner_radius_top_right = 4
+	qas.corner_radius_bottom_left = 4
+	qas.corner_radius_bottom_right = 4
+	qa_btn.add_theme_stylebox_override("panel", qas)
+
+	var qa_icon = TextureRect.new()
+	qa_icon.texture = load("res://addons/at-icons/control/ellipsis.svg") if ResourceLoader.exists("res://addons/at-icons/control/ellipsis.svg") else null
+	if not qa_icon.texture:
+		var qa_label = Label.new()
+		qa_label.text = "···"
+		qa_label.add_theme_color_override("font_color", COL_TEXT_MUTED)
+		qa_btn.add_child(qa_label)
+	else:
+		qa_icon.custom_minimum_size = Vector2(16, 16)
+		qa_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		qa_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		qa_icon.modulate = COL_TEXT_MUTED
+		qa_icon.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		qa_icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		qa_btn.add_child(qa_icon)
+
+	var qa_click = Button.new()
+	qa_click.flat = true
+	qa_click.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	qa_click.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	qa_click.mouse_filter = Control.MOUSE_FILTER_STOP
+	qa_click.pressed.connect(func():
+		var pos = qa_btn.get_screen_position() + Vector2(qa_btn.size.x, 0)
+		quick_action_requested.emit(d, pos)
+	)
+	qa_btn.add_child(qa_click)
+
+	hbox.add_child(pos_lbl)
+	hbox.add_child(name_hbox)
+	hbox.add_child(age_lbl)
+	hbox.add_child(ovr_box)
+	hbox.add_child(energy_lbl)
+	hbox.add_child(contract_lbl)
+	hbox.add_child(salary_lbl)
+	hbox.add_child(qa_btn)
+	row.add_child(hbox)
+
+	# Row click
+	var row_click = Button.new()
+	row_click.flat = true
+	row_click.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	row_click.mouse_filter = Control.MOUSE_FILTER_PASS
+	row_click.pressed.connect(func():
+		_selected_player_idx = idx
+		_refresh_all()
+		player_selected.emit(d)
+	)
+	row.add_child(row_click)
+
+	return row
+
+# ─── Player Detail Panel ─────────────────────────────────────────────────────
+
+func _build_player_detail(parent: HBoxContainer):
+	var card = PanelContainer.new()
+	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	card.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	card.size_flags_stretch_ratio = 1.0
+
+	var cs = StyleBoxFlat.new()
+	cs.bg_color = COL_SURFACE
+	cs.corner_radius_top_left = 12
+	cs.corner_radius_bottom_right = 12
+	cs.corner_radius_bottom_left = 12
+	cs.corner_radius_top_right = 12
+	card.add_theme_stylebox_override("panel", cs)
+
 	var scroll = ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	
-	var m = MarginContainer.new()
-	m.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	m.add_theme_constant_override("margin_left", 32); m.add_theme_constant_override("margin_right", 32)
-	m.add_theme_constant_override("margin_top", 32); m.add_theme_constant_override("margin_bottom", 32)
-	
+
 	var vb = VBoxContainer.new()
 	vb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	vb.add_theme_constant_override("separation", 24)
-	
-	var th = HBoxContainer.new()
-	var tl = Label.new(); tl.text = "JOGADOR SELECIONADO"; tl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); tl.add_theme_font_size_override("font_size", 10); tl.add_theme_color_override("font_color", ThemeConfig.BRAND_PRIMARY); tl.add_theme_constant_override("letter_spacing", 1); tl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var tr = Label.new(); tr.text = "ESTRELA"; tr.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); tr.add_theme_font_size_override("font_size", 10); tr.add_theme_color_override("font_color", ThemeConfig.WARNING)
-	var tr_box = HBoxContainer.new(); tr_box.add_theme_constant_override("separation", 4)
-	var tr_icon = TextureRect.new(); tr_icon.texture = load("res://addons/at-icons/control/star.svg"); tr_icon.custom_minimum_size = Vector2(12, 12); tr_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE; tr_icon.modulate = ThemeConfig.WARNING
-	tr_box.add_child(tr_icon); tr_box.add_child(tr)
-	th.add_child(tl); th.add_child(tr_box); vb.add_child(th)
-	
-	# Profile header
-	var ph = HBoxContainer.new(); ph.add_theme_constant_override("separation", 16)
-	
+	vb.add_theme_constant_override("separation", 0)
+	vb.name = "DetailContent"
+
+	var placeholder = Label.new()
+	placeholder.text = "Selecione um jogador"
+	placeholder.add_theme_color_override("font_color", COL_TEXT_MUTED)
+	placeholder.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	placeholder.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	placeholder.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	vb.add_child(placeholder)
+
+	scroll.add_child(vb)
+	card.add_child(scroll)
+	parent.add_child(card)
+	_detail_panel = card
+
+func _refresh_detail():
+	var content = _detail_panel.find_child("DetailContent", true, false)
+	if not content:
+		return
+	for c in content.get_children():
+		c.queue_free()
+
+	if _selected_player_idx < 0 or _selected_player_idx >= _player_data_cache.size():
+		var placeholder = Label.new()
+		placeholder.text = "Selecione um jogador"
+		placeholder.add_theme_color_override("font_color", COL_TEXT_MUTED)
+		placeholder.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		placeholder.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		placeholder.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		content.add_child(placeholder)
+		return
+
+	var d = _player_data_cache[_selected_player_idx]
+	var ovr_val = int(d.get("ovr", 50))
+
+	var main_vb = VBoxContainer.new()
+	main_vb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	main_vb.add_theme_constant_override("separation", 0)
+
+	# ═══ PC HEADER (lighter bg, rounded corners) ═══
+
+	var header_outer = MarginContainer.new()
+	header_outer.add_theme_constant_override("margin_left", 24)
+	header_outer.add_theme_constant_override("margin_right", 24)
+	header_outer.add_theme_constant_override("margin_top", 16)
+	header_outer.add_theme_constant_override("margin_bottom", 0)
+
+	var header_panel = PanelContainer.new()
+	var hp_style = StyleBoxFlat.new()
+	hp_style.bg_color = Color("#120B20")
+	hp_style.corner_radius_top_left = 12
+	hp_style.corner_radius_top_right = 12
+	hp_style.corner_radius_bottom_left = 12
+	hp_style.corner_radius_bottom_right = 12
+	header_panel.add_theme_stylebox_override("panel", hp_style)
+
+	var header_vb = VBoxContainer.new()
+	header_vb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header_vb.add_theme_constant_override("separation", 12)
+
+	var top_hbox = HBoxContainer.new()
+	top_hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var section = Label.new()
+	section.text = "JOGADOR SELECIONADO"
+	section.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
+	section.add_theme_font_size_override("font_size", 9)
+	section.add_theme_color_override("font_color", COL_BRAND)
+	section.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	top_hbox.add_child(section)
+	if ovr_val >= 90:
+		var star_box = HBoxContainer.new()
+		star_box.add_theme_constant_override("separation", 4)
+		var star_icon = Label.new()
+		star_icon.text = "★"
+		star_icon.add_theme_color_override("font_color", COL_WARNING)
+		star_icon.add_theme_font_size_override("font_size", 12)
+		star_box.add_child(star_icon)
+		var star_lbl = Label.new()
+		star_lbl.text = "ESTRELA"
+		star_lbl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
+		star_lbl.add_theme_font_size_override("font_size", 9)
+		star_lbl.add_theme_color_override("font_color", COL_WARNING)
+		star_box.add_child(star_lbl)
+		top_hbox.add_child(star_box)
+	header_vb.add_child(top_hbox)
+
+	var avatar_hbox = HBoxContainer.new()
+	avatar_hbox.add_theme_constant_override("separation", 14)
 	var av_container = Control.new()
-	av_container.custom_minimum_size = Vector2(80, 80)
-	
-	var glow = TextureRect.new()
-	var gg = GradientTexture2D.new()
-	var gg_color = Gradient.new()
-	gg_color.set_color(0, Color(ThemeConfig.BRAND_PRIMARY.r, ThemeConfig.BRAND_PRIMARY.g, ThemeConfig.BRAND_PRIMARY.b, 0.6))
-	gg_color.set_color(1, Color(ThemeConfig.BRAND_PRIMARY.r, ThemeConfig.BRAND_PRIMARY.g, ThemeConfig.BRAND_PRIMARY.b, 0.0))
-	gg.gradient = gg_color
-	gg.fill = GradientTexture2D.FILL_RADIAL
-	gg.fill_from = Vector2(0.5, 0.5)
-	gg.fill_to = Vector2(1.0, 0.5)
-	gg.width = 160
-	gg.height = 160
-	glow.texture = gg
-	glow.position = Vector2(-40, -40)
-	av_container.add_child(glow)
-	
-	var av = PanelContainer.new(); av.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	var avs = StyleBoxFlat.new(); avs.bg_color = ThemeConfig.BRAND_PRIMARY; avs.corner_radius_top_left=40; avs.corner_radius_bottom_right=40; avs.corner_radius_top_right=40; avs.corner_radius_bottom_left=40
-	avs.shadow_color = Color(ThemeConfig.BRAND_PRIMARY.r, ThemeConfig.BRAND_PRIMARY.g, ThemeConfig.BRAND_PRIMARY.b, 0.4)
-	avs.shadow_size = 20
-	av.add_theme_stylebox_override("panel", avs)
-	var al = Label.new(); al.text = "MS"; al.add_theme_font_override("font", ThemeConfig.FONT_INTER_BLACK); al.add_theme_font_size_override("font_size", 28); al.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; al.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	av.add_child(al); av_container.add_child(av); ph.add_child(av_container)
-	
-	var pv = VBoxContainer.new(); pv.alignment = BoxContainer.ALIGNMENT_CENTER; pv.add_theme_constant_override("separation", 4)
-	var pnum = Label.new(); pnum.text = "#7"; pnum.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED); pnum.add_theme_font_size_override("font_size", 12); pnum.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); pv.add_child(pnum)
-	var pnam = Label.new(); pnam.text = "Marcus Silva"; pnam.add_theme_font_override("font", ThemeConfig.FONT_INTER_BLACK); pnam.add_theme_font_size_override("font_size", 24); pv.add_child(pnam)
-	var psub = Label.new(); psub.text = "\"The Maestro\""; psub.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED); pv.add_child(psub)
-	ph.add_child(pv); vb.add_child(ph)
-	
-	# 4 stats boxes
-	var sh = HBoxContainer.new(); sh.add_theme_constant_override("separation", 12); sh.alignment = BoxContainer.ALIGNMENT_CENTER
-	_add_stat_box(sh, "POS", "PG")
-	_add_stat_box(sh, "IDADE", "28")
-	_add_stat_box(sh, "ALTURA", "1.91m")
-	_add_stat_box(sh, "OVR", "92")
-	vb.add_child(sh)
-	
-	var div1 = ColorRect.new(); div1.custom_minimum_size = Vector2(0,1); div1.color = ThemeConfig.BORDER_SUBTLE; vb.add_child(div1)
-	
-	# ATRIBUTOS
-	var at = Label.new(); at.text = "ATRIBUTOS"; at.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); at.add_theme_font_size_override("font_size", 10); at.add_theme_color_override("font_color", ThemeConfig.BRAND_PRIMARY); at.add_theme_constant_override("letter_spacing", 1); vb.add_child(at)
-	
-	var ab = VBoxContainer.new(); ab.add_theme_constant_override("separation", 16)
-	_add_attr_bar(ab, "Arremesso", 95, ThemeConfig.BRAND_PRIMARY)
-	_add_attr_bar(ab, "Drible / Manejo", 96, ThemeConfig.BRAND_PRIMARY)
-	_add_attr_bar(ab, "Passe / Visão", 94, ThemeConfig.BRAND_PRIMARY)
-	_add_attr_bar(ab, "Defesa", 78, Color("#3B82F6"))
-	_add_attr_bar(ab, "Atletismo", 85, ThemeConfig.SUCCESS)
-	_add_attr_bar(ab, "QI de Quadra", 92, ThemeConfig.BRAND_PRIMARY)
-	vb.add_child(ab)
-	
-	var div2 = ColorRect.new(); div2.custom_minimum_size = Vector2(0,1); div2.color = ThemeConfig.BORDER_SUBTLE; vb.add_child(div2)
-	
-	# QUINTETO TITULAR
-	var qh = HBoxContainer.new()
-	var qt = Label.new(); qt.text = "QUINTETO TITULAR"; qt.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); qt.add_theme_font_size_override("font_size", 10); qt.add_theme_color_override("font_color", ThemeConfig.BRAND_PRIMARY); qt.add_theme_constant_override("letter_spacing", 1); qt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var qe = PanelContainer.new(); var qes = StyleBoxFlat.new(); qes.bg_color = ThemeConfig.BG_ELEVATED; qes.corner_radius_top_left=4; qes.corner_radius_bottom_right=4; qes.corner_radius_bottom_left=4; qes.corner_radius_top_right=4; qe.add_theme_stylebox_override("panel", qes)
-	var qem = MarginContainer.new(); qem.add_theme_constant_override("margin_left",8); qem.add_theme_constant_override("margin_right",8); qem.add_theme_constant_override("margin_top",4); qem.add_theme_constant_override("margin_bottom",4)
-	var qel_box = HBoxContainer.new(); qel_box.add_theme_constant_override("separation", 4)
-	var qei = TextureRect.new(); qei.texture = load("res://addons/at-icons/control/pencil.svg"); qei.custom_minimum_size = Vector2(10, 10); qei.expand_mode = TextureRect.EXPAND_IGNORE_SIZE; qei.modulate = ThemeConfig.TEXT_MUTED; qel_box.add_child(qei)
-	var qel = Label.new(); qel.text = "EDITAR"; qel.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); qel.add_theme_font_size_override("font_size", 9); qel.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED); qel_box.add_child(qel)
-	qem.add_child(qel_box); qe.add_child(qem)
-	qh.add_child(qt); qh.add_child(qe); vb.add_child(qh)
-	
-	# Court mockup
-	var court = PanelContainer.new()
-	court.custom_minimum_size = Vector2(0, 180)
-	court.clip_contents = true
-	var cs = StyleBoxFlat.new(); cs.bg_color = ThemeConfig.BG_APP; cs.border_width_left=1; cs.border_width_right=1; cs.border_width_top=1; cs.border_width_bottom=1; cs.border_color=ThemeConfig.BORDER_SUBTLE; cs.corner_radius_top_left=12; cs.corner_radius_bottom_right=12; cs.corner_radius_bottom_left=12; cs.corner_radius_top_right=12
-	court.add_theme_stylebox_override("panel", cs)
-	
-	var cctrl = Control.new()
-	cctrl.set_script(preload("res://scripts/menu_court.gd"))
-	court.add_child(cctrl)
-	
-	# Nodes
-	_add_court_node(cctrl, "MS", ThemeConfig.BRAND_PRIMARY, Vector2(160, 80))
-	_add_court_node(cctrl, "JP", Color("#3B82F6"), Vector2(80, 130))
-	_add_court_node(cctrl, "CM", ThemeConfig.SUCCESS, Vector2(240, 130))
-	
-	vb.add_child(court)
-	
-	m.add_child(vb)
-	scroll.add_child(m)
-	p.add_child(scroll)
-	parent.add_child(p)
+	av_container.custom_minimum_size = Vector2(72, 72)
+	var av_bg = PanelContainer.new()
+	av_bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	var avs = StyleBoxFlat.new()
+	avs.bg_color = Color("#7C3AED")
+	avs.corner_radius_top_left = 36
+	avs.corner_radius_top_right = 36
+	avs.corner_radius_bottom_left = 36
+	avs.corner_radius_bottom_right = 36
+	avs.border_width_left = 3
+	avs.border_width_right = 3
+	avs.border_width_top = 3
+	avs.border_width_bottom = 3
+	avs.border_color = Color("#5B21B6")
+	avs.shadow_size = 16
+	avs.shadow_color = Color("#A78BFA66")
+	avs.shadow_offset = Vector2(0, 0)
+	av_bg.add_theme_stylebox_override("panel", avs)
+	var initials = Label.new()
+	var name_parts = d.get("name", "?").split(" ", false)
+	var init_str = ""
+	if name_parts.size() >= 2:
+		init_str = name_parts[0][0] + name_parts[1][0]
+	else:
+		init_str = d.get("name", "?")[0]
+	initials.text = init_str
+	initials.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	initials.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	initials.add_theme_font_override("font", ThemeConfig.FONT_INTER_BLACK)
+	initials.add_theme_font_size_override("font_size", 22)
+	initials.add_theme_color_override("font_color", COL_TEXT)
+	initials.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	initials.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	av_bg.add_child(initials)
+	av_container.add_child(av_bg)
 
-func _add_stat_box(parent: Node, title: String, val: String):
-	var p = PanelContainer.new(); p.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var s = StyleBoxFlat.new(); s.bg_color = ThemeConfig.BG_ELEVATED; s.corner_radius_top_left=8; s.corner_radius_bottom_right=8; s.corner_radius_bottom_left=8; s.corner_radius_top_right=8
+	var name_vbox = VBoxContainer.new()
+	name_vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	name_vbox.add_theme_constant_override("separation", 3)
+	var num_lbl = Label.new()
+	num_lbl.text = "#" + str(d.get("number", 0))
+	num_lbl.add_theme_color_override("font_color", COL_BRAND)
+	num_lbl.add_theme_font_size_override("font_size", 11)
+	num_lbl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
+	var name_lbl = Label.new()
+	name_lbl.text = d.get("name", "Jogador")
+	name_lbl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BLACK)
+	name_lbl.add_theme_font_size_override("font_size", 18)
+	name_lbl.add_theme_color_override("font_color", COL_TEXT)
+	var sub_lbl = Label.new()
+	sub_lbl.text = d.get("nickname", "")
+	if sub_lbl.text != "":
+		sub_lbl.text = "\"" + sub_lbl.text + "\""
+	sub_lbl.add_theme_font_size_override("font_size", 11)
+	sub_lbl.add_theme_font_override("font", ThemeConfig.FONT_INTER)
+	sub_lbl.add_theme_color_override("font_color", Color("#94A3B8"))
+	name_vbox.add_child(num_lbl)
+	name_vbox.add_child(name_lbl)
+	if sub_lbl.text != "":
+		name_vbox.add_child(sub_lbl)
+	avatar_hbox.add_child(av_container)
+	avatar_hbox.add_child(name_vbox)
+	header_vb.add_child(avatar_hbox)
+
+	var stat_hbox = HBoxContainer.new()
+	stat_hbox.add_theme_constant_override("separation", 8)
+	stat_hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var stat_val_colors = {POS = COL_BRAND, IDADE = COL_TEXT, ALTURA = COL_TEXT, OVR = COL_BRAND}
+	var details = [
+		{t = "POS", v = d.get("pos", "-")},
+		{t = "IDADE", v = str(d.get("age", 0))},
+		{t = "ALTURA", v = d.get("height", "-")},
+		{t = "OVR", v = str(ovr_val)},
+	]
+	for det in details:
+		var sp = PanelContainer.new()
+		sp.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var ss = StyleBoxFlat.new()
+		ss.bg_color = Color("#0B0514")
+		ss.corner_radius_top_left = 6
+		ss.corner_radius_top_right = 6
+		ss.corner_radius_bottom_left = 6
+		ss.corner_radius_bottom_right = 6
+		sp.add_theme_stylebox_override("panel", ss)
+		var sv = VBoxContainer.new()
+		sv.alignment = BoxContainer.ALIGNMENT_CENTER
+		sv.add_theme_constant_override("separation", 2)
+		var sm = MarginContainer.new()
+		sm.add_theme_constant_override("margin_left", 10)
+		sm.add_theme_constant_override("margin_right", 10)
+		sm.add_theme_constant_override("margin_top", 8)
+		sm.add_theme_constant_override("margin_bottom", 8)
+		var tl = Label.new()
+		tl.text = det.t
+		tl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
+		tl.add_theme_font_size_override("font_size", 8)
+		tl.add_theme_color_override("font_color", Color("#6B5B95"))
+		tl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		var vl = Label.new()
+		vl.text = det.v
+		vl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BLACK)
+		vl.add_theme_font_size_override("font_size", 13)
+		vl.add_theme_color_override("font_color", stat_val_colors.get(det.t, COL_TEXT))
+		vl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		sv.add_child(tl); sv.add_child(vl)
+		sm.add_child(sv); sp.add_child(sm)
+		stat_hbox.add_child(sp)
+	header_vb.add_child(stat_hbox)
+
+	var inner_margin = MarginContainer.new()
+	inner_margin.add_theme_constant_override("margin_left", 20)
+	inner_margin.add_theme_constant_override("margin_right", 20)
+	inner_margin.add_theme_constant_override("margin_top", 16)
+	inner_margin.add_theme_constant_override("margin_bottom", 16)
+	inner_margin.add_child(header_vb)
+	header_panel.add_child(inner_margin)
+	header_outer.add_child(header_panel)
+	main_vb.add_child(header_outer)
+
+	# ═══ BODY (padding, no gradient) ═══
+
+	var body_margin = MarginContainer.new()
+	body_margin.add_theme_constant_override("margin_left", 24)
+	body_margin.add_theme_constant_override("margin_right", 24)
+	body_margin.add_theme_constant_override("margin_top", 20)
+	body_margin.add_theme_constant_override("margin_bottom", 20)
+
+	var body_vb = VBoxContainer.new()
+	body_vb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	body_vb.add_theme_constant_override("separation", 20)
+
+	var div1 = ColorRect.new()
+	div1.custom_minimum_size = Vector2(0, 1)
+	div1.color = COL_BORDER
+	body_vb.add_child(div1)
+
+	var attr_label = Label.new()
+	attr_label.text = "ATRIBUTOS"
+	attr_label.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
+	attr_label.add_theme_font_size_override("font_size", 10)
+	attr_label.add_theme_color_override("font_color", COL_BRAND)
+	body_vb.add_child(attr_label)
+
+	var attr_vbox = VBoxContainer.new()
+	attr_vbox.add_theme_constant_override("separation", 12)
+	var attrs = d.get("attrs", {})
+	var attr_groups = [
+		{n = "FÍSICOS", c = COL_INFO, is_measure = false, keys = [
+			{k = "speed", l = "Velocidade"},
+			{k = "strength", l = "Força"},
+			{k = "stamina", l = "Resistência"},
+			{k = "jumping", l = "Salto"},
+		]},
+		{n = "MEDIDAS", c = COL_INFO, is_measure = true, keys = [
+			{k = "height_cm", l = "Altura (cm)"},
+			{k = "weight_kg", l = "Peso (kg)"},
+			{k = "wingspan_cm", l = "Envergadura (cm)"},
+		]},
+		{n = "FINALIZAÇÃO", c = COL_BRAND, is_measure = false, keys = [
+			{k = "three_pt", l = "3 Pontos"},
+			{k = "mid_range", l = "Média Distância"},
+			{k = "close_shot", l = "Curta Distância"},
+			{k = "dunk", l = "Enterrada"},
+			{k = "layup", l = "Bandeja"},
+			{k = "free_throw", l = "Lance Livre"},
+		]},
+		{n = "MANEJO / PASSE", c = COL_BRAND, is_measure = false, keys = [
+			{k = "ball_handle", l = "Manejo"},
+			{k = "passing", l = "Passe"},
+		]},
+		{n = "DEFESA / REBOTE", c = COL_SUCCESS, is_measure = false, keys = [
+			{k = "perimeter_def", l = "Defesa Perímetro"},
+			{k = "interior_def", l = "Defesa Interior"},
+			{k = "steal", l = "Roubo"},
+			{k = "block", l = "Toco"},
+			{k = "offensive_rebound", l = "Rebote Ofensivo"},
+			{k = "defensive_rebound", l = "Rebote Defensivo"},
+		]},
+		{n = "MENTAL", c = COL_WARNING, is_measure = false, keys = [
+			{k = "basketball_iq", l = "QI de Quadra"},
+			{k = "clutch", l = "Clutch"},
+			{k = "leadership", l = "Liderança"},
+			{k = "work_ethic", l = "Ética de Trabalho"},
+			{k = "potential", l = "Potencial"},
+		]},
+	]
+	for g in attr_groups:
+		var has_any = false
+		for a in g.keys:
+			if attrs.has(a.k):
+				has_any = true
+				break
+		if not has_any:
+			continue
+
+		var gl = Label.new()
+		gl.text = g.n
+		gl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
+		gl.add_theme_font_size_override("font_size", 9)
+		gl.add_theme_color_override("font_color", g.c)
+		gl.add_theme_constant_override("letter_spacing", 1)
+		attr_vbox.add_child(gl)
+
+		for a in g.keys:
+			var val = attrs.get(a.k)
+			if val == null:
+				continue
+			if g.is_measure:
+				attr_vbox.add_child(_make_attr_measure(a.l, val))
+			else:
+				attr_vbox.add_child(_make_attr_bar(a.l, val, g.c))
+	body_vb.add_child(attr_vbox)
+
+	var div2 = ColorRect.new()
+	div2.custom_minimum_size = Vector2(0, 1)
+	div2.color = COL_BORDER
+	body_vb.add_child(div2)
+
+	var lineup_hbox = HBoxContainer.new()
+	var lineup_label = Label.new()
+	lineup_label.text = "QUINTETO TITULAR"
+	lineup_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	lineup_label.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
+	lineup_label.add_theme_font_size_override("font_size", 10)
+	lineup_label.add_theme_color_override("font_color", COL_BRAND)
+	var edit_btn = PanelContainer.new()
+	var ebs = StyleBoxFlat.new()
+	ebs.bg_color = COL_SURFACE_ALT
+	ebs.corner_radius_top_left = 4
+	ebs.corner_radius_bottom_right = 4
+	ebs.corner_radius_bottom_left = 4
+	ebs.corner_radius_top_right = 4
+	edit_btn.add_theme_stylebox_override("panel", ebs)
+	var eb_margin = MarginContainer.new()
+	eb_margin.add_theme_constant_override("margin_left", 8)
+	eb_margin.add_theme_constant_override("margin_right", 8)
+	eb_margin.add_theme_constant_override("margin_top", 4)
+	eb_margin.add_theme_constant_override("margin_bottom", 4)
+	var eb_hbox = HBoxContainer.new()
+	eb_hbox.add_theme_constant_override("separation", 4)
+	var eb_icon = TextureRect.new()
+	eb_icon.texture = load("res://addons/at-icons/control/pencil.svg")
+	eb_icon.custom_minimum_size = Vector2(10, 10)
+	eb_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	eb_icon.modulate = COL_TEXT_MUTED
+	var eb_text = Label.new()
+	eb_text.text = "EDITAR"
+	eb_text.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
+	eb_text.add_theme_font_size_override("font_size", 9)
+	eb_text.add_theme_color_override("font_color", COL_TEXT_MUTED)
+	eb_hbox.add_child(eb_icon)
+	eb_hbox.add_child(eb_text)
+	eb_margin.add_child(eb_hbox)
+	edit_btn.add_child(eb_margin)
+
+	var edit_click = Button.new()
+	edit_click.flat = true
+	edit_click.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	edit_click.mouse_filter = Control.MOUSE_FILTER_STOP
+	edit_click.pressed.connect(func():
+		edit_rotation_requested.emit()
+	)
+	edit_btn.add_child(edit_click)
+
+	lineup_hbox.add_child(lineup_label)
+	lineup_hbox.add_child(edit_btn)
+	body_vb.add_child(lineup_hbox)
+
+	if _edit_mode:
+		var banner = _EDIT_BANNER.instantiate()
+		banner.cancel_pressed.connect(func():
+			set_edit_mode(false)
+		)
+		banner.save_pressed.connect(func():
+			save_rotation_requested.emit()
+			set_edit_mode(false)
+		)
+		body_vb.add_child(banner)
+
+	body_margin.add_child(body_vb)
+	main_vb.add_child(body_margin)
+
+	content.add_child(main_vb)
+
+func _make_stat_box(title: String, val: String) -> PanelContainer:
+	var p = PanelContainer.new()
+	p.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var s = StyleBoxFlat.new()
+	s.bg_color = COL_SURFACE_ALT
+	s.corner_radius_top_left = 8
+	s.corner_radius_bottom_right = 8
+	s.corner_radius_bottom_left = 8
+	s.corner_radius_top_right = 8
 	p.add_theme_stylebox_override("panel", s)
-	var v = VBoxContainer.new(); v.alignment = BoxContainer.ALIGNMENT_CENTER
-	var m = MarginContainer.new(); m.add_theme_constant_override("margin_top", 12); m.add_theme_constant_override("margin_bottom", 12)
-	var t = Label.new(); t.text = title; t.add_theme_font_size_override("font_size", 9); t.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); t.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED); t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	var val_lbl = Label.new(); val_lbl.text = val; val_lbl.add_theme_font_size_override("font_size", 16); val_lbl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BLACK); val_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	v.add_child(t); v.add_child(val_lbl); m.add_child(v); p.add_child(m); parent.add_child(p)
 
-func _add_attr_bar(parent: Node, title: String, val: int, color: Color):
+	var v = VBoxContainer.new()
+	v.alignment = BoxContainer.ALIGNMENT_CENTER
+	var m = MarginContainer.new()
+	m.add_theme_constant_override("margin_top", 10)
+	m.add_theme_constant_override("margin_bottom", 10)
+
+	var t = Label.new()
+	t.text = title
+	t.add_theme_font_size_override("font_size", 9)
+	t.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
+	t.add_theme_color_override("font_color", COL_TEXT_MUTED)
+	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+
+	var vl = Label.new()
+	vl.text = val
+	vl.add_theme_font_size_override("font_size", 16)
+	vl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BLACK)
+	vl.add_theme_color_override("font_color", COL_TEXT)
+	vl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+
+	v.add_child(t)
+	v.add_child(vl)
+	m.add_child(v)
+	p.add_child(m)
+	return p
+
+func _make_attr_bar(title: String, val: int, color: Color) -> HBoxContainer:
 	var h = HBoxContainer.new()
-	var tl = Label.new(); tl.text = title; tl.custom_minimum_size = Vector2(120, 0); tl.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED); tl.add_theme_font_size_override("font_size", 12)
-	var ebox = VBoxContainer.new(); ebox.size_flags_horizontal = Control.SIZE_EXPAND_FILL; ebox.alignment = BoxContainer.ALIGNMENT_CENTER
-	var ebar = ColorRect.new(); ebar.custom_minimum_size = Vector2(0, 6); ebar.color = ThemeConfig.BG_ELEVATED
-	var w = (val / 100.0) * 160 # approximate for visual width
-	
-	var efill = TextureRect.new()
-	efill.custom_minimum_size = Vector2(w, 6)
+	h.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+	var tl = Label.new()
+	tl.text = title
+	tl.custom_minimum_size = Vector2(100, 0)
+	tl.add_theme_color_override("font_color", COL_TEXT_MUTED)
+	tl.add_theme_font_size_override("font_size", 11)
+
+	var bar_container = VBoxContainer.new()
+	bar_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	bar_container.alignment = BoxContainer.ALIGNMENT_CENTER
+
+	var track = ColorRect.new()
+	track.custom_minimum_size = Vector2(0, 6)
+	track.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	track.color = COL_SURFACE_ALT
+
+	var fill_w = clamp(val, 0, 100) / 100.0
+	var fill = TextureRect.new()
+	fill.custom_minimum_size = Vector2(fill_w * 160, 6)
+	fill.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	fill.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	var g2d = GradientTexture2D.new()
 	var g = Gradient.new()
-	g.set_color(0, Color(color.r, color.g, color.b, 0.2))
+	g.set_color(0, Color(color.r, color.g, color.b, 0.15))
 	g.set_color(1, color)
 	g2d.gradient = g
 	g2d.fill_from = Vector2(0, 0)
 	g2d.fill_to = Vector2(1, 0)
-	efill.texture = g2d
-	efill.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	
-	ebar.add_child(efill); ebox.add_child(ebar)
-	var vl = Label.new(); vl.text = str(val); vl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); vl.add_theme_font_size_override("font_size", 14); vl.add_theme_color_override("font_color", color); vl.custom_minimum_size = Vector2(32, 0); vl.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	h.add_child(tl); h.add_child(ebox); h.add_child(vl)
-	parent.add_child(h)
+	fill.texture = g2d
 
-func _add_court_node(parent: Node, init: String, color: Color, pos: Vector2):
-	var av = PanelContainer.new(); av.custom_minimum_size = Vector2(32, 32); av.position = pos - Vector2(16, 16)
-	var as_st = StyleBoxFlat.new(); as_st.bg_color = color; as_st.corner_radius_top_left=16; as_st.corner_radius_bottom_right=16; as_st.corner_radius_top_right=16; as_st.corner_radius_bottom_left=16; av.add_theme_stylebox_override("panel", as_st)
-	var al = Label.new(); al.text = init; al.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); al.add_theme_font_size_override("font_size", 10); al.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; al.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	av.add_child(al); parent.add_child(av)
+	var bar_hbox = HBoxContainer.new()
+	bar_hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	bar_hbox.add_child(fill)
+
+	track.add_child(bar_hbox)
+	bar_container.add_child(track)
+
+	var vl = Label.new()
+	vl.text = str(val)
+	vl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
+	vl.add_theme_font_size_override("font_size", 13)
+	vl.add_theme_color_override("font_color", color)
+	vl.custom_minimum_size = Vector2(28, 0)
+	vl.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+
+	h.add_child(tl)
+	h.add_child(bar_container)
+	h.add_child(vl)
+	return h
+
+func _make_attr_measure(title: String, val) -> HBoxContainer:
+	var h = HBoxContainer.new()
+	h.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+	var tl = Label.new()
+	tl.text = title
+	tl.custom_minimum_size = Vector2(100, 0)
+	tl.add_theme_color_override("font_color", COL_TEXT_MUTED)
+	tl.add_theme_font_size_override("font_size", 11)
+
+	var vl = Label.new()
+	vl.text = str(val)
+	vl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	vl.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	vl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
+	vl.add_theme_font_size_override("font_size", 13)
+	vl.add_theme_color_override("font_color", COL_TEXT)
+
+	h.add_child(tl)
+	h.add_child(vl)
+	return h
+
+# ─── Popover Handlers ─────────────────────────────────────────────────────────
+
+func _on_quick_action_requested(player_data: Dictionary, global_pos: Vector2):
+	if _quick_actions_popover:
+		_quick_actions_popover.queue_free()
+		_quick_actions_popover = null
+
+	var popover = _QA_POPOVER.instantiate()
+	popover.player_data = player_data
+	popover.global_position = global_pos
+	popover.action_selected.connect(func(action_id: String):
+		print("Quick action: ", action_id)
+		popover.queue_free()
+		_quick_actions_popover = null
+	)
+	popover.closed.connect(func():
+		popover.queue_free()
+		_quick_actions_popover = null
+	)
+	add_child(popover)
+	_quick_actions_popover = popover
+
+func _on_edit_rotation_requested():
+	set_edit_mode(true)
+
+func _on_cancel_rotation_requested():
+	set_edit_mode(false)
+
+func _on_save_rotation_requested():
+	print("Rotation saved")
+	set_edit_mode(false)
+
+# ─── Utilities ───────────────────────────────────────────────────────────────
+
+func _load_roster():
+	_player_data_cache.clear()
+	if GameManager.league.is_empty():
+		# Demo data
+		_player_data_cache = [
+			{pos = "PG", name = "Marcus Silva", nickname = "The Maestro", age = 28, ovr = 92, energy = 88, contract = "2 anos", salary = "R$ 2.4M", status = "ATIVO", number = 7, height = "1.91m", attrs = {speed = 82, strength = 68, stamina = 90, jumping = 78, height_cm = 191, weight_kg = 88, wingspan_cm = 198, three_pt = 94, mid_range = 92, close_shot = 88, dunk = 60, layup = 90, free_throw = 96, ball_handle = 96, passing = 94, offensive_rebound = 35, perimeter_def = 78, interior_def = 40, steal = 72, block = 30, defensive_rebound = 55, basketball_iq = 92, clutch = 88, leadership = 95, work_ethic = 90, potential = 85}},
+			{pos = "SG", name = "João Pedro", nickname = "Sniper", age = 26, ovr = 88, energy = 76, contract = "3 anos", salary = "R$ 1.8M", status = "ATIVO", number = 11, height = "1.96m", attrs = {speed = 80, strength = 65, stamina = 82, jumping = 84, height_cm = 196, weight_kg = 92, wingspan_cm = 205, three_pt = 95, mid_range = 88, close_shot = 82, dunk = 78, layup = 85, free_throw = 90, ball_handle = 84, passing = 78, offensive_rebound = 40, perimeter_def = 72, interior_def = 45, steal = 68, block = 35, defensive_rebound = 50, basketball_iq = 85, clutch = 82, leadership = 70, work_ethic = 88, potential = 82}},
+			{pos = "SF", name = "Carlos Mendez", nickname = "El Capitán", age = 31, ovr = 86, energy = 65, contract = "1 ano", salary = "R$ 1.5M", status = "ATIVO", number = 23, height = "2.01m", attrs = {speed = 76, strength = 78, stamina = 80, jumping = 82, height_cm = 201, weight_kg = 100, wingspan_cm = 212, three_pt = 82, mid_range = 80, close_shot = 85, dunk = 84, layup = 82, free_throw = 78, ball_handle = 78, passing = 74, offensive_rebound = 70, perimeter_def = 88, interior_def = 72, steal = 80, block = 65, defensive_rebound = 78, basketball_iq = 86, clutch = 90, leadership = 92, work_ethic = 85, potential = 75}},
+			{pos = "PF", name = "Anderson Costa", nickname = "The Beast", age = 29, ovr = 85, energy = 45, contract = "2 anos", salary = "R$ 1.3M", status = "CANSADO", number = 34, height = "2.06m", attrs = {speed = 68, strength = 92, stamina = 70, jumping = 88, height_cm = 206, weight_kg = 112, wingspan_cm = 218, three_pt = 60, mid_range = 70, close_shot = 88, dunk = 92, layup = 78, free_throw = 65, ball_handle = 60, passing = 52, offensive_rebound = 85, perimeter_def = 65, interior_def = 88, steal = 45, block = 82, defensive_rebound = 90, basketball_iq = 78, clutch = 72, leadership = 65, work_ethic = 80, potential = 78}},
+			{pos = "C", name = "Tyrone Walker", nickname = "The Wall", age = 32, ovr = 83, energy = 30, contract = "0.5 ano", salary = "R$ 1.1M", status = "LESIONADO", number = 44, height = "2.13m", attrs = {speed = 45, strength = 95, stamina = 65, jumping = 60, height_cm = 213, weight_kg = 125, wingspan_cm = 228, three_pt = 30, mid_range = 55, close_shot = 90, dunk = 85, layup = 75, free_throw = 60, ball_handle = 35, passing = 40, offensive_rebound = 80, perimeter_def = 35, interior_def = 94, steal = 25, block = 95, defensive_rebound = 92, basketball_iq = 80, clutch = 70, leadership = 78, work_ethic = 75, potential = 70}},
+			{pos = "PG", name = "Lucas Almeida", nickname = "Rookie", age = 21, ovr = 78, energy = 95, contract = "4 anos", salary = "R$ 480K", status = "ATIVO", number = 2, height = "1.85m", attrs = {speed = 88, strength = 55, stamina = 85, jumping = 80, height_cm = 185, weight_kg = 80, wingspan_cm = 195, three_pt = 80, mid_range = 76, close_shot = 72, dunk = 55, layup = 82, free_throw = 78, ball_handle = 85, passing = 82, offensive_rebound = 30, perimeter_def = 68, interior_def = 35, steal = 72, block = 20, defensive_rebound = 45, basketball_iq = 74, clutch = 65, leadership = 55, work_ethic = 92, potential = 92}},
+			{pos = "SG", name = "Diego Ramos", nickname = "Flash", age = 24, ovr = 81, energy = 82, contract = "2 anos", salary = "R$ 720K", status = "ATIVO", number = 5, height = "1.93m", attrs = {speed = 92, strength = 62, stamina = 78, jumping = 90, height_cm = 193, weight_kg = 86, wingspan_cm = 200, three_pt = 86, mid_range = 82, close_shot = 78, dunk = 80, layup = 84, free_throw = 82, ball_handle = 80, passing = 72, offensive_rebound = 35, perimeter_def = 70, interior_def = 40, steal = 74, block = 30, defensive_rebound = 48, basketball_iq = 76, clutch = 78, leadership = 60, work_ethic = 85, potential = 86}},
+			{pos = "SF", name = "Rafael Souza", nickname = "Iron Man", age = 27, ovr = 79, energy = 70, contract = "3 anos", salary = "R$ 650K", status = "ATIVO", number = 8, height = "1.98m", attrs = {speed = 74, strength = 76, stamina = 88, jumping = 76, height_cm = 198, weight_kg = 98, wingspan_cm = 208, three_pt = 76, mid_range = 78, close_shot = 80, dunk = 78, layup = 76, free_throw = 82, ball_handle = 72, passing = 68, offensive_rebound = 72, perimeter_def = 82, interior_def = 74, steal = 76, block = 68, defensive_rebound = 76, basketball_iq = 78, clutch = 80, leadership = 85, work_ethic = 90, potential = 80}},
+			{pos = "PF", name = "Bruno Oliveira", nickname = "Hammer", age = 25, ovr = 76, energy = 88, contract = "1 ano", salary = "R$ 540K", status = "ATIVO", number = 15, height = "2.03m", attrs = {speed = 66, strength = 86, stamina = 76, jumping = 82, height_cm = 203, weight_kg = 106, wingspan_cm = 215, three_pt = 60, mid_range = 72, close_shot = 84, dunk = 88, layup = 74, free_throw = 70, ball_handle = 58, passing = 50, offensive_rebound = 82, perimeter_def = 62, interior_def = 84, steal = 42, block = 76, defensive_rebound = 86, basketball_iq = 72, clutch = 68, leadership = 62, work_ethic = 82, potential = 76}},
+			{pos = "C", name = "Pedro Henrique", nickname = "Big Pete", age = 23, ovr = 74, energy = 92, contract = "4 anos", salary = "R$ 420K", status = "ATIVO", number = 50, height = "2.10m", attrs = {speed = 52, strength = 88, stamina = 72, jumping = 65, height_cm = 210, weight_kg = 118, wingspan_cm = 222, three_pt = 35, mid_range = 60, close_shot = 86, dunk = 82, layup = 72, free_throw = 68, ball_handle = 38, passing = 44, offensive_rebound = 78, perimeter_def = 38, interior_def = 88, steal = 28, block = 88, defensive_rebound = 88, basketball_iq = 74, clutch = 60, leadership = 50, work_ethic = 88, potential = 84}},
+		]
+	else:
+		var team = GameManager.get_user_team()
+		if team and team.has("players"):
+			for p in team.players:
+				_player_data_cache.append({
+					pos = p.get("position", p.get("pos", "PG")),
+					name = p.get("first_name", "") + " " + p.get("last_name", "Jogador"),
+					nickname = p.get("nickname", ""),
+					age = p.get("age", 20),
+					ovr = p.get("overall", p.get("ovr", 50)),
+					energy = p.get("energy", 100),
+					contract = str(p.get("contract_year", p.get("contract_years", 0))) + " anos",
+					salary = _format_salary(p.get("salary", 0)),
+					status = p.get("status", "ATIVO"),
+					number = p.get("number", 0),
+					height = p.get("height", "1.90m"),
+					attrs = p.get("attributes", p.get("attrs", {})),
+				})
+
+func _format_salary(val) -> String:
+	if typeof(val) == TYPE_STRING:
+		return val
+	var v = float(val) if val else 0.0
+	if v >= 1000000:
+		return "R$ " + str(round(v / 100000) / 10.0) + "M"
+	elif v >= 1000:
+		return "R$ " + str(round(v / 1000)) + "K"
+	return "R$ " + str(v)
+
+func _get_filtered_players() -> Array:
+	if _active_filter == "TODOS":
+		return _player_data_cache
+	var result = []
+	for p in _player_data_cache:
+		var status = p.get("status", "ATIVO")
+		var age = p.get("age", 20)
+		match _active_filter:
+			"TITULARES":
+				if p.get("pos", "") in ["PG", "SG", "SF", "PF", "C"] and _player_data_cache.find(p) < 5:
+					result.append(p)
+			"ROTAÇÃO":
+				if _player_data_cache.find(p) >= 5 and _player_data_cache.find(p) < 10:
+					result.append(p)
+			"LESIONADOS":
+				if status == "LESIONADO":
+					result.append(p)
+			"JOVENS":
+				if age <= 23:
+					result.append(p)
+	return result
+
+func _compute_filter_counts() -> Dictionary:
+	return {
+		"TODOS": _player_data_cache.size(),
+		"TITULARES": min(5, _player_data_cache.size()),
+		"ROTAÇÃO": min(5, max(0, _player_data_cache.size() - 5)),
+		"LESIONADOS": _player_data_cache.filter(func(p): return p.get("status", "ATIVO") == "LESIONADO").size(),
+		"JOVENS": _player_data_cache.filter(func(p): return p.get("age", 20) <= 23).size(),
+	}
+
+func _energy_color(e: int) -> Color:
+	if e >= 70:
+		return COL_SUCCESS
+	elif e >= 40:
+		return COL_WARNING
+	return COL_DANGER
+
+func _ovr_color(ovr: int) -> Color:
+	if ovr >= 90:
+		return COL_BRAND
+	elif ovr >= 85:
+		return COL_SUCCESS
+	elif ovr >= 80:
+		return COL_INFO
+	elif ovr >= 75:
+		return COL_WARNING
+	return COL_TEXT_MUTED
+
+func _on_filter_changed(filter: String):
+	_active_filter = filter
+	for f in _filter_btns:
+		var btn = _filter_btns[f]
+		var counts = _compute_filter_counts()
+		var count = counts.get(f, 0)
+		var is_active = f == _active_filter
+
+		var s = StyleBoxFlat.new()
+		if is_active:
+			s.bg_color = COL_BRAND
+			btn.add_theme_color_override("font_color", COL_TEXT)
+		else:
+			s.bg_color = Color(1, 1, 1, 0.05)
+			btn.add_theme_color_override("font_color", COL_TEXT_MUTED)
+		s.corner_radius_top_left = 16
+		s.corner_radius_top_right = 16
+		s.corner_radius_bottom_left = 16
+		s.corner_radius_bottom_right = 16
+		s.content_margin_left = 16
+		s.content_margin_right = 16
+		s.content_margin_top = 8
+		s.content_margin_bottom = 8
+		btn.add_theme_stylebox_override("normal", s)
+		btn.add_theme_stylebox_override("hover", s)
+		btn.add_theme_stylebox_override("pressed", s)
+		btn.add_theme_stylebox_override("focus", s)
+
+		var count_str = str(count)
+		var name_part = f
+		btn.text = name_part + "  " + count_str
+
+	_refresh_all()
+
+func _refresh_all():
+	_refresh_player_rows()
+	_refresh_detail()
+
+func set_edit_mode(enabled: bool):
+	_edit_mode = enabled
+	_refresh_all()
+
+func get_filtered_count() -> int:
+	return _get_filtered_players().size()
