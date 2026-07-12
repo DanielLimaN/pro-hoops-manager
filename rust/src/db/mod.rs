@@ -8,6 +8,61 @@ pub fn init_db(path: &str) -> Result<Connection> {
     Ok(conn)
 }
 
+/// Save GameParams to the `settings` table as a JSON blob.
+pub fn save_params(conn: &Connection, params: &crate::engine::params::GameParams) -> Result<()> {
+    let json = serde_json::to_string(params).unwrap_or_default();
+    conn.execute(
+        "INSERT OR REPLACE INTO settings (key, value) VALUES ('game_params', ?1)",
+        [&json],
+    )?;
+    Ok(())
+}
+
+/// Load GameParams from the `settings` table. Returns `None` if not found.
+pub fn load_params(conn: &Connection) -> Result<Option<crate::engine::params::GameParams>> {
+    let mut stmt = conn.prepare("SELECT value FROM settings WHERE key = 'game_params'")?;
+    let mut rows = stmt.query([])?;
+    if let Some(row) = rows.next()? {
+        let json: String = row.get(0)?;
+        match serde_json::from_str(&json) {
+            Ok(params) => Ok(Some(params)),
+            Err(e) => {
+                eprintln!("[DB] Failed to deserialize game_params: {}", e);
+                Ok(None)
+            }
+        }
+    } else {
+        Ok(None)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::engine::params::GameParams;
+
+    #[test]
+    fn test_save_load_params_roundtrip() {
+        let conn = Connection::open_in_memory().unwrap();
+        schema::create_tables(&conn).unwrap();
+
+        let params = GameParams::default();
+        save_params(&conn, &params).unwrap();
+
+        let loaded = load_params(&conn).unwrap().expect("params should exist");
+        assert_eq!(loaded.salary_cap, params.salary_cap);
+        assert_eq!(loaded.training_boost_med, params.training_boost_med);
+    }
+
+    #[test]
+    fn test_load_params_none_when_missing() {
+        let conn = Connection::open_in_memory().unwrap();
+        schema::create_tables(&conn).unwrap();
+        let result = load_params(&conn).unwrap();
+        assert!(result.is_none());
+    }
+}
+
 pub fn save_game_state(conn: &Connection, state: &crate::state::GameState) -> Result<()> {
     let json = serde_json::to_string(state).unwrap_or_default();
     conn.execute("INSERT OR REPLACE INTO game_state (id, data) VALUES (1, ?1)", [&json])?;
@@ -82,6 +137,29 @@ pub fn save_game_state(conn: &Connection, state: &crate::state::GameState) -> Re
             params![msg.id as i64, msg.coach_id as i64, msg.sender_name, msg.sender_role, msg.subject, msg.body, read_int, msg.date_received, act_int])?;
     }
 
+    // Also persist GameParams to the settings table
+    save_params(conn, &state.params)?;
+
+    // Persist transactions for all teams
+    if let Some(ref league) = state.league {
+        for team in &league.teams {
+            for txn in &team.transactions {
+                conn.execute(
+                    "INSERT OR REPLACE INTO transactions (id, team_id, amount, category, description, week, season)
+                     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)",
+                    params![txn.id as i64, txn.team_id as i64, txn.amount, txn.category, txn.description, txn.week as i64, txn.season as i64],
+                )?;
+            }
+            for sponsor in &team.sponsors {
+                conn.execute(
+                    "INSERT OR REPLACE INTO sponsors (id, team_id, name, amount_per_year, years_remaining, total_years, category)
+                     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)",
+                    params![sponsor.id as i64, sponsor.team_id as i64, sponsor.name, sponsor.amount_per_year, sponsor.years_remaining as i64, sponsor.total_years as i64, sponsor.category],
+                )?;
+            }
+        }
+    }
+
     Ok(())
 }
 
@@ -91,9 +169,11 @@ pub fn load_game_state(conn: &Connection) -> Result<Option<crate::state::GameSta
     if let Some(row) = rows.next()? {
         let json: String = row.get(0)?;
         let mut state: crate::state::GameState = serde_json::from_str(&json).unwrap_or_default();
-        
-        // We could load relational data here and overwrite `state.coach`, etc.
-        // For now, they are perfectly synced inside the JSON as well, so we just verify they exist.
+
+        // Load GameParams from settings table (overrides JSON-stored params)
+        if let Ok(Some(params)) = load_params(conn) {
+            state.params = params;
+        }
         
         Ok(Some(state))
     } else {

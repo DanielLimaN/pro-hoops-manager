@@ -1,6 +1,9 @@
 pub mod types;
 pub mod manager;
 pub mod names;
+pub mod params;
+pub mod finance;
+pub mod systems;
 pub mod player;
 pub mod team;
 pub mod clock;

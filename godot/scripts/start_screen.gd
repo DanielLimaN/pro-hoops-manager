@@ -1,6 +1,8 @@
 extends Control
 
 func _ready():
+	if GameManager.has_save() and GameManager.league.is_empty():
+		GameManager.load_career()
 	_build_background()
 	_build_top_bar()
 	_build_center_area()
@@ -222,14 +224,17 @@ func _build_center_area():
 	hero.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	main_hbox.add_child(hero)
 
-	var welcome = _make_panel(_make_style(Color(0x0B / 255.0, 0x05 / 255.0, 0x14 / 255.0, 0.53), Color(0xA7 / 255.0, 0x8B / 255.0, 0xFA / 255.0, 0.25), 4))
-	var welcome_hbox = _make_hbox(8, BoxContainer.ALIGNMENT_CENTER)
+	var welcome_style = _make_style(Color(0x0B / 255.0, 0x05 / 255.0, 0x14 / 255.0, 0.53), Color(0xA7 / 255.0, 0x8B / 255.0, 0xFA / 255.0, 0.25), 4)
+	welcome_style.content_margin_left = 12
+	welcome_style.content_margin_top = 8
+	welcome_style.content_margin_bottom = 8
+	var welcome = _make_panel(welcome_style)
+	var welcome_hbox = _make_hbox(8, BoxContainer.ALIGNMENT_BEGIN)
 	var wicon = _make_icon("res://addons/at-icons/control/stars.svg", 11, Color(0xFB / 255.0, 0xBF / 255.0, 0x24 / 255.0))
 	welcome_hbox.add_child(wicon)
 	var wlabel = _make_label("BEM-VINDO DE VOLTA, TREINADOR", ThemeConfig.FONT_INTER, 10, Color(0xFB / 255.0, 0xBF / 255.0, 0x24 / 255.0), {"letter_spacing": 2})
 	welcome_hbox.add_child(wlabel)
 	welcome.add_child(welcome_hbox)
-	welcome.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	hero.add_child(welcome)
 
 	var big_title = _make_label("Construa sua dinastia.", ThemeConfig.FONT_INTER_BLACK, 56, Color.WHITE, {"letter_spacing": -1, "line_spacing": -2})
@@ -244,13 +249,23 @@ func _build_center_area():
 	hero.add_child(subtitle)
 
 	var stats_hbox = _make_hbox(24)
-	var stat_defs = [
-		["TEMPORADAS", "3", Color(0xA7 / 255.0, 0x8B / 255.0, 0xFA / 255.0)],
-		["TÍTULOS", "1", Color(0xFB / 255.0, 0xBF / 255.0, 0x24 / 255.0)],
-		["HORAS", "127", Color(0x60 / 255.0, 0xA5 / 255.0, 0xFA / 255.0)],
-		["TROFÉUS", "8/24", Color(0x10 / 255.0, 0xB9 / 255.0, 0x81 / 255.0)],
+	var has_league = not GameManager.league.is_empty()
+	var season = GameManager.league.get("season", 0)
+	var team = GameManager.get_user_team() if has_league else {}
+	var team_wins = team.get("wins", 0) if has_league else 0
+	var team_losses = team.get("losses", 0) if has_league else 0
+	var team_id = team.get("id", 0) if has_league else 0
+	var season_label = str(max(1, season - 2024)) if has_league else "-"
+	var games_label = str(team_wins + team_losses) if has_league else "-"
+	var wins_label = str(team_wins) if has_league else "-"
+	var rank_label = _get_team_rank(team_id) if has_league else "-"
+	var hero_stat_defs = [
+		["TEMPORADAS", season_label, Color(0xA7 / 255.0, 0x8B / 255.0, 0xFA / 255.0)],
+		["JOGOS", games_label, Color(0xFB / 255.0, 0xBF / 255.0, 0x24 / 255.0)],
+		["VITÓRIAS", wins_label, Color(0x60 / 255.0, 0xA5 / 255.0, 0xFA / 255.0)],
+		["POSIÇÃO", rank_label, Color(0x10 / 255.0, 0xB9 / 255.0, 0x81 / 255.0)],
 	]
-	for sd in stat_defs:
+	for sd in hero_stat_defs:
 		var svbox = _make_vbox(2)
 		var slabel = _make_label(sd[0], ThemeConfig.FONT_INTER, 9, Color(0x6B / 255.0, 0x5B / 255.0, 0x95 / 255.0), {"letter_spacing": 1.5})
 		svbox.add_child(slabel)
@@ -278,12 +293,46 @@ func _build_center_area():
 	center.add_child(main_hbox)
 
 func _build_continue_card() -> PanelContainer:
+	var team = GameManager.get_user_team()
+	var coach = GameManager.get_coach()
+	if team.is_empty() or coach.is_empty():
+		return _build_continue_card_static()
+
+	var save_time = _get_save_time_string()
+	var abbr = team.get("abbreviation", "PH")
+	var badge_initials = abbr.substr(0, 2)
+	var city = team.get("city", "")
+	var name = team.get("name", "")
+	var team_full_name = city + " " + name
+	var coach_name_str = coach.get("name", "Treinador")
+	var wins = team.get("wins", 0)
+	var losses = team.get("losses", 0)
+	var record_str = str(wins) + "–" + str(losses)
+	var rank_str = _get_team_rank(team.get("id", 0))
+	var budget_str = _get_team_budget(team)
+	var next_info = _get_next_match_info()
+	var next_opponent = next_info.get("opponent", "")
+	var next_is_home = next_info.get("is_home", true)
+	var next_comp = next_info.get("competition", "LIGA")
+	var next_text = "Próximo: "
+
+	if next_opponent.is_empty():
+		next_text = "Nenhum jogo agendado"
+	else:
+		next_text += next_opponent + " (" + ("C" if next_is_home else "F") + ")"
+
+	var record_color = Color(0x10 / 255.0, 0xB9 / 255.0, 0x81 / 255.0)
+	var rank_color = Color(0x60 / 255.0, 0xA5 / 255.0, 0xFA / 255.0)
+	var budget_color = Color(0xFB / 255.0, 0xBF / 255.0, 0x24 / 255.0)
+
 	var cc_bg = Color(0x2A / 255.0, 0x1A / 255.0, 0x4E / 255.0, 0.80)
 	var cc_border = Color(0xA7 / 255.0, 0x8B / 255.0, 0xFA / 255.0)
 
 	var card_style = _make_style(cc_bg, cc_border, 12)
 	card_style.shadow_color = Color(0xA7 / 255.0, 0x8B / 255.0, 0xFA / 255.0, 0.13)
 	card_style.shadow_size = 32
+	card_style.content_margin_left = 20
+	card_style.content_margin_right = 20
 
 	var card = _make_panel(card_style)
 	var card_vbox = _make_vbox(0)
@@ -298,7 +347,7 @@ func _build_continue_card() -> PanelContainer:
 	logo_small_container.add_child(logo_small)
 	header.add_child(logo_small_container)
 
-	var header_lbl = _make_label("SALVO HÁ 2 MIN", ThemeConfig.FONT_INTER, 9, Color(0x6B / 255.0, 0x5B / 255.0, 0x95 / 255.0), {"letter_spacing": 1})
+	var header_lbl = _make_label(save_time, ThemeConfig.FONT_INTER, 9, Color(0x6B / 255.0, 0x5B / 255.0, 0x95 / 255.0), {"letter_spacing": 1})
 	header.add_child(header_lbl)
 
 	var header_spacer = Control.new()
@@ -310,7 +359,7 @@ func _build_continue_card() -> PanelContainer:
 	header_line.custom_minimum_size = Vector2(0, 1)
 	header_line.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
-	var header_margin = _make_margin(12, 16)
+	var header_margin = _make_margin(0, 16, 0, 8)
 	header_margin.add_child(_make_vbox(0))
 	header_margin.get_child(0).add_child(header)
 	header_margin.get_child(0).add_child(header_line)
@@ -321,7 +370,7 @@ func _build_continue_card() -> PanelContainer:
 	team_badge_style.shadow_color = Color(0xA7 / 255.0, 0x8B / 255.0, 0xFA / 255.0, 0.4)
 	team_badge_style.shadow_size = 20
 	var badge = _make_panel(team_badge_style, Vector2(72, 72))
-	var badge_lbl = _make_label("PH", ThemeConfig.FONT_INTER_BLACK, 24, Color.WHITE)
+	var badge_lbl = _make_label(badge_initials, ThemeConfig.FONT_INTER_BLACK, 24, Color.WHITE)
 	badge_lbl.set_anchors_preset(Control.PRESET_CENTER)
 	badge.add_child(badge_lbl)
 	body.add_child(badge)
@@ -329,10 +378,10 @@ func _build_continue_card() -> PanelContainer:
 	var info_vbox = _make_vbox(4)
 	info_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	info_vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	var team_name = _make_label("Pro Hoops", ThemeConfig.FONT_INTER_BOLD, 18, Color.WHITE)
+	var team_name = _make_label(team_full_name, ThemeConfig.FONT_INTER_BOLD, 18, Color.WHITE)
 	info_vbox.add_child(team_name)
-	var coach_name = _make_label("Daniel Lima", ThemeConfig.FONT_INTER, 12, Color(0x94 / 255.0, 0xA3 / 255.0, 0xB8 / 255.0))
-	info_vbox.add_child(coach_name)
+	var coach_lbl = _make_label(coach_name_str, ThemeConfig.FONT_INTER, 12, Color(0x94 / 255.0, 0xA3 / 255.0, 0xB8 / 255.0))
+	info_vbox.add_child(coach_lbl)
 	body.add_child(info_vbox)
 
 	var body_margin = _make_margin(0, 18, 0, 20)
@@ -340,35 +389,45 @@ func _build_continue_card() -> PanelContainer:
 	card_vbox.add_child(body_margin)
 
 	var stats_row_style = _make_style(Color(0.04, 0.02, 0.08, 0.69))
+	stats_row_style.content_margin_left = 12
+	stats_row_style.content_margin_right = 12
+	stats_row_style.content_margin_top = 8
+	stats_row_style.content_margin_bottom = 8
 	var stats_panel = _make_panel(stats_row_style)
 	var stats_hbox = _make_hbox(16)
-	var sdefs = [
-		["RECORD", "12–4", Color(0x10 / 255.0, 0xB9 / 255.0, 0x81 / 255.0)],
-		["POSIÇÃO", "2º LUGAR", Color(0x60 / 255.0, 0xA5 / 255.0, 0xFA / 255.0)],
-		["ORÇAMENTO", "R$ 12.4M", Color(0xFB / 255.0, 0xBF / 255.0, 0x24 / 255.0)],
+	var stat_defs = [
+		["RECORD", record_str, record_color],
+		["POSIÇÃO", rank_str, rank_color],
+		["ORÇAMENTO", budget_str, budget_color],
 	]
-	for sd in sdefs:
+	for sd in stat_defs:
 		var svbox = _make_vbox(2)
 		svbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		var slabel = _make_label(sd[0], ThemeConfig.FONT_INTER, 9, Color(0x6B / 255.0, 0x5B / 255.0, 0x95 / 255.0), {"letter_spacing": 1.5})
 		svbox.add_child(slabel)
 		var vlabel = _make_label(sd[1], ThemeConfig.FONT_INTER_BLACK, 18, sd[2])
 		svbox.add_child(vlabel)
-		stats_hbox.add_child(svbox)
+		var svbox_margin = _make_margin(4, 2, 4, 2)
+		svbox_margin.add_child(svbox)
+		stats_hbox.add_child(svbox_margin)
 	stats_panel.add_child(stats_hbox)
-	card_vbox.add_child(stats_panel)
+	var stats_margin = _make_margin(0, 12, 0, 12)
+	stats_margin.add_child(stats_panel)
+	card_vbox.add_child(stats_margin)
 
 	var next_row = _make_hbox(8, BoxContainer.ALIGNMENT_CENTER)
 	var nicon = _make_icon("res://addons/at-icons/control/calendar.svg", 14, Color(0xA7 / 255.0, 0x8B / 255.0, 0xFA / 255.0))
 	next_row.add_child(nicon)
-	var next_lbl = _make_label("Próximo: Cangurus RJ (C) · 3 dias", ThemeConfig.FONT_INTER, 11, Color(0x94 / 255.0, 0xA3 / 255.0, 0xB8 / 255.0))
+	var next_lbl = _make_label(next_text, ThemeConfig.FONT_INTER, 11, Color(0x94 / 255.0, 0xA3 / 255.0, 0xB8 / 255.0))
 	next_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	next_row.add_child(next_lbl)
 	var comp_badge = _make_panel(_make_style(Color(0x23 / 255.0, 0x52 / 255.0, 0x86 / 255.0, 0.13), Color(0x60 / 255.0, 0xA5 / 255.0, 0xFA / 255.0, 0.38), 4))
-	var comp_lbl = _make_label("LIGA", ThemeConfig.FONT_INTER, 9, Color(0x60 / 255.0, 0xA5 / 255.0, 0xFA / 255.0))
+	var comp_lbl = _make_label(next_comp, ThemeConfig.FONT_INTER, 9, Color(0x60 / 255.0, 0xA5 / 255.0, 0xFA / 255.0))
 	comp_badge.add_child(comp_lbl)
 	next_row.add_child(comp_badge)
-	card_vbox.add_child(next_row)
+	var next_margin = _make_margin(0, 0, 0, 12)
+	next_margin.add_child(next_row)
+	card_vbox.add_child(next_margin)
 
 	var continue_btn = Button.new()
 	continue_btn.text = "CONTINUAR CARREIRA"
@@ -392,10 +451,94 @@ func _build_continue_card() -> PanelContainer:
 		_show_loading(continue_btn)
 		await get_tree().process_frame
 		await get_tree().process_frame
-		if GameManager.load_career():
-			get_tree().change_scene_to_file("res://scenes/main.tscn")
+		get_tree().change_scene_to_file("res://scenes/main.tscn")
 	)
-	var btn_margin = _make_margin(0, 16, 0, 16)
+	var btn_margin = _make_margin(0, 0, 0, 20)
+	btn_margin.add_child(continue_btn)
+	card_vbox.add_child(btn_margin)
+
+	return card
+
+func _build_continue_card_static() -> PanelContainer:
+	var cc_bg = Color(0x2A / 255.0, 0x1A / 255.0, 0x4E / 255.0, 0.80)
+	var cc_border = Color(0xA7 / 255.0, 0x8B / 255.0, 0xFA / 255.0)
+	var card_style = _make_style(cc_bg, cc_border, 12)
+	card_style.shadow_color = Color(0xA7 / 255.0, 0x8B / 255.0, 0xFA / 255.0, 0.13)
+	card_style.shadow_size = 32
+	card_style.content_margin_left = 20
+	card_style.content_margin_right = 20
+	var card = _make_panel(card_style)
+	var card_vbox = _make_vbox(0)
+	card.add_child(card_vbox)
+
+	var header = _make_hbox(8, BoxContainer.ALIGNMENT_CENTER)
+	header.add_theme_constant_override("separation", 8)
+	header.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var logo_small = _make_icon("res://addons/at-icons/control/basketball.svg", 16, Color(0xA7 / 255.0, 0x8B / 255.0, 0xFA / 255.0))
+	var logo_small_container = _make_panel(_make_style(Color.TRANSPARENT))
+	logo_small_container.add_child(logo_small)
+	header.add_child(logo_small_container)
+	var header_lbl = _make_label("SALVO", ThemeConfig.FONT_INTER, 9, Color(0x6B / 255.0, 0x5B / 255.0, 0x95 / 255.0), {"letter_spacing": 1})
+	header.add_child(header_lbl)
+	var header_spacer = Control.new()
+	header_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header.add_child(header_spacer)
+	var header_line = ColorRect.new()
+	header_line.color = Color(0xA7 / 255.0, 0x8B / 255.0, 0xFA / 255.0, 0.13)
+	header_line.custom_minimum_size = Vector2(0, 1)
+	header_line.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var header_margin = _make_margin(0, 16, 0, 8)
+	header_margin.add_child(_make_vbox(0))
+	header_margin.get_child(0).add_child(header)
+	header_margin.get_child(0).add_child(header_line)
+	card_vbox.add_child(header_margin)
+
+	var body = _make_hbox(16)
+	var team_badge_style = _make_style(Color(0xA7 / 255.0, 0x8B / 255.0, 0xFA / 255.0), Color(0x5B / 255.0, 0x21 / 255.0, 0xB6 / 255.0), 50)
+	team_badge_style.shadow_color = Color(0xA7 / 255.0, 0x8B / 255.0, 0xFA / 255.0, 0.4)
+	team_badge_style.shadow_size = 20
+	var badge = _make_panel(team_badge_style, Vector2(72, 72))
+	var badge_lbl = _make_label("--", ThemeConfig.FONT_INTER_BLACK, 24, Color.WHITE)
+	badge_lbl.set_anchors_preset(Control.PRESET_CENTER)
+	badge.add_child(badge_lbl)
+	body.add_child(badge)
+	var info_vbox = _make_vbox(4)
+	info_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	info_vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	var team_name = _make_label("Carreira", ThemeConfig.FONT_INTER_BOLD, 18, Color.WHITE)
+	info_vbox.add_child(team_name)
+	var coach_lbl = _make_label("Treinador", ThemeConfig.FONT_INTER, 12, Color(0x94 / 255.0, 0xA3 / 255.0, 0xB8 / 255.0))
+	info_vbox.add_child(coach_lbl)
+	body.add_child(info_vbox)
+	var body_margin = _make_margin(0, 18, 0, 20)
+	body_margin.add_child(body)
+	card_vbox.add_child(body_margin)
+
+	var continue_btn = Button.new()
+	continue_btn.text = "CONTINUAR CARREIRA"
+	continue_btn.add_theme_font_override("font", ThemeConfig.FONT_INTER_EXTRABOLD)
+	continue_btn.add_theme_font_size_override("font_size", 14)
+	continue_btn.add_theme_color_override("font_color", Color.WHITE)
+	continue_btn.add_theme_constant_override("letter_spacing", 2)
+	continue_btn.custom_minimum_size = Vector2(0, 52)
+	continue_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var btn_bg = Color(0xA7 / 255.0, 0x8B / 255.0, 0xFA / 255.0)
+	var btn_style = _make_style(btn_bg, Color.TRANSPARENT, 6)
+	btn_style.shadow_color = Color(0xFF / 255.0, 0xFF / 255.0, 0xFF / 255.0, 0.13)
+	btn_style.shadow_size = 10
+	btn_style.shadow_offset = Vector2(0, 1)
+	continue_btn.add_theme_stylebox_override("normal", btn_style)
+	var btn_hover = btn_style.duplicate()
+	btn_hover.bg_color = Color(0x7C / 255.0, 0x3A / 255.0, 0xED / 255.0)
+	continue_btn.add_theme_stylebox_override("hover", btn_hover)
+	continue_btn.add_theme_stylebox_override("pressed", btn_style)
+	continue_btn.pressed.connect(func():
+		_show_loading(continue_btn)
+		await get_tree().process_frame
+		await get_tree().process_frame
+		get_tree().change_scene_to_file("res://scenes/main.tscn")
+	)
+	var btn_margin = _make_margin(0, 0, 0, 20)
 	btn_margin.add_child(continue_btn)
 	card_vbox.add_child(btn_margin)
 
@@ -564,3 +707,60 @@ func _show_loading(btn: Button):
 	load_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	load_lbl.set_anchors_preset(Control.PRESET_FULL_RECT)
 	load_bg.add_child(load_lbl)
+
+func _get_save_time_string() -> String:
+	var path = GameManager.get_save_path()
+	if not FileAccess.file_exists(path):
+		return "SALVO"
+	var mod_time = FileAccess.get_modified_time(path)
+	var diff = Time.get_unix_time_from_system() - mod_time
+	if diff < 60:
+		return "SALVO HÁ SEGUNDOS"
+	if diff < 3600:
+		return "SALVO HÁ " + str(floor(diff / 60)) + " MIN"
+	if diff < 86400:
+		return "SALVO HÁ " + str(floor(diff / 3600)) + " H"
+	return "SALVO HÁ " + str(floor(diff / 86400)) + " DIAS"
+
+func _get_team_rank(team_id: int) -> String:
+	var teams = GameManager.league.get("teams", [])
+	if teams.is_empty():
+		return "-"
+	var sorted = teams.duplicate()
+	sorted.sort_custom(func(a, b): return (a.get("wins", 0) - a.get("losses", 0)) > (b.get("wins", 0) - b.get("losses", 0)))
+	for i in sorted.size():
+		if sorted[i].get("id", -1) == team_id:
+			return str(i + 1) + "º LUGAR"
+	return "-"
+
+func _get_next_match_info() -> Dictionary:
+	var next = EventManager.get_next_match()
+	if next.is_empty():
+		return {}
+	var league_teams = GameManager.league.get("teams", [])
+	var opponent_id = next.get("home_team_id", 0)
+	if opponent_id == GameManager.user_team_id:
+		opponent_id = next.get("away_team_id", 0)
+	var opponent_name = ""
+	for t in league_teams:
+		if t.get("id", 0) == opponent_id:
+			opponent_name = t.get("city", "") + " " + t.get("name", "")
+			break
+	var is_home = next.get("home_team_id", 0) == GameManager.user_team_id
+	return {
+		"opponent": opponent_name,
+		"is_home": is_home,
+		"phase": next.get("phase_label", "LIGA"),
+		"competition": "LIGA",
+	}
+
+func _get_team_budget(team: Dictionary) -> String:
+	var total_salary = 0.0
+	for p in team.get("players", []):
+		total_salary += p.get("salary", 0)
+	var remaining = 150_000_000.0 - total_salary
+	if remaining < 0:
+		remaining = 0
+	if remaining >= 1_000_000:
+		return "R$ " + str(ceil(remaining / 100_000) / 10) + "M"
+	return "R$ " + str(remaining)

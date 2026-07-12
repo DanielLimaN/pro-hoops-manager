@@ -56,21 +56,85 @@ func get_schedule() -> Array:
 	return engine.get_schedule()
 
 func get_inbox() -> Array:
-	if engine.has_method("get_inbox"):
+	if engine and engine.has_method("get_inbox"):
 		return engine.get_inbox()
 	return []
+
+func get_finances(team_id: int = -1) -> Dictionary:
+	if engine and engine.has_method("get_finances"):
+		if team_id == -1:
+			team_id = user_team_id
+		return engine.get_finances(team_id)
+	return {}
+
+func get_player_salary_details(team_id: int = -1) -> Array:
+	var finances = get_finances(team_id)
+	return finances.get("player_salaries", [])
+
+func get_game_params() -> Dictionary:
+	if engine and engine.has_method("get_game_params"):
+		return engine.get_game_params()
+	return {}
+
+func set_game_param(key: String, value) -> bool:
+	if engine and engine.has_method("set_game_param"):
+		var ok = engine.set_game_param(key, value)
+		if ok:
+			save_career()
+		return ok
+	return false
 
 func set_tactic(team_id: int, tactic: Dictionary):
 	engine.set_tactic(team_id, tactic)
 
+func set_rotation_order(team_id: int, player_ids: Array):
+	if engine and engine.has_method("set_rotation_order"):
+		engine.set_rotation_order(team_id, player_ids)
+		save_career()
+
+func get_rotation_order(team_id: int = -1) -> Array:
+	if engine and engine.has_method("get_rotation_order"):
+		if team_id == -1:
+			team_id = user_team_id
+		return engine.get_rotation_order(team_id)
+	return []
+
 func set_training_focus(focus: String):
-	engine.set_training_focus(focus)
-	save_career()
+	if engine and engine.has_method("set_training_focus"):
+		engine.set_training_focus(focus)
+		save_career()
 
 func get_training_focus() -> String:
-	if engine.has_method("get_training_focus"):
+	if engine and engine.has_method("get_training_focus"):
 		return engine.get_training_focus()
 	return "Balanced"
+
+func set_training_intensity(intensity: String):
+	if engine and engine.has_method("set_training_intensity"):
+		engine.set_training_intensity(intensity)
+		save_career()
+
+func get_training_intensity() -> String:
+	if engine and engine.has_method("get_training_intensity"):
+		return engine.get_training_intensity()
+	return "MÉDIA"
+
+func get_training_status(team_id: int = -1) -> Dictionary:
+	if engine and engine.has_method("get_training_status"):
+		if team_id == -1:
+			team_id = user_team_id
+		return engine.get_training_status(team_id)
+	return {}
+
+func get_coach() -> Dictionary:
+	if engine and engine.has_method("get_coach"):
+		return engine.get_coach()
+	return {}
+
+func get_staff() -> Array:
+	if engine and engine.has_method("get_staff"):
+		return engine.get_staff()
+	return []
 
 func submit_interview_answer(answer_id: String, target_id: int = 0) -> Dictionary:
 	if engine and engine.has_method("submit_interview_answer"):

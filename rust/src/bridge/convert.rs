@@ -120,6 +120,12 @@ pub fn team_to_dict(t: &Team) -> VarDictionary {
     for s in &starters { starter_arr.push(&player_to_dict(s)); }
     d.set("starters", &starter_arr);
 
+    let mut rotation_order_arr = VarArray::new();
+    for pid in &t.rotation_order {
+        rotation_order_arr.push(*pid as i64);
+    }
+    d.set("rotation_order", &rotation_order_arr);
+
     let mut player_arr = VarArray::new();
     for p in &t.players { player_arr.push(&player_to_dict(p)); }
     d.set("players", &player_arr);

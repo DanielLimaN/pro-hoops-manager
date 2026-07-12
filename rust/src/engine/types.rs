@@ -425,18 +425,89 @@ impl Default for TrainingFocus {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct TeamFinances {
+    pub budget: f64,
+    pub total_salary: f64,
+    pub salary_cap: f64,
+    pub projected_revenue: f64,
+    pub projected_expenses: f64,
+    pub weekly_revenue: f64,
+    pub weekly_expenses: f64,
+}
+
+impl Default for TeamFinances {
+    fn default() -> Self {
+        Self {
+            budget: 120_000_000.0,
+            total_salary: 0.0,
+            salary_cap: 150_000_000.0,
+            projected_revenue: 0.0,
+            projected_expenses: 0.0,
+            weekly_revenue: 0.0,
+            weekly_expenses: 0.0,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Transaction {
+    pub id: u32,
+    pub team_id: u32,
+    pub amount: f64,
+    pub category: String,
+    pub description: String,
+    pub week: u16,
+    pub season: u16,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Sponsor {
+    pub id: u32,
+    pub team_id: u32,
+    pub name: String,
+    pub amount_per_year: f64,
+    pub years_remaining: u8,
+    pub total_years: u8,
+    pub category: String,
+}
+
+impl Default for Sponsor {
+    fn default() -> Self {
+        Self {
+            id: 0,
+            team_id: 0,
+            name: String::new(),
+            amount_per_year: 0.0,
+            years_remaining: 3,
+            total_years: 3,
+            category: "Main".to_string(),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Team {
     pub id: TeamId,
     pub name: String,
     pub city: String,
     pub abbreviation: String,
     pub players: Vec<Player>,
+    #[serde(default)]
+    pub rotation_order: Vec<PlayerId>,
     pub tactic: TacticConfig,
     pub chemistry: f32,
     pub wins: u16,
     pub losses: u16,
     #[serde(default)]
     pub training_focus: TrainingFocus,
+    #[serde(default)]
+    pub training_intensity: String,
+    #[serde(default)]
+    pub finances: TeamFinances,
+    #[serde(default)]
+    pub transactions: Vec<Transaction>,
+    #[serde(default)]
+    pub sponsors: Vec<Sponsor>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

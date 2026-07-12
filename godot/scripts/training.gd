@@ -35,6 +35,106 @@ func _ready():
 	_build_center_col(content)
 	_build_right_col(content)
 
+# ENGINE CONNECTED helpers
+func _get_season() -> int:
+	return GameManager.league.get("season", 2026)
+
+func _get_current_week() -> int:
+	return GameManager.league.get("current_week", 1)
+
+static func _week_to_date(season: int, week: int) -> Dictionary:
+	var base_day = 3
+	var base_month = 11
+	var day = base_day + (week - 1) * 7
+	var month = base_month
+	var year = season
+	var days_in_month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+	while day > days_in_month[month - 1]:
+		day -= days_in_month[month - 1]
+		month += 1
+		if month > 12:
+			month = 1
+			year += 1
+	return {"day": day, "month": month, "year": year}
+
+static func _add_days(year: int, month: int, day: int, count: int) -> Dictionary:
+	var d = day + count
+	var m = month
+	var y = year
+	var days_in_month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+	while d > days_in_month[m - 1]:
+		d -= days_in_month[m - 1]
+		m += 1
+		if m > 12:
+			m = 1
+			y += 1
+	return {"day": d, "month": m, "year": y}
+
+func _get_events_for_date(day: int, month: int, year: int) -> Array:
+	var result: Array = []
+	for evt in EventManager.events:
+		if evt.get("day", 0) == day and evt.get("month", 0) == month and evt.get("year", 0) == year:
+			result.append(evt)
+	return result
+
+func _get_dow(year: int, month: int, day: int) -> int:
+	var date = {"year": year, "month": month, "day": day, "hour": 12, "minute": 0, "second": 0}
+	var unix = Time.get_unix_time_from_datetime_dict(date)
+	var dt = Time.get_datetime_dict_from_unix_time(unix)
+	return dt.get("weekday", 0)
+
+func _training_event_color(etype: String) -> Color:
+	match etype:
+		"training_physical":
+			return ThemeConfig.DANGER
+		"training_tactical":
+			return ThemeConfig.BRAND_PRIMARY
+		"recovery":
+			return ThemeConfig.SUCCESS
+		"rest":
+			return ThemeConfig.SUCCESS
+		"meeting":
+			return Color("#3B82F6")
+		"press_conference":
+			return Color("#3B82F6")
+		_:
+			return ThemeConfig.BRAND_PRIMARY
+
+func _training_event_dots(etype: String) -> int:
+	match etype:
+		"training_physical":
+			return 3
+		"training_tactical":
+			return 2
+		"recovery":
+			return 1
+		"rest":
+			return 0
+		"meeting":
+			return 1
+		"press_conference":
+			return 1
+		_:
+			return 2
+
+func _training_event_duration(etype: String) -> String:
+	match etype:
+		"training_physical":
+			return "90min"
+		"training_tactical":
+			return "60min"
+		"recovery":
+			return "45min"
+		"rest":
+			return "—"
+		"meeting":
+			return "60min"
+		"press_conference":
+			return "30min"
+		_:
+			return "60min"
+# END ENGINE CONNECTED helpers
+
 func _build_top_bar(parent: Node):
 	var topbar_scene = preload("res://scenes/components/topbar.tscn")
 	var tb = topbar_scene.instantiate()
@@ -105,9 +205,10 @@ func _build_tabs(parent: Node):
 	var int_box = HBoxContainer.new(); int_box.add_theme_constant_override("separation", 8); int_box.alignment = BoxContainer.ALIGNMENT_CENTER
 	var int_l = Label.new(); int_l.text = "INTENSIDADE:"; int_l.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); int_l.add_theme_font_size_override("font_size", 10); int_l.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED); int_l.add_theme_constant_override("letter_spacing", 1); int_box.add_child(int_l)
 	
-	int_box.add_child(_create_int_btn("BAIXA", ThemeConfig.SUCCESS, false))
-	int_box.add_child(_create_int_btn("MÉDIA", ThemeConfig.WARNING, true))
-	int_box.add_child(_create_int_btn("ALTA", ThemeConfig.DANGER, false))
+	var current_intensity = GameManager.get_training_intensity()
+	int_box.add_child(_create_int_btn("BAIXA", ThemeConfig.SUCCESS, current_intensity == "BAIXA"))
+	int_box.add_child(_create_int_btn("MÉDIA", ThemeConfig.WARNING, current_intensity == "MÉDIA"))
+	int_box.add_child(_create_int_btn("ALTA", ThemeConfig.DANGER, current_intensity == "ALTA"))
 	h.add_child(int_box)
 	
 	var sep_v = VSeparator.new(); h.add_child(sep_v)
@@ -166,22 +267,103 @@ func _create_focus_btn(text: String, color: Color, active: bool) -> Button:
 	)
 	return b
 
-func _create_int_btn(text: String, color: Color, active: bool) -> PanelContainer:
-	var p = PanelContainer.new()
-	var s = StyleBoxFlat.new(); s.bg_color = color if active else Color(0,0,0,0); s.corner_radius_top_left=4; s.corner_radius_bottom_right=4; s.corner_radius_bottom_left=4; s.corner_radius_top_right=4; s.border_width_left=1 if not active else 0; s.border_width_right=1 if not active else 0; s.border_width_top=1 if not active else 0; s.border_width_bottom=1 if not active else 0; s.border_color = ThemeConfig.BORDER_SUBTLE
-	p.add_theme_stylebox_override("panel", s)
-	var m = MarginContainer.new(); m.add_theme_constant_override("margin_left", 8); m.add_theme_constant_override("margin_right", 8); m.add_theme_constant_override("margin_top", 4); m.add_theme_constant_override("margin_bottom", 4); p.add_child(m)
-	var l = Label.new(); l.text = text; l.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); l.add_theme_font_size_override("font_size", 10); l.add_theme_color_override("font_color", Color("#06030E") if active else color); m.add_child(l)
-	return p
+func _create_int_btn(text: String, color: Color, active: bool) -> Button:
+	var b = Button.new()
+	b.text = text
+	b.flat = true
+	b.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
+	b.add_theme_font_size_override("font_size", 10)
+	var s = StyleBoxFlat.new()
+	s.bg_color = color if active else Color(0,0,0,0)
+	s.corner_radius_top_left = 4; s.corner_radius_bottom_right = 4
+	s.corner_radius_bottom_left = 4; s.corner_radius_top_right = 4
+	if not active:
+		s.border_width_left = 1; s.border_width_right = 1
+		s.border_width_top = 1; s.border_width_bottom = 1
+		s.border_color = ThemeConfig.BORDER_SUBTLE
+	b.add_theme_stylebox_override("normal", s)
+	b.add_theme_stylebox_override("hover", s)
+	b.add_theme_stylebox_override("pressed", s)
+	b.add_theme_color_override("font_color", Color("#06030E") if active else color)
+	b.pressed.connect(func():
+		GameManager.set_training_intensity(text)
+		for child in b.get_parent().get_children():
+			if child is Button and child != b.get_parent().get_child(0):
+				var cs = StyleBoxFlat.new()
+				cs.bg_color = Color(0,0,0,0)
+				cs.corner_radius_top_left = 4; cs.corner_radius_bottom_right = 4
+				cs.corner_radius_bottom_left = 4; cs.corner_radius_top_right = 4
+				cs.border_width_left = 1; cs.border_width_right = 1
+				cs.border_width_top = 1; cs.border_width_bottom = 1
+				cs.border_color = ThemeConfig.BORDER_SUBTLE
+				child.add_theme_stylebox_override("normal", cs)
+				child.add_theme_color_override("font_color", color)
+		var act_s = StyleBoxFlat.new()
+		act_s.bg_color = color
+		act_s.corner_radius_top_left = 4; act_s.corner_radius_bottom_right = 4
+		act_s.corner_radius_bottom_left = 4; act_s.corner_radius_top_right = 4
+		b.add_theme_stylebox_override("normal", act_s)
+		b.add_theme_color_override("font_color", Color("#06030E"))
+	)
+	return b
 
-func _build_kpis(parent: Node):
+func _build_kpis(parent: Node): # ENGINE CONNECTED
+	var team = GameManager.get_user_team()
+	var players: Array = team.get("players", [])
+	var season = _get_season()
+	var week = _get_current_week()
+	
+	# FORMA MÉDIA: average morale
+	var avg_morale := 50
+	if players.size() > 0:
+		var morale_sum := 0
+		for p in players:
+			morale_sum += p.get("morale", 50)
+		avg_morale = morale_sum / players.size()
+	
+	# SESSÕES: count training-type events in current week
+	var week_start = _week_to_date(season, week)
+	var session_count := 0
+	for evt in EventManager.events:
+		for offset in range(5):
+			var d = _add_days(week_start.year, week_start.month, week_start.day, offset)
+			if evt.get("day", 0) == d.day and evt.get("month", 0) == d.month and evt.get("year", 0) == d.year:
+				var etype: String = evt.get("event_type", "")
+				if etype.begins_with("training") or etype == "recovery" or etype == "meeting" or etype == "press_conference":
+					session_count += 1
+				break
+	
+	# RISCO LESÃO: based on avg stamina
+	var avg_stamina := 50
+	if players.size() > 0:
+		var stamina_sum := 0
+		for p in players:
+			stamina_sum += p.get("attributes", {}).get("stamina", 50)
+		avg_stamina = stamina_sum / players.size()
+	
+	var injury_risk: int
+	var injury_color: Color
+	if avg_stamina < 40:
+		injury_risk = 65
+		injury_color = ThemeConfig.DANGER
+	elif avg_stamina < 60:
+		injury_risk = 35
+		injury_color = ThemeConfig.WARNING
+	else:
+		injury_risk = 12
+		injury_color = ThemeConfig.SUCCESS
+	
+	# CARGA SEMANAL: based on current focus
+	var focus = GameManager.get_training_focus()
+	var weekly_load = {"Shooting": 70, "Defense": 65, "Playmaking": 68, "Physical": 75, "Balanced": 60}.get(focus, 60)
+	
 	var h = HBoxContainer.new()
 	h.add_theme_constant_override("separation", 16)
 	
-	h.add_child(_create_stat_card("CARGA SEMANAL", "68", ThemeConfig.WARNING, "clock", "/100"))
-	h.add_child(_create_stat_card("RISCO LESÃO", "12", ThemeConfig.SUCCESS, "#", "%"))
-	h.add_child(_create_stat_card("FORMA MÉDIA", "82", ThemeConfig.BRAND_PRIMARY, "arrow_up_right", "/100"))
-	h.add_child(_create_stat_card("SESSÕES", "11", Color("#3B82F6"), "calendar", "/14 sem."))
+	h.add_child(_create_stat_card("CARGA SEMANAL", str(weekly_load), ThemeConfig.WARNING, "clock", "/100"))
+	h.add_child(_create_stat_card("RISCO LESÃO", str(injury_risk), injury_color, "#", "%"))
+	h.add_child(_create_stat_card("FORMA MÉDIA", str(avg_morale), ThemeConfig.BRAND_PRIMARY, "arrow_up_right", "/100"))
+	h.add_child(_create_stat_card("SESSÕES", str(session_count), Color("#3B82F6"), "calendar", "/14 sem."))
 	
 	parent.add_child(h)
 
@@ -231,26 +413,38 @@ func _create_main_panel(ratio: float) -> PanelContainer:
 	var bg_grad = TextureRect.new(); var g2d = GradientTexture2D.new(); var g = Gradient.new(); g.set_color(0, Color(ThemeConfig.BRAND_PRIMARY.r, ThemeConfig.BRAND_PRIMARY.g, ThemeConfig.BRAND_PRIMARY.b, 0.15)); g.set_color(1, Color(0,0,0,0)); g2d.gradient = g; g2d.fill_from = Vector2(0.5, 0); g2d.fill_to = Vector2(0.5, 0.6); bg_grad.texture = g2d; bg_grad.expand_mode = TextureRect.EXPAND_IGNORE_SIZE; bg_grad.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT); p.add_child(bg_grad)
 	return p
 
-func _build_left_col(parent: Node):
+func _build_left_col(parent: Node): # ENGINE CONNECTED
 	var p = _create_main_panel(1.0)
 	var m = MarginContainer.new(); m.add_theme_constant_override("margin_left", 20); m.add_theme_constant_override("margin_right", 20); m.add_theme_constant_override("margin_top", 20); m.add_theme_constant_override("margin_bottom", 20); p.add_child(m)
 	var scroll = ScrollContainer.new(); scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED; scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL; m.add_child(scroll)
 	var vb = VBoxContainer.new(); vb.size_flags_horizontal = Control.SIZE_EXPAND_FILL; scroll.add_child(vb)
 	
+	var focus = GameManager.get_training_focus()
+	
 	vb.add_child(_create_section_head("L", "BIBLIOTECA", ""))
-	vb.add_child(_create_lib_head("FÍSICO", "3", ThemeConfig.DANGER))
-	vb.add_child(_create_lib_item("Resistência", "90min · INT Alta", ThemeConfig.DANGER, "arrow_double_vertical"))
-	vb.add_child(_create_lib_item("Força", "60min · INT Alta", ThemeConfig.DANGER, "F"))
-	vb.add_child(_create_lib_item("Velocidade", "45min · INT Méd", ThemeConfig.DANGER, "E"))
 	
-	vb.add_child(_create_lib_head("TÉCNICO", "2", ThemeConfig.BRAND_PRIMARY))
-	vb.add_child(_create_lib_item("Arremesso 3PT", "60min · INT Méd", ThemeConfig.BRAND_PRIMARY, "O"))
-	vb.add_child(_create_lib_item("Defesa Individual", "75min · INT Méd", ThemeConfig.BRAND_PRIMARY, "#"))
+	# Physical — highlight when focus == Physical
+	var phys_alpha = 1.0 if focus == "Physical" else 0.35
+	vb.add_child(_create_lib_head("FÍSICO", "3", Color(ThemeConfig.DANGER.r, ThemeConfig.DANGER.g, ThemeConfig.DANGER.b, phys_alpha)))
+	vb.add_child(_create_lib_item("Resistência", "90min · INT Alta", Color(ThemeConfig.DANGER.r, ThemeConfig.DANGER.g, ThemeConfig.DANGER.b, phys_alpha), "arrow_double_vertical"))
+	vb.add_child(_create_lib_item("Força", "60min · INT Alta", Color(ThemeConfig.DANGER.r, ThemeConfig.DANGER.g, ThemeConfig.DANGER.b, phys_alpha), "F"))
+	vb.add_child(_create_lib_item("Velocidade", "45min · INT Méd", Color(ThemeConfig.DANGER.r, ThemeConfig.DANGER.g, ThemeConfig.DANGER.b, phys_alpha), "E"))
 	
-	vb.add_child(_create_lib_head("TÁTICO", "2", Color("#3B82F6")))
-	vb.add_child(_create_lib_item("5v5 Halfcourt", "90min · INT Alta", Color("#3B82F6"), "P"))
-	vb.add_child(_create_lib_item("Jogadas", "60min · INT Baixa", Color("#3B82F6"), ">"))
+	# Técnico — Shooting or Defense highlights this section
+	var tech_alpha = 1.0 if focus == "Shooting" or focus == "Defense" else 0.35
+	vb.add_child(_create_lib_head("TÉCNICO", "2", Color(ThemeConfig.BRAND_PRIMARY.r, ThemeConfig.BRAND_PRIMARY.g, ThemeConfig.BRAND_PRIMARY.b, tech_alpha)))
+	var shoot_alpha = 1.0 if focus == "Shooting" else tech_alpha
+	var def_alpha = 1.0 if focus == "Defense" else tech_alpha
+	vb.add_child(_create_lib_item("Arremesso 3PT", "60min · INT Méd", Color(ThemeConfig.BRAND_PRIMARY.r, ThemeConfig.BRAND_PRIMARY.g, ThemeConfig.BRAND_PRIMARY.b, shoot_alpha), "O"))
+	vb.add_child(_create_lib_item("Defesa Individual", "75min · INT Méd", Color(ThemeConfig.BRAND_PRIMARY.r, ThemeConfig.BRAND_PRIMARY.g, ThemeConfig.BRAND_PRIMARY.b, def_alpha), "#"))
 	
+	# Tático — Playmaking focus
+	var tac_alpha = 1.0 if focus == "Playmaking" else 0.35
+	vb.add_child(_create_lib_head("TÁTICO", "2", Color(0.23, 0.51, 0.96, tac_alpha)))
+	vb.add_child(_create_lib_item("5v5 Halfcourt", "90min · INT Alta", Color(0.23, 0.51, 0.96, tac_alpha), "P"))
+	vb.add_child(_create_lib_item("Jogadas", "60min · INT Baixa", Color(0.23, 0.51, 0.96, tac_alpha), ">"))
+	
+	# Recuperação — always full color
 	vb.add_child(_create_lib_head("RECUPERAÇÃO", "2", ThemeConfig.SUCCESS))
 	vb.add_child(_create_lib_item("Mobilidade", "45min · INT Baixa", ThemeConfig.SUCCESS, "arrow_uturn_left_down"))
 	vb.add_child(_create_lib_item("Folga", "— · INT Nula", ThemeConfig.SUCCESS, "Z"))
@@ -294,49 +488,137 @@ func _create_lib_item(title: String, desc: String, color: Color, icon: String) -
 	
 	return p
 
-func _build_center_col(parent: Node):
+func _build_center_col(parent: Node): # ENGINE CONNECTED
 	var p = _create_main_panel(2.2)
 	var m = MarginContainer.new(); m.add_theme_constant_override("margin_left", 24); m.add_theme_constant_override("margin_right", 24); m.add_theme_constant_override("margin_top", 24); m.add_theme_constant_override("margin_bottom", 24); p.add_child(m)
 	var vb = VBoxContainer.new(); vb.size_flags_horizontal = Control.SIZE_EXPAND_FILL; m.add_child(vb)
 	
+	var season = _get_season()
+	var week = _get_current_week()
+	var week_start = _week_to_date(season, week)
+	var month_names = ["JAN", "FEV", "MAR", "ABR", "MAI", "JUN", "JUL", "AGO", "SET", "OUT", "NOV", "DEZ"]
+	var day_labels = ["SEG", "TER", "QUA", "QUI", "SEX", "SÁB", "DOM"]
+	
+	# Compute week end (Monday + 6 days)
+	var week_end = _add_days(week_start.year, week_start.month, week_start.day, 6)
+	
+	# Collect events for each day of the week + compute load
+	var day_events: Array = []
+	var day_loads: Array = []
+	var total_load := 0
+	var next_match_data: Dictionary = {}
+	var next_match_idx := -1
+	
+	for offset in range(7):
+		var d = _add_days(week_start.year, week_start.month, week_start.day, offset)
+		var date_events = _get_events_for_date(d.day, d.month, d.year)
+		day_events.append(date_events)
+		
+		# Compute load for this day
+		var load := 10
+		var has_match := false
+		for evt in date_events:
+			var etype: String = evt.get("event_type", "")
+			if etype == "match":
+				load = 95
+				has_match = true
+				if next_match_data.is_empty():
+					next_match_data = evt
+					next_match_idx = offset
+			elif etype == "training_physical":
+				load = max(load, 82)
+			elif etype == "training_tactical":
+				load = max(load, 65)
+			elif etype == "recovery":
+				load = max(load, 28)
+			elif etype == "press_conference" or etype == "meeting":
+				load = max(load, 35)
+			elif etype == "rest":
+				load = max(load, 12)
+		day_loads.append(load)
+		total_load += load
+	
+	var avg_load = total_load / 7
+	
+	# --- Week header ---
 	var top = HBoxContainer.new()
 	var i1 = TextureRect.new(); i1.texture = load("res://addons/at-icons/control/calendar.svg"); i1.custom_minimum_size = Vector2(12, 12); i1.expand_mode = TextureRect.EXPAND_IGNORE_SIZE; i1.modulate = ThemeConfig.TEXT_MUTED; top.add_child(i1)
-	var hl = Label.new(); hl.text = " CRONOGRAMA · 24-30 NOV"; hl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); hl.add_theme_font_size_override("font_size", 10); hl.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED); hl.add_theme_constant_override("letter_spacing", 1); top.add_child(hl)
+	var hl = Label.new()
+	hl.text = " CRONOGRAMA · " + str(week_start.day) + "-" + str(week_end.day) + " " + month_names[week_start.month - 1]
+	hl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); hl.add_theme_font_size_override("font_size", 10); hl.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED); hl.add_theme_constant_override("letter_spacing", 1); top.add_child(hl)
 	var sp = Control.new(); sp.size_flags_horizontal = Control.SIZE_EXPAND_FILL; top.add_child(sp)
-	var btn = Button.new(); btn.text = "X JOGO SEX 25/11"; btn.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); btn.add_theme_font_size_override("font_size", 10)
-	var sbtn = StyleBoxFlat.new(); sbtn.bg_color = Color(0,0,0,0); sbtn.border_width_left=1; sbtn.border_width_right=1; sbtn.border_width_top=1; sbtn.border_width_bottom=1; sbtn.border_color = Color("#3B82F6"); sbtn.corner_radius_top_left=4; sbtn.corner_radius_bottom_right=4; sbtn.corner_radius_bottom_left=4; sbtn.corner_radius_top_right=4; sbtn.content_margin_left=12; sbtn.content_margin_right=12; sbtn.content_margin_top=4; sbtn.content_margin_bottom=4
-	btn.add_theme_stylebox_override("normal", sbtn); btn.add_theme_color_override("font_color", Color("#3B82F6")); top.add_child(btn)
+	
+	# Next match button in this week
+	if not next_match_data.is_empty():
+		var nd = next_match_data
+		var ndow = _get_dow(nd.get("year", season), nd.get("month", 1), nd.get("day", 1))
+		var ndow_labels = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SÁB"]
+		var btn = Button.new()
+		var desc: String = nd.get("description", "Jogo")
+		var hour: int = nd.get("hour", 20)
+		btn.text = str(nd.get("day", "?")) + " " + desc + " " + str(hour) + "h"
+		btn.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); btn.add_theme_font_size_override("font_size", 10)
+		var sbtn = StyleBoxFlat.new(); sbtn.bg_color = Color(0,0,0,0); sbtn.border_width_left=1; sbtn.border_width_right=1; sbtn.border_width_top=1; sbtn.border_width_bottom=1; sbtn.border_color = Color("#3B82F6"); sbtn.corner_radius_top_left=4; sbtn.corner_radius_bottom_right=4; sbtn.corner_radius_bottom_left=4; sbtn.corner_radius_top_right=4; sbtn.content_margin_left=12; sbtn.content_margin_right=12; sbtn.content_margin_top=4; sbtn.content_margin_bottom=4
+		btn.add_theme_stylebox_override("normal", sbtn); btn.add_theme_color_override("font_color", Color("#3B82F6"))
+		btn.pressed.connect(func():
+			EventBus.navigation_requested.emit("match")
+		)
+		top.add_child(btn)
 	vb.add_child(top)
 	
 	vb.add_theme_constant_override("separation", 16)
 	
-	# Calendar Grid
+	# --- Calendar Grid ---
 	var cal = HBoxContainer.new(); cal.size_flags_vertical = Control.SIZE_EXPAND_FILL; cal.add_theme_constant_override("separation", 1)
-	cal.add_child(_create_cal_day("SEG", "24", [_create_cal_card("09h00", "Resistência", "90min", ThemeConfig.DANGER, 3), _create_cal_card("14h00", "Arremesso 3PT", "60min", ThemeConfig.BRAND_PRIMARY, 2)]))
-	cal.add_child(_create_cal_day("TER", "25", [_create_cal_card("09h00", "Defesa Individual", "75min", ThemeConfig.BRAND_PRIMARY, 2), _create_cal_card("14h00", "5v5 Halfcourt", "90min", Color("#3B82F6"), 3)]))
-	cal.add_child(_create_cal_day("QUA", "26", [_create_cal_card("10h00", "Mobilidade", "45min", ThemeConfig.SUCCESS, 1), _create_cal_card("15h00", "Jogadas Ensaiadas", "60min", Color("#3B82F6"), 1)]))
-	cal.add_child(_create_cal_day("QUI", "27", [_create_cal_card("09h00", "Força", "60min", ThemeConfig.DANGER, 3), _create_cal_card("14h00", "Velocidade", "45min", ThemeConfig.DANGER, 2)]))
-	cal.add_child(_create_cal_day("SEX", "28", [_create_game_card("DIA DE JOGO", "vs POA", "20h30")], true))
-	cal.add_child(_create_cal_day("SÁB", "29", [_create_cal_card("10h00", "Folga Total", "—", ThemeConfig.SUCCESS, 0)]))
-	cal.add_child(_create_cal_day("DOM", "30", [_create_cal_card("11h00", "Mobilidade", "45min", ThemeConfig.SUCCESS, 1)]))
+	
+	for offset in range(7):
+		var d = _add_days(week_start.year, week_start.month, week_start.day, offset)
+		var events_today: Array = day_events[offset]
+		var cards: Array = []
+		var has_match := false
+		
+		for evt in events_today:
+			var etype: String = evt.get("event_type", "")
+			var hour: int = evt.get("hour", 9)
+			var min: int = evt.get("minute", 0)
+			var time_str = "%02dh%02d" % [hour, min]
+			var desc: String = evt.get("description", "Sessão")
+			
+			if etype == "match":
+				has_match = true
+				var opp_label: String = desc
+				var hour_str = str(hour) + "h" + str(min) if min > 0 else str(hour) + "h00"
+				cards.append(_create_game_card("DIA DE JOGO", opp_label, hour_str))
+			else:
+				var color = _training_event_color(etype)
+				var dots = _training_event_dots(etype)
+				var dur = _training_event_duration(etype)
+				cards.append(_create_cal_card(time_str, desc, dur, color, dots))
+		
+		cal.add_child(_create_cal_day(day_labels[offset], str(d.day), cards, has_match))
+	
 	vb.add_child(cal)
 	
 	var sep = HSeparator.new(); vb.add_child(sep)
 	
+	# --- Load chart ---
 	var hbot = HBoxContainer.new()
 	var ctit = Label.new(); ctit.text = "CARGA SEMANAL POR DIA"; ctit.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); ctit.add_theme_font_size_override("font_size", 10); ctit.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED); ctit.add_theme_constant_override("letter_spacing", 1); hbot.add_child(ctit)
 	var sp2 = Control.new(); sp2.size_flags_horizontal = Control.SIZE_EXPAND_FILL; hbot.add_child(sp2)
-	var med = Label.new(); med.text = "MÉDIA: 68/100"; med.add_theme_font_size_override("font_size", 10); med.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED); hbot.add_child(med)
+	var med = Label.new(); med.text = "MÉDIA: " + str(avg_load) + "/100"; med.add_theme_font_size_override("font_size", 10); med.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED); hbot.add_child(med)
 	vb.add_child(hbot)
 	
 	var chart = HBoxContainer.new(); chart.custom_minimum_size = Vector2(0, 64); chart.add_theme_constant_override("separation", 8); chart.alignment = BoxContainer.ALIGNMENT_CENTER
-	chart.add_child(_create_chart_bar(78, ThemeConfig.WARNING, "SEG"))
-	chart.add_child(_create_chart_bar(85, ThemeConfig.WARNING, "TER"))
-	chart.add_child(_create_chart_bar(40, ThemeConfig.SUCCESS, "QUA"))
-	chart.add_child(_create_chart_bar(75, ThemeConfig.WARNING, "QUI"))
-	chart.add_child(_create_chart_bar(95, ThemeConfig.DANGER, "SEX"))
-	chart.add_child(_create_chart_bar(15, ThemeConfig.SUCCESS, "SÁB"))
-	chart.add_child(_create_chart_bar(35, ThemeConfig.SUCCESS, "DOM"))
+	for offset in range(7):
+		var load = day_loads[offset]
+		var color: Color
+		if load >= 80:
+			color = ThemeConfig.DANGER
+		elif load >= 50:
+			color = ThemeConfig.WARNING
+		else:
+			color = ThemeConfig.SUCCESS
+		chart.add_child(_create_chart_bar(load, color, day_labels[offset]))
 	vb.add_child(chart)
 	
 	parent.add_child(p)
@@ -408,11 +690,32 @@ func _create_chart_bar(val: int, color: Color, day: String) -> VBoxContainer:
 	var dl = Label.new(); dl.text = day; dl.add_theme_font_size_override("font_size", 9); dl.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED); dl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; vb.add_child(dl)
 	return vb
 
-func _build_right_col(parent: Node):
+func _build_right_col(parent: Node): # ENGINE CONNECTED
 	var p = _create_main_panel(1.2)
 	var m = MarginContainer.new(); m.add_theme_constant_override("margin_left", 20); m.add_theme_constant_override("margin_right", 20); m.add_theme_constant_override("margin_top", 20); m.add_theme_constant_override("margin_bottom", 20); p.add_child(m)
 	var scroll = ScrollContainer.new(); scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED; scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL; m.add_child(scroll)
 	var vb = VBoxContainer.new(); vb.size_flags_horizontal = Control.SIZE_EXPAND_FILL; vb.add_theme_constant_override("separation", 16); scroll.add_child(vb)
+	
+	var team = GameManager.get_user_team()
+	var all_players: Array = team.get("players", [])
+	all_players.sort_custom(func(a, b): return a.get("overall", 0) > b.get("overall", 0))
+	var top5 = all_players.slice(0, 5)
+	
+	var focus = GameManager.get_training_focus()
+	
+	# Map training focus → attribute key, display name, and visual color
+	var attr_map = {
+		"Shooting": {"key": "three_point", "label": "3PT %"},
+		"Defense": {"key": "defense", "label": "Defesa"},
+		"Physical": {"key": "stamina", "label": "Energia"},
+		"Playmaking": {"key": "passing", "label": "Passe"},
+		"Balanced": {"key": "overall", "label": "Geral"}
+	}
+	var focus_attr = attr_map.get(focus, attr_map["Balanced"])
+	
+	var season = _get_season()
+	var week = _get_current_week()
+	var weeks_left = max(0, 22 - week)
 	
 	var top = HBoxContainer.new(); top.custom_minimum_size = Vector2(0, 32)
 	var i1 = TextureRect.new(); i1.texture = load("res://addons/at-icons/control/arrow_up_right.svg"); i1.custom_minimum_size = Vector2(12, 12); i1.expand_mode = TextureRect.EXPAND_IGNORE_SIZE; i1.modulate = ThemeConfig.TEXT_MUTED; top.add_child(i1)
@@ -421,14 +724,58 @@ func _build_right_col(parent: Node):
 	var bp = PanelContainer.new()
 	var sbp = StyleBoxFlat.new(); sbp.bg_color = Color(ThemeConfig.BRAND_PRIMARY.r, ThemeConfig.BRAND_PRIMARY.g, ThemeConfig.BRAND_PRIMARY.b, 0.2); sbp.corner_radius_top_left=4; sbp.corner_radius_bottom_right=4; sbp.corner_radius_bottom_left=4; sbp.corner_radius_top_right=4; bp.add_theme_stylebox_override("panel", sbp)
 	var mbp = MarginContainer.new(); mbp.add_theme_constant_override("margin_left", 6); mbp.add_theme_constant_override("margin_right", 6); bp.add_child(mbp)
-	var lbp = Label.new(); lbp.text = "5 ATIVOS"; lbp.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); lbp.add_theme_font_size_override("font_size", 9); lbp.add_theme_color_override("font_color", ThemeConfig.BRAND_PRIMARY); mbp.add_child(lbp); top.add_child(bp)
+	var lbp = Label.new(); lbp.text = str(top5.size()) + " ATIVOS"; lbp.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); lbp.add_theme_font_size_override("font_size", 9); lbp.add_theme_color_override("font_color", ThemeConfig.BRAND_PRIMARY); mbp.add_child(lbp); top.add_child(bp)
 	vb.add_child(top)
 	
-	vb.add_child(_create_indiv_card("MS", "Marcus Silva", "PG · Liderança", "ESTRELA", ThemeConfig.WARNING, "QI Quadra", "88", "92", "+0.3/sem", 4, ThemeConfig.SUCCESS, 0.4))
-	vb.add_child(_create_indiv_card("LA", "Lucas Almeida", "PG · Arremesso 3PT", "JOVEM", ThemeConfig.SUCCESS, "3PT %", "72", "80", "+0.8/sem", 8, ThemeConfig.BRAND_PRIMARY, 0.6))
-	vb.add_child(_create_indiv_card("PH", "Pedro Henrique", "C · Defesa Pivô", "", Color.WHITE, "Defesa", "64", "75", "+0.6/sem", 10, Color("#3B82F6"), 0.3))
-	vb.add_child(_create_indiv_card("AC", "Anderson Costa", "PF · Recuperação", "CANSADO", ThemeConfig.WARNING, "Energia", "45", "80", "+5/sem", 1, ThemeConfig.SUCCESS, 0.8))
-	vb.add_child(_create_indiv_card("TW", "Tyrone Walker", "C · Fisioterapia", "LESÃO", ThemeConfig.DANGER, "Lesão", "0", "100", "+7/sem", 2, ThemeConfig.DANGER, 0.2))
+	for player in top5:
+		var first: String = player.get("first_name", "Jogador")
+		var last: String = player.get("last_name", "")
+		var full_name = first + " " + last
+		var ini = first.substr(0, 1).to_upper() + last.substr(0, 1).to_upper()
+		var pos: String = player.get("position", "RES")
+		var overall: int = player.get("overall", 50)
+		var morale: int = player.get("morale", 50)
+		var attributes: Dictionary = player.get("attributes", {})
+		var stamina: int = attributes.get("stamina", 50)
+		var attr_val: int = attributes.get(focus_attr["key"], overall)
+		
+		# Position → Portuguese label
+		var pos_labels = {"PG": "Armador", "SG": "Ala", "SF": "Ala", "PF": "Ala-Pivô", "C": "Pivô", "RES": "Reserva"}
+		var pos_label = pos_labels.get(pos, pos)
+		
+		# Desc: position + focus attribute
+		var desc = pos_label + " · " + focus_attr["label"]
+		
+		# Badge
+		var badge := ""
+		var bcolor := Color.WHITE
+		if stamina < 40:
+			badge = "LESÃO"
+			bcolor = ThemeConfig.DANGER
+		elif stamina < 60:
+			badge = "CANSADO"
+			bcolor = ThemeConfig.WARNING
+		elif morale > 80:
+			badge = "ESTRELA"
+			bcolor = ThemeConfig.WARNING
+		
+		# Progress
+		var attr_capped = mini(attr_val, 99)
+		var prog = float(attr_capped) / 99.0
+		
+		# Progress color
+		var pcolor: Color
+		if attr_val < 50:
+			pcolor = ThemeConfig.DANGER
+		elif attr_val < 70:
+			pcolor = ThemeConfig.WARNING
+		else:
+			pcolor = ThemeConfig.BRAND_PRIMARY
+		
+		# Rate (approximate weekly gain based on focus)
+		var rate_str = "+0." + str((attr_val % 10 + 2) % 10) + "/sem"
+		
+		vb.add_child(_create_indiv_card(ini, full_name, desc, badge, bcolor, focus_attr["label"], str(attr_val), "99", rate_str, weeks_left, pcolor, prog))
 	
 	parent.add_child(p)
 

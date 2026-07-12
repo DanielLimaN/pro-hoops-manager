@@ -1,5 +1,7 @@
 use godot::prelude::*;
 use std::sync::Mutex;
+use std::sync::atomic::AtomicU32;
+use std::sync::atomic::Ordering::Relaxed;
 use rand::Rng;
 use crate::engine::*;
 use crate::state::GameState;
@@ -14,6 +16,7 @@ pub struct BasketballEngine {
     pending_games: Vec<usize>,
     pending_idx: usize,
     worker: Mutex<Option<SimulationWorker>>,
+    txn_id_counter: AtomicU32,
 
     base: Base<RefCounted>,
 }
@@ -92,7 +95,7 @@ impl BasketballEngine {
             team_indices.insert(1, last);
         }
 
-        let league = League {
+        let mut league = League {
             teams, schedule, current_week: 1, season: 2025,
             playoffs_active: false, playoff_series: Vec::new(),
             events: Vec::new(),
@@ -125,6 +128,12 @@ impl BasketballEngine {
                 action_required: false,
             }
         ];
+
+        // ── Generate sponsors for all teams ──
+        for team in league.teams.iter_mut() {
+            let default_params = crate::engine::params::GameParams::default();
+            crate::engine::finance::generate_sponsors(team, &default_params, &self.txn_id_counter);
+        }
 
         let mut game = self.state.lock().unwrap();
         game.league = Some(league.clone());
@@ -431,6 +440,10 @@ impl BasketballEngine {
 
     #[func]
     fn sim_week(&mut self) -> bool {
+        let (params, user_id) = {
+            let g = self.state.lock().unwrap();
+            (g.params.clone(), g.user_team_id.unwrap_or(0))
+        };
         let mut game = self.state.lock().unwrap();
         let league = match game.league.as_mut() {
             Some(l) => l,
@@ -470,6 +483,36 @@ impl BasketballEngine {
         let mut all_deltas: std::collections::HashMap<u32, PlayerStats> = std::collections::HashMap::new();
         for &idx in &games_to_sim {
             Self::simulate_game(idx, league, &mut all_deltas);
+
+            // Post-game: morale + stamina for both teams
+            let sg_clone = league.schedule[idx].clone();
+            if let (Some(hs), Some(aw)) = (sg_clone.home_score, sg_clone.away_score) {
+                // Home team
+                if let Some(team) = league.teams.iter_mut().find(|t| t.id == sg_clone.home_team) {
+                    crate::engine::systems::update_morale_after_game(team, hs > aw, &params);
+                    crate::engine::systems::stamina_after_game(team, &params);
+                }
+                // Away team
+                if let Some(team) = league.teams.iter_mut().find(|t| t.id == sg_clone.away_team) {
+                    crate::engine::systems::update_morale_after_game(team, aw > hs, &params);
+                    crate::engine::systems::stamina_after_game(team, &params);
+                }
+                // Game finances
+                crate::engine::finance::process_game_finances(
+                    league, &sg_clone, hs, aw, &params, &self.txn_id_counter,
+                );
+            }
+        }
+
+        // Process weekly finances for all teams
+        crate::engine::finance::process_weekly_finances(
+            league, &params, &self.txn_id_counter,
+        );
+
+        // Process weekly team systems (training, recovery, morale decay, injuries)
+        let injuries = crate::engine::systems::process_weekly_team_systems(league, &params);
+        if !injuries.is_empty() {
+            godot_print!("[Systems] Week {} injuries: {:?}", current_week, injuries);
         }
 
         league.current_week += 1;
@@ -480,12 +523,9 @@ impl BasketballEngine {
             Self::resolve_playoff_round(league, current_week);
         }
 
+        // Build stats dict with financial data
+        let dict = Self::make_stats_dict(league, user_id);
         drop(game);
-
-        let mut dict = VarDictionary::new();
-        dict.set("wins", 0i64);
-        dict.set("losses", 0i64);
-        dict.set("budget", 120_000_000i64);
         self.base_mut().emit_signal("stats_updated", &[dict.to_variant()]);
         self.base_mut().emit_signal("day_advanced", &[
             GString::from(&format!("Week {}", next_week)).to_variant()
@@ -496,6 +536,10 @@ impl BasketballEngine {
 
     #[func]
     fn sim_next_game(&mut self) -> bool {
+        let (params, user_id) = {
+            let g = self.state.lock().unwrap();
+            (g.params.clone(), g.user_team_id.unwrap_or(0))
+        };
         let mut game = self.state.lock().unwrap();
         let league = match game.league.as_mut() {
             Some(l) => l,
@@ -545,7 +589,35 @@ impl BasketballEngine {
         let mut all_deltas: std::collections::HashMap<u32, PlayerStats> = std::collections::HashMap::new();
         Self::simulate_game(idx, league, &mut all_deltas);
 
+        // Post-game: morale + stamina + finances (clone sg to avoid borrow conflict)
+        let sg = league.schedule[idx].clone();
+        if let (Some(hs), Some(aw)) = (sg.home_score, sg.away_score) {
+            if let Some(team) = league.teams.iter_mut().find(|t| t.id == sg.home_team) {
+                crate::engine::systems::update_morale_after_game(team, hs > aw, &params);
+                crate::engine::systems::stamina_after_game(team, &params);
+            }
+            if let Some(team) = league.teams.iter_mut().find(|t| t.id == sg.away_team) {
+                crate::engine::systems::update_morale_after_game(team, aw > hs, &params);
+                crate::engine::systems::stamina_after_game(team, &params);
+            }
+            crate::engine::finance::process_game_finances(
+                league, &sg, hs, aw, &params, &self.txn_id_counter,
+            );
+        };
+
         if is_last {
+            // Process weekly finances for all teams
+            crate::engine::finance::process_weekly_finances(
+                league, &params, &self.txn_id_counter,
+            );
+
+            // Process weekly team systems (training, recovery, morale decay, injuries)
+            let current_week = league.current_week;
+            let injuries = crate::engine::systems::process_weekly_team_systems(league, &params);
+            if !injuries.is_empty() {
+                godot_print!("[Systems] Week {} injuries: {:?}", current_week, injuries);
+            }
+
             let prev_week = league.current_week;
             league.current_week += 1;
 
@@ -554,13 +626,10 @@ impl BasketballEngine {
             }
 
             let next_week = league.current_week;
+            let stats = Self::make_stats_dict(league, user_id);
             drop(game);
 
-            let mut dict = VarDictionary::new();
-            dict.set("wins", 0i64);
-            dict.set("losses", 0i64);
-            dict.set("budget", 120_000_000i64);
-            self.base_mut().emit_signal("stats_updated", &[dict.to_variant()]);
+            self.base_mut().emit_signal("stats_updated", &[stats.to_variant()]);
             self.base_mut().emit_signal("day_advanced", &[
                 GString::from(&format!("Week {}", next_week)).to_variant()
             ]);
@@ -576,9 +645,11 @@ impl BasketballEngine {
         if let Some(team) = league.teams.iter().find(|t| t.id == user_id) {
             d.set("wins", team.wins as i64);
             d.set("losses", team.losses as i64);
-            let total_salary: u64 = team.players.iter().map(|p| p.salary as u64).sum();
-            let budget = 150_000_000i64 - total_salary as i64;
-            d.set("budget", budget as f64);
+            d.set("budget", team.finances.budget);
+            d.set("salary_cap", team.finances.salary_cap);
+            d.set("total_salary", team.finances.total_salary);
+            d.set("weekly_revenue", team.finances.weekly_revenue);
+            d.set("weekly_expenses", team.finances.weekly_expenses);
             let avg_morale: f64 = if team.players.is_empty() { 100.0 } else {
                 team.players.iter().map(|p| p.morale as f64).sum::<f64>() / team.players.len() as f64
             };
@@ -591,6 +662,10 @@ impl BasketballEngine {
             d.set("wins", 0i64);
             d.set("losses", 0i64);
             d.set("budget", 0f64);
+            d.set("salary_cap", 0f64);
+            d.set("total_salary", 0f64);
+            d.set("weekly_revenue", 0f64);
+            d.set("weekly_expenses", 0f64);
             d.set("morale", 100.0);
             d.set("energy", 100.0);
         }
@@ -625,8 +700,11 @@ impl BasketballEngine {
 
     #[func]
     fn sim_day(&mut self) -> VarDictionary {
+        let (params, user_id) = {
+            let g = self.state.lock().unwrap();
+            (g.params.clone(), g.user_team_id.unwrap_or(0))
+        };
         let mut game = self.state.lock().unwrap();
-        let user_id = game.user_team_id.unwrap_or(0);
         let league = match game.league.as_mut() {
             Some(l) => l,
             None => {
@@ -678,14 +756,41 @@ impl BasketballEngine {
         let mut all_deltas: std::collections::HashMap<u32, PlayerStats> = std::collections::HashMap::new();
         Self::simulate_game(idx, league, &mut all_deltas);
 
+        // Post-game: morale + stamina + finances (clone sg to avoid borrow conflict)
+        let sg = league.schedule[idx].clone();
+        if let (Some(hs), Some(aw)) = (sg.home_score, sg.away_score) {
+            if let Some(team) = league.teams.iter_mut().find(|t| t.id == sg.home_team) {
+                crate::engine::systems::update_morale_after_game(team, hs > aw, &params);
+                crate::engine::systems::stamina_after_game(team, &params);
+            }
+            if let Some(team) = league.teams.iter_mut().find(|t| t.id == sg.away_team) {
+                crate::engine::systems::update_morale_after_game(team, aw > hs, &params);
+                crate::engine::systems::stamina_after_game(team, &params);
+            }
+            crate::engine::finance::process_game_finances(
+                league, &sg, hs, aw, &params, &self.txn_id_counter,
+            );
+        }
+
         // Build match event if user's team played
         let mut events = VarArray::new();
-        let sg = &league.schedule[idx];
         if sg.home_team == user_id || sg.away_team == user_id {
-            events.push(&Self::make_match_event(sg, user_id, league));
+            events.push(&Self::make_match_event(&sg, user_id, league));
         }
 
         if is_last {
+            // Process weekly finances for all teams
+            crate::engine::finance::process_weekly_finances(
+                league, &params, &self.txn_id_counter,
+            );
+
+            // Process weekly team systems (training, recovery, morale decay, injuries)
+            let current_week = league.current_week;
+            let injuries = crate::engine::systems::process_weekly_team_systems(league, &params);
+            if !injuries.is_empty() {
+                godot_print!("[Systems] Week {} injuries: {:?}", current_week, injuries);
+            }
+
             let prev_week = league.current_week;
             league.current_week += 1;
             if league.playoffs_active {
@@ -715,6 +820,77 @@ impl BasketballEngine {
         };
         match league.teams.iter().find(|t| t.id == team_id as u32) {
             Some(t) => team_to_dict(t),
+            None => {
+                godot_error!("Team not found");
+                VarDictionary::new()
+            }
+        }
+    }
+
+    #[func]
+    fn get_finances(&self, team_id: i64) -> VarDictionary {
+        let game = self.state.lock().unwrap();
+        let league = match game.league.as_ref() {
+            Some(l) => l,
+            None => {
+                godot_error!("No league");
+                return VarDictionary::new();
+            }
+        };
+        match league.teams.iter().find(|t| t.id == team_id as u32) {
+            Some(t) => {
+                let mut d = VarDictionary::new();
+                d.set("budget", t.finances.budget);
+                d.set("total_salary", t.finances.total_salary);
+                d.set("salary_cap", t.finances.salary_cap);
+                d.set("projected_revenue", t.finances.projected_revenue);
+                d.set("projected_expenses", t.finances.projected_expenses);
+                d.set("weekly_revenue", t.finances.weekly_revenue);
+                d.set("weekly_expenses", t.finances.weekly_expenses);
+                d.set("budget_remaining", t.finances.salary_cap - t.finances.total_salary);
+                d.set("cap_usage_pct", if t.finances.salary_cap > 0.0 {
+                    (t.finances.total_salary / t.finances.salary_cap * 100.0 * 100.0).round() / 100.0
+                } else { 0.0 });
+
+                // Recent transactions (last 20)
+                let mut txns = VarArray::new();
+                for txn in t.transactions.iter().rev().take(20) {
+                    let mut td = VarDictionary::new();
+                    td.set("amount", txn.amount);
+                    td.set("category", &GString::from(&txn.category));
+                    td.set("description", &GString::from(&txn.description));
+                    td.set("week", txn.week as i64);
+                    td.set("season", txn.season as i64);
+                    txns.push(&td);
+                }
+                d.set("transactions", &txns);
+
+                // Sponsors
+                let mut sp_arr = VarArray::new();
+                for sp in &t.sponsors {
+                    let mut sd = VarDictionary::new();
+                    sd.set("name", &GString::from(&sp.name));
+                    sd.set("amount_per_year", sp.amount_per_year);
+                    sd.set("years_remaining", sp.years_remaining as i64);
+                    sd.set("category", &GString::from(&sp.category));
+                    sp_arr.push(&sd);
+                }
+                d.set("sponsors", &sp_arr);
+
+                // Player salaries breakdown
+                let mut salaries = VarArray::new();
+                for p in &t.players {
+                    let mut pd = VarDictionary::new();
+                    pd.set("name", &GString::from(&format!("{} {}", p.first_name, p.last_name)));
+                    pd.set("salary", p.salary as i64);
+                    let pos_str = format!("{:?}", p.position);
+                    pd.set("position", &GString::from(pos_str.as_str()));
+                    salaries.push(&pd);
+                }
+                d.set("player_salaries", &salaries);
+
+                d
+            }
             None => {
                 godot_error!("Team not found");
                 VarDictionary::new()
@@ -800,6 +976,39 @@ impl BasketballEngine {
     }
 
     #[func]
+    fn set_rotation_order(&self, team_id: i64, player_ids: VarArray) {
+        let mut game = self.state.lock().unwrap();
+        if let Some(ref mut league) = game.league {
+            if let Some(team) = league.teams.iter_mut().find(|t| t.id == team_id as u32) {
+                team.rotation_order = (0..player_ids.len()).map(|i| {
+                    player_ids.get(i).and_then(|v| v.try_to::<i64>().ok()).unwrap_or(0) as u32
+                }).collect();
+                godot_print!("[Engine] rotation_order set for team {}: {:?}", team_id, team.rotation_order);
+            }
+        }
+    }
+
+    #[func]
+    fn get_rotation_order(&self, team_id: i64) -> VarArray {
+        let game = self.state.lock().unwrap();
+        let mut arr = VarArray::new();
+        if let Some(ref league) = game.league {
+            if let Some(team) = league.teams.iter().find(|t| t.id == team_id as u32) {
+                // If rotation_order is empty, return the auto-computed starter IDs
+                let ids = if team.rotation_order.is_empty() {
+                    team.starters().iter().map(|p| p.id).collect::<Vec<_>>()
+                } else {
+                    team.rotation_order.clone()
+                };
+                for pid in ids {
+                    arr.push(pid as i64);
+                }
+            }
+        }
+        arr
+    }
+
+    #[func]
     fn get_user_team_id(&self) -> i64 {
         let game = self.state.lock().unwrap();
         game.user_team_id.unwrap_or(1) as i64
@@ -847,6 +1056,89 @@ impl BasketballEngine {
             }
         }
         GString::from("Balanced")
+    }
+
+    #[func]
+    fn set_training_intensity(&self, intensity: GString) {
+        let intensity_str = intensity.to_string();
+        let parsed = match intensity_str.as_str() {
+            "BAIXA" | "LOW" => "BAIXA",
+            "ALTA" | "HIGH" => "ALTA",
+            _ => "MÉDIA",
+        };
+        let mut game = self.state.lock().unwrap();
+        let user_id = game.user_team_id.unwrap_or(0);
+        if let Some(ref mut league) = game.league {
+            if let Some(team) = league.teams.iter_mut().find(|t| t.id == user_id) {
+                team.training_intensity = parsed.to_string();
+                godot_print!("[Engine] training_intensity set to {} for team {}", parsed, team.id);
+            }
+        }
+    }
+
+    #[func]
+    fn get_training_intensity(&self) -> GString {
+        let game = self.state.lock().unwrap();
+        if let Some(ref league) = game.league {
+            if let Some(team) = league.teams.iter().find(|t| t.id == game.user_team_id.unwrap_or(0)) {
+                return GString::from(team.training_intensity.as_str());
+            }
+        }
+        GString::from("MÉDIA")
+    }
+
+    #[func]
+    fn get_training_status(&self, team_id: i64) -> VarDictionary {
+        let game = self.state.lock().unwrap();
+        let league = match game.league.as_ref() {
+            Some(l) => l,
+            None => return VarDictionary::new(),
+        };
+        match league.teams.iter().find(|t| t.id == team_id as u32) {
+            Some(team) => {
+                let mut d = VarDictionary::new();
+                d.set("focus", &GString::from(match team.training_focus {
+                    TrainingFocus::Shooting => "Shooting",
+                    TrainingFocus::Defense => "Defense",
+                    TrainingFocus::Playmaking => "Playmaking",
+                    TrainingFocus::Physical => "Physical",
+                    TrainingFocus::Balanced => "Balanced",
+                }));
+                d.set("intensity", &GString::from(team.training_intensity.as_str()));
+
+                // Player training info
+                let mut players_arr = VarArray::new();
+                for p in &team.players {
+                    let mut pd = VarDictionary::new();
+                    pd.set("id", p.id as i64);
+                    let name_str = format!("{} {}", p.first_name, p.last_name);
+                    pd.set("name", &GString::from(name_str.as_str()));
+                    let pos_str = format!("{:?}", p.position);
+                    pd.set("position", &GString::from(pos_str.as_str()));
+                    pd.set("morale", p.morale as f64);
+                    pd.set("stamina", p.attributes.stamina as f64);
+                    pd.set("overall", p.attributes.overall() as f64);
+                    pd.set("injury_days", p.injury_days as i64);
+                    let injury_str = if p.injury_days > 0 { format!("Lesionado ({} dias)", p.injury_days) } else { "Saudável".to_string() };
+                    pd.set("injury_status", &GString::from(injury_str.as_str()));
+                    // Attribute breakdown for training focus
+                    let (attr_value, attr_name) = match team.training_focus {
+                        TrainingFocus::Shooting => (p.attributes.three_pt, "three_pt"),
+                        TrainingFocus::Defense => (p.attributes.perimeter_def, "perimeter_def"),
+                        TrainingFocus::Playmaking => (p.attributes.passing, "passing"),
+                        TrainingFocus::Physical => (p.attributes.stamina, "stamina"),
+                        TrainingFocus::Balanced => (p.attributes.overall(), "overall"),
+                    };
+                    pd.set("focus_attr", attr_value as f64);
+                    pd.set("focus_attr_name", &GString::from(attr_name));
+                    players_arr.push(&pd);
+                }
+                d.set("players", &players_arr);
+
+                d
+            }
+            None => VarDictionary::new()
+        }
     }
 
     #[func]
@@ -938,9 +1230,9 @@ impl BasketballEngine {
 
     #[func]
     fn advance_season(&self) -> VarDictionary {
-        let user_id = {
+        let (user_id, params) = {
             let game = self.state.lock().unwrap();
-            game.user_team_id.unwrap_or(0)
+            (game.user_team_id.unwrap_or(0), game.params.clone())
         };
         let mut game = self.state.lock().unwrap();
         let league = match game.league.as_mut() {
@@ -1008,7 +1300,12 @@ impl BasketballEngine {
             }
         }
 
-        // ── C) Season metadata ──
+        // ── C) Season prizes ──
+        crate::engine::finance::process_season_prizes(
+            league, &params, &self.txn_id_counter,
+        );
+
+        // ── D) Season metadata ──
         league.season = league.season.saturating_add(1);
         league.current_week = 1;
         league.playoffs_active = false;
@@ -1018,17 +1315,29 @@ impl BasketballEngine {
         for team in league.teams.iter_mut() {
             team.wins = 0;
             team.losses = 0;
+            team.transactions.clear();
+            // Regenerate sponsors
+            crate::engine::finance::generate_sponsors(
+                team, &params, &self.txn_id_counter,
+            );
         }
 
-        // ── D) Assign new focus for non-user teams for the new season ──
+        // ── E) Assign new focus + intensity for non-user teams for the new season ──
         let all_focuses = [TrainingFocus::Shooting, TrainingFocus::Defense, TrainingFocus::Playmaking, TrainingFocus::Physical, TrainingFocus::Balanced];
         for team in league.teams.iter_mut() {
+            // Clear injuries and reset stamina/morale baseline
+            for p in team.players.iter_mut() {
+                p.injury_days = 0;
+                p.morale = 50.0;
+                p.attributes.stamina = 80.0;
+            }
             if team.id != user_id {
                 team.training_focus = all_focuses[rng.gen_range(0..all_focuses.len())].clone();
+                team.training_intensity = "MÉDIA".to_string();
             }
         }
 
-        // ── E) Fresh double round‑robin schedule ──
+        // ── F) Fresh double round‑robin schedule ──
         league.schedule.clear();
         let mut game_id: u32 = 1;
         let num = league.teams.len();
@@ -1061,7 +1370,7 @@ impl BasketballEngine {
 
         let result = league_to_dict(league);
 
-        // ── E) Tiny reputation bump for surviving a season ──
+        // ── G) Tiny reputation bump for surviving a season ──
         if let Some(ref mut c) = game.coach {
             c.reputation = (c.reputation + 2).min(100);
         }
@@ -1234,6 +1543,54 @@ impl BasketballEngine {
         worker_lock.as_ref().map_or(false, |w| w.is_alive())
     }
 
+    // ── Game Params (configuração) ──
+
+    #[func]
+    fn get_game_params(&self) -> VarDictionary {
+        let game = self.state.lock().unwrap();
+        let dict = game.params.to_dict();
+        let mut vd = VarDictionary::new();
+        for (k, v) in &dict {
+            let val = match v {
+                serde_json::Value::Number(n) => {
+                    if let Some(f) = n.as_f64() { f.to_variant() }
+                    else if let Some(i) = n.as_i64() { i.to_variant() }
+                    else { ().to_variant() }
+                }
+                serde_json::Value::Bool(b) => b.to_variant(),
+                serde_json::Value::String(s) => GString::from(s.as_str()).to_variant(),
+                _ => ().to_variant(),
+            };
+            vd.set(&GString::from(k.as_str()), &val);
+        }
+        vd
+    }
+
+    #[func]
+    fn set_game_param(&self, key: GString, value: Variant) -> bool {
+        let key_str = key.to_string();
+        let json_val = Self::variant_to_json_value(&value);
+        let mut game = self.state.lock().unwrap();
+        let ok = game.params.set_from_json(&key_str, json_val);
+        if ok {
+            godot_print!("[Engine] GameParam '{}' updated", key_str);
+        } else {
+            godot_warn!("[Engine] Unknown GameParam key: '{}'", key_str);
+        }
+        ok
+    }
+
+    fn variant_to_json_value(v: &Variant) -> serde_json::Value {
+        use godot::prelude::VariantType;
+        match v.get_type() {
+            VariantType::FLOAT => serde_json::json!(v.to::<f64>()),
+            VariantType::INT => serde_json::json!(v.to::<i64>()),
+            VariantType::BOOL => serde_json::json!(v.to::<bool>()),
+            VariantType::STRING => serde_json::json!(v.to::<GString>().to_string()),
+            _ => serde_json::Value::Null,
+        }
+    }
+
     // ── Worker Breakpoint & Match Recording ──
 
     #[func]
@@ -1331,6 +1688,7 @@ impl IRefCounted for BasketballEngine {
             pending_games: Vec::new(),
             pending_idx: 0,
             worker: Mutex::new(None),
+            txn_id_counter: AtomicU32::new(10_000), // start high to avoid ID conflicts
             base,
         }
     }

@@ -1,16 +1,34 @@
 use serde::{Deserialize, Serialize};
 use crate::engine::types::*;
+use crate::engine::params::GameParams;
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GameState {
     pub league: Option<League>,
     pub current_match: Option<MatchState>,
     pub user_team_id: Option<TeamId>,
     pub date: GameDate,
     pub settings: GameSettings,
+    pub params: GameParams,
     pub coach: Option<crate::engine::manager::CoachProfile>,
     pub staff: Vec<crate::engine::manager::Staff>,
     pub inbox: Vec<crate::engine::manager::InboxMessage>,
+}
+
+impl Default for GameState {
+    fn default() -> Self {
+        Self {
+            league: None,
+            current_match: None,
+            user_team_id: None,
+            date: GameDate::default(),
+            settings: GameSettings::default(),
+            params: GameParams::default(),
+            coach: None,
+            staff: Vec::new(),
+            inbox: Vec::new(),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

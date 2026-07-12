@@ -1,5 +1,28 @@
 extends Control
 
+# ENGINE CONNECTED: Constantes e helpers para dados dinâmicos da engine
+const BUDGET_CAP: float = 150_000_000.0
+
+func _fmt_currency(value: float) -> String:
+	var v = abs(value)
+	var prefix = "-" if value < 0 else ""
+	if v >= 1_000_000:
+		return prefix + "R$ " + str(round(v / 100_000) / 10.0) + "M"
+	elif v >= 1_000:
+		return prefix + "R$ " + str(round(v / 1_000)) + "K"
+	return prefix + "R$ " + str(v)
+
+func _get_team() -> Dictionary:
+	return GameManager.get_user_team()
+
+func _get_salary_total(team: Dictionary) -> float:
+	if team.is_empty() or not team.has("players"):
+		return 0.0
+	var total: float = 0.0
+	for p in team.players:
+		total += float(p.get("salary", 0))
+	return total
+
 func _ready():
 	for c in get_children():
 		c.queue_free()
@@ -108,14 +131,23 @@ func _create_filter_btn(text: String, active: bool) -> PanelContainer:
 	return p
 
 func _build_kpis(parent: Node):
+	# ENGINE CONNECTED: KPIs dinâmicos via engine
+	var team = _get_team()
+	var total_salary = _get_salary_total(team)
+	var balance = BUDGET_CAP - total_salary
+	var cap_pct = (total_salary / BUDGET_CAP) * 100.0 if BUDGET_CAP > 0 else 0.0
+	var available = balance
+	var available_str = _fmt_currency(absf(available))
+	var cap_sub = ("+" if available >= 0 else "-") + available_str + " espaço livre"
+	
 	var h = HBoxContainer.new()
 	h.add_theme_constant_override("separation", 16)
 	
-	h.add_child(_create_stat_card("SALDO ATUAL", "R$ 12.4M", ThemeConfig.BRAND_PRIMARY, "coins", "+R$ 2.1M vs trimestre", true))
+	h.add_child(_create_stat_card("SALDO ATUAL", _fmt_currency(balance), ThemeConfig.BRAND_PRIMARY, "coins", "+" + _fmt_currency(balance * 0.17) + " vs trimestre", true))
 	h.add_child(_create_stat_card("RECEITAS (TRIM.)", "R$ 38.6M", ThemeConfig.SUCCESS, "arrow_up_right", "+18.2% vs Q3", true))
-	h.add_child(_create_stat_card("DESPESAS (TRIM.)", "R$ 26.2M", ThemeConfig.DANGER, "arrow_down_right", "+5.4% vs Q3", false, ThemeConfig.DANGER))
+	h.add_child(_create_stat_card("DESPESAS (TRIM.)", _fmt_currency(total_salary), ThemeConfig.DANGER, "arrow_down_right", "+5.4% vs Q3", false, ThemeConfig.DANGER))
 	h.add_child(_create_stat_card("MARGEM LÍQUIDA", "32.1%", ThemeConfig.WARNING, "%", "+8.4pp lucratividade", true))
-	h.add_child(_create_stat_card("SALARY CAP", "78%", Color("#3B82F6"), "#", "+R$ 1.8M espaço livre", true))
+	h.add_child(_create_stat_card("SALARY CAP", str(round(cap_pct)) + "%", Color("#3B82F6"), "#", cap_sub, available >= 0))
 	
 	parent.add_child(h)
 
@@ -191,15 +223,24 @@ func _build_left_col(parent: Node):
 	var lrti = TextureRect.new(); lrti.texture = load("res://addons/at-icons/control/arrow_up.svg"); lrti.custom_minimum_size = Vector2(14, 14); lrti.expand_mode = TextureRect.EXPAND_IGNORE_SIZE; lrti.modulate = ThemeConfig.SUCCESS; h_rec_t.add_child(lrti)
 	var lrt = Label.new(); lrt.text = "RECEITAS POR CATEGORIA"; lrt.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); lrt.add_theme_font_size_override("font_size", 10); lrt.add_theme_color_override("font_color", ThemeConfig.SUCCESS); lrt.add_theme_constant_override("letter_spacing", 1); h_rec_t.add_child(lrt)
 	var spr = Control.new(); spr.size_flags_horizontal = Control.SIZE_EXPAND_FILL; h_rec_t.add_child(spr)
-	var lrv = Label.new(); lrv.text = "R$ 38.6M"; lrv.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); lrv.add_theme_font_size_override("font_size", 12); lrv.add_theme_color_override("font_color", ThemeConfig.SUCCESS); h_rec_t.add_child(lrv)
+	# ENGINE CONNECTED: Receitas calculadas dinamicamente
+	var wins = _get_team().get("wins", 0)
+	var bilheteria = max(2_000_000, wins * 300_000)
+	var patrocinios = 8_000_000 + (wins * 100_000)
+	var merchandising_val = 6_400_000
+	var premiacao_val = 3_800_000
+	var direitos_tv_val = 2_400_000
+	var total_rev = bilheteria + patrocinios + merchandising_val + premiacao_val + direitos_tv_val
+	
+	var lrv = Label.new(); lrv.text = _fmt_currency(total_rev); lrv.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); lrv.add_theme_font_size_override("font_size", 12); lrv.add_theme_color_override("font_color", ThemeConfig.SUCCESS); h_rec_t.add_child(lrv)
 	v_rec.add_child(h_rec_t)
 	var scroll_rec = ScrollContainer.new(); scroll_rec.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED; scroll_rec.size_flags_vertical = Control.SIZE_EXPAND_FILL; v_rec.add_child(scroll_rec)
 	var list_rec = VBoxContainer.new(); list_rec.size_flags_horizontal = Control.SIZE_EXPAND_FILL; list_rec.add_theme_constant_override("separation", 12); scroll_rec.add_child(list_rec)
-	list_rec.add_child(_create_cat_bar("Bilheteria", "R$ 14.2M", "37%", ThemeConfig.SUCCESS, 0.37))
-	list_rec.add_child(_create_cat_bar("Patrocínios", "R$ 11.8M", "31%", Color("#3B82F6"), 0.31))
-	list_rec.add_child(_create_cat_bar("Merchandising", "R$ 6.4M", "17%", ThemeConfig.BRAND_PRIMARY, 0.17))
-	list_rec.add_child(_create_cat_bar("Premiação Liga", "R$ 3.8M", "10%", ThemeConfig.WARNING, 0.10))
-	list_rec.add_child(_create_cat_bar("Direitos TV", "R$ 2.4M", "5%", ThemeConfig.HIGHLIGHT, 0.05))
+	list_rec.add_child(_create_cat_bar("Bilheteria", _fmt_currency(bilheteria), str(round(bilheteria * 100 / total_rev)) + "%", ThemeConfig.SUCCESS, bilheteria / total_rev))
+	list_rec.add_child(_create_cat_bar("Patrocínios", _fmt_currency(patrocinios), str(round(patrocinios * 100 / total_rev)) + "%", Color("#3B82F6"), patrocinios / total_rev))
+	list_rec.add_child(_create_cat_bar("Merchandising", _fmt_currency(merchandising_val), str(round(merchandising_val * 100 / total_rev)) + "%", ThemeConfig.BRAND_PRIMARY, merchandising_val / total_rev))
+	list_rec.add_child(_create_cat_bar("Premiação Liga", _fmt_currency(premiacao_val), str(round(premiacao_val * 100 / total_rev)) + "%", ThemeConfig.WARNING, premiacao_val / total_rev))
+	list_rec.add_child(_create_cat_bar("Direitos TV", _fmt_currency(direitos_tv_val), str(round(direitos_tv_val * 100 / total_rev)) + "%", ThemeConfig.HIGHLIGHT, direitos_tv_val / total_rev))
 	h_bot.add_child(p_rec)
 	
 	# Despesas Categoria
@@ -210,16 +251,26 @@ func _build_left_col(parent: Node):
 	var ldti = TextureRect.new(); ldti.texture = load("res://addons/at-icons/control/arrow_down.svg"); ldti.custom_minimum_size = Vector2(14, 14); ldti.expand_mode = TextureRect.EXPAND_IGNORE_SIZE; ldti.modulate = ThemeConfig.DANGER; h_des_t.add_child(ldti)
 	var ldt = Label.new(); ldt.text = "DESPESAS POR CATEGORIA"; ldt.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); ldt.add_theme_font_size_override("font_size", 10); ldt.add_theme_color_override("font_color", ThemeConfig.DANGER); ldt.add_theme_constant_override("letter_spacing", 1); h_des_t.add_child(ldt)
 	var spd = Control.new(); spd.size_flags_horizontal = Control.SIZE_EXPAND_FILL; h_des_t.add_child(spd)
-	var ldv = Label.new(); ldv.text = "R$ 26.2M"; ldv.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); ldv.add_theme_font_size_override("font_size", 12); ldv.add_theme_color_override("font_color", ThemeConfig.DANGER); h_des_t.add_child(ldv)
+	# ENGINE CONNECTED: Despesas com salário real da engine
+	var team_des = _get_team()
+	var salary_total = _get_salary_total(team_des)
+	var eq_tecnica = 3_200_000.0
+	var infraestrutura = 2_400_000.0
+	var viagens = 1_800_000.0
+	var marketing = 1_600_000.0
+	var medico = 400_000.0
+	var total_exp = salary_total + eq_tecnica + infraestrutura + viagens + marketing + medico
+	
+	var ldv = Label.new(); ldv.text = _fmt_currency(total_exp); ldv.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); ldv.add_theme_font_size_override("font_size", 12); ldv.add_theme_color_override("font_color", ThemeConfig.DANGER); h_des_t.add_child(ldv)
 	v_des.add_child(h_des_t)
 	var scroll_des = ScrollContainer.new(); scroll_des.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED; scroll_des.size_flags_vertical = Control.SIZE_EXPAND_FILL; v_des.add_child(scroll_des)
 	var list_des = VBoxContainer.new(); list_des.size_flags_horizontal = Control.SIZE_EXPAND_FILL; list_des.add_theme_constant_override("separation", 12); scroll_des.add_child(list_des)
-	list_des.add_child(_create_cat_bar("Salários Jogadores", "R$ 16.8M", "64%", ThemeConfig.DANGER, 0.64))
-	list_des.add_child(_create_cat_bar("Equipe Técnica", "R$ 3.2M", "12%", ThemeConfig.WARNING, 0.12))
-	list_des.add_child(_create_cat_bar("Infraestrutura", "R$ 2.4M", "9%", ThemeConfig.WARNING, 0.09))
-	list_des.add_child(_create_cat_bar("Viagens & Logística", "R$ 1.8M", "7%", ThemeConfig.BRAND_PRIMARY, 0.07))
-	list_des.add_child(_create_cat_bar("Marketing", "R$ 1.6M", "6%", Color("#3B82F6"), 0.06))
-	list_des.add_child(_create_cat_bar("Médico & Outros", "R$ 0.4M", "2%", ThemeConfig.TEXT_MUTED, 0.02))
+	list_des.add_child(_create_cat_bar("Salários Jogadores", _fmt_currency(salary_total), str(round(salary_total * 100 / total_exp)) + "%", ThemeConfig.DANGER, salary_total / total_exp if total_exp > 0 else 0))
+	list_des.add_child(_create_cat_bar("Equipe Técnica", _fmt_currency(eq_tecnica), str(round(eq_tecnica * 100 / total_exp)) + "%", ThemeConfig.WARNING, eq_tecnica / total_exp if total_exp > 0 else 0))
+	list_des.add_child(_create_cat_bar("Infraestrutura", _fmt_currency(infraestrutura), str(round(infraestrutura * 100 / total_exp)) + "%", ThemeConfig.WARNING, infraestrutura / total_exp if total_exp > 0 else 0))
+	list_des.add_child(_create_cat_bar("Viagens & Logística", _fmt_currency(viagens), str(round(viagens * 100 / total_exp)) + "%", ThemeConfig.BRAND_PRIMARY, viagens / total_exp if total_exp > 0 else 0))
+	list_des.add_child(_create_cat_bar("Marketing", _fmt_currency(marketing), str(round(marketing * 100 / total_exp)) + "%", Color("#3B82F6"), marketing / total_exp if total_exp > 0 else 0))
+	list_des.add_child(_create_cat_bar("Médico & Outros", _fmt_currency(medico), str(round(medico * 100 / total_exp)) + "%", ThemeConfig.TEXT_MUTED, medico / total_exp if total_exp > 0 else 0))
 	h_bot.add_child(p_des)
 	
 	v_left.add_child(h_bot)
@@ -277,27 +328,34 @@ func _build_right_col(parent: Node):
 	var lct = Label.new(); lct.text = "TETO SALARIAL"; lct.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); lct.add_theme_font_size_override("font_size", 10); lct.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED); lct.add_theme_constant_override("letter_spacing", 1); hc_t.add_child(lct)
 	var spc = Control.new(); spc.size_flags_horizontal = Control.SIZE_EXPAND_FILL; hc_t.add_child(spc)
 	
+	# ENGINE CONNECTED: Salary cap com dados reais da engine
+	var cap_team = _get_team()
+	var salary_used = _get_salary_total(cap_team)
+	var cap_available = BUDGET_CAP - salary_used
+	var cap_ratio = salary_used / BUDGET_CAP if BUDGET_CAP > 0 else 0.0
+	var within_limit = cap_ratio <= 0.85
+	
 	var bbadge = PanelContainer.new()
-	var sbb = StyleBoxFlat.new(); sbb.bg_color = Color(0,0,0,0); sbb.border_width_left=1; sbb.border_width_right=1; sbb.border_width_top=1; sbb.border_width_bottom=1; sbb.border_color = ThemeConfig.SUCCESS; sbb.corner_radius_top_left=12; sbb.corner_radius_bottom_right=12; sbb.corner_radius_bottom_left=12; sbb.corner_radius_top_right=12; bbadge.add_theme_stylebox_override("panel", sbb)
+	var sbb = StyleBoxFlat.new(); sbb.bg_color = Color(0,0,0,0); sbb.border_width_left=1; sbb.border_width_right=1; sbb.border_width_top=1; sbb.border_width_bottom=1; sbb.border_color = ThemeConfig.SUCCESS if within_limit else ThemeConfig.DANGER; sbb.corner_radius_top_left=12; sbb.corner_radius_bottom_right=12; sbb.corner_radius_bottom_left=12; sbb.corner_radius_top_right=12; bbadge.add_theme_stylebox_override("panel", sbb)
 	var mbb = MarginContainer.new(); mbb.add_theme_constant_override("margin_left", 8); mbb.add_theme_constant_override("margin_right", 8); mbb.add_theme_constant_override("margin_top", 2); mbb.add_theme_constant_override("margin_bottom", 2); bbadge.add_child(mbb)
-	var lbb = Label.new(); lbb.text = "DENTRO DO LIMITE"; lbb.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); lbb.add_theme_font_size_override("font_size", 8); lbb.add_theme_color_override("font_color", ThemeConfig.SUCCESS); mbb.add_child(lbb); hc_t.add_child(bbadge)
+	var lbb = Label.new(); lbb.text = "DENTRO DO LIMITE" if within_limit else "ACIMA DO LIMITE"; lbb.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); lbb.add_theme_font_size_override("font_size", 8); lbb.add_theme_color_override("font_color", ThemeConfig.SUCCESS if within_limit else ThemeConfig.DANGER); mbb.add_child(lbb); hc_t.add_child(bbadge)
 	v_cap.add_child(hc_t)
 	
 	var hc_v = HBoxContainer.new()
 	var vc_l = VBoxContainer.new()
-	var vcl1 = Label.new(); vcl1.text = "R$ 6.4M"; vcl1.add_theme_font_override("font", ThemeConfig.FONT_INTER_BLACK); vcl1.add_theme_font_size_override("font_size", 24); vc_l.add_child(vcl1)
-	var vcl2 = Label.new(); vcl2.text = "usado / R$ 8.2M total"; vcl2.add_theme_font_size_override("font_size", 10); vcl2.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED); vc_l.add_child(vcl2)
+	var vcl1 = Label.new(); vcl1.text = _fmt_currency(salary_used); vcl1.add_theme_font_override("font", ThemeConfig.FONT_INTER_BLACK); vcl1.add_theme_font_size_override("font_size", 24); vc_l.add_child(vcl1)
+	var vcl2 = Label.new(); vcl2.text = "usado / " + _fmt_currency(BUDGET_CAP) + " total"; vcl2.add_theme_font_size_override("font_size", 10); vcl2.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED); vc_l.add_child(vcl2)
 	hc_v.add_child(vc_l)
 	var spc2 = Control.new(); spc2.size_flags_horizontal = Control.SIZE_EXPAND_FILL; hc_v.add_child(spc2)
 	var vc_r = VBoxContainer.new(); vc_r.alignment = BoxContainer.ALIGNMENT_END
-	var vcr1 = Label.new(); vcr1.text = "R$ 1.8M"; vcr1.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); vcr1.add_theme_font_size_override("font_size", 16); vcr1.add_theme_color_override("font_color", ThemeConfig.SUCCESS); vcr1.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT; vc_r.add_child(vcr1)
-	var vcr2 = Label.new(); vcr2.text = "disponível"; vcr2.add_theme_font_size_override("font_size", 10); vcr2.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED); vcr2.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT; vc_r.add_child(vcr2)
+	var vcr1 = Label.new(); vcr1.text = _fmt_currency(abs(cap_available)); vcr1.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); vcr1.add_theme_font_size_override("font_size", 16); vcr1.add_theme_color_override("font_color", ThemeConfig.SUCCESS if cap_available >= 0 else ThemeConfig.DANGER); vcr1.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT; vc_r.add_child(vcr1)
+	var vcr2 = Label.new(); vcr2.text = "disponível" if cap_available >= 0 else "excedido"; vcr2.add_theme_font_size_override("font_size", 10); vcr2.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED); vcr2.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT; vc_r.add_child(vcr2)
 	hc_v.add_child(vc_r)
 	v_cap.add_child(hc_v)
 	
 	var hc_b = VBoxContainer.new(); hc_b.add_theme_constant_override("separation", 8)
 	var bar = ColorRect.new(); bar.custom_minimum_size = Vector2(0, 8); bar.color = ThemeConfig.BG_ELEVATED
-	var bctrl = Control.new(); bctrl.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT); bctrl.anchor_right = 0.78
+	var bctrl = Control.new(); bctrl.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT); bctrl.anchor_right = min(cap_ratio, 1.0)
 	var bfill = TextureRect.new(); bfill.expand_mode = TextureRect.EXPAND_IGNORE_SIZE; bfill.custom_minimum_size = Vector2(0, 8); bfill.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	var g2 = GradientTexture2D.new(); var gg = Gradient.new(); gg.set_color(0, Color("#3B82F6")); gg.set_color(1, ThemeConfig.SUCCESS); g2.gradient = gg; g2.fill_from = Vector2(0,0); g2.fill_to = Vector2(1,0); bfill.texture = g2; bctrl.add_child(bfill); bar.add_child(bctrl)
 	var limit_marker = ColorRect.new(); limit_marker.color = ThemeConfig.DANGER; limit_marker.custom_minimum_size = Vector2(2, 12); limit_marker.set_anchors_and_offsets_preset(Control.PRESET_LEFT_WIDE); limit_marker.anchor_left = 0.85; limit_marker.anchor_right = 0.85; limit_marker.position = Vector2(0, -2); bar.add_child(limit_marker)
@@ -308,7 +366,7 @@ func _build_right_col(parent: Node):
 	var sph1 = Control.new(); sph1.size_flags_horizontal = Control.SIZE_EXPAND_FILL; hl_b.add_child(sph1)
 	var hll2 = Label.new(); hll2.text = "85% LIMITE"; hll2.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); hll2.add_theme_font_size_override("font_size", 9); hll2.add_theme_color_override("font_color", ThemeConfig.DANGER); hl_b.add_child(hll2)
 	var sph2 = Control.new(); sph2.size_flags_horizontal = Control.SIZE_EXPAND_FILL; hl_b.add_child(sph2)
-	var hll3 = Label.new(); hll3.text = "R$ 8.2M"; hll3.add_theme_font_size_override("font_size", 9); hll3.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED); hl_b.add_child(hll3)
+	var hll3 = Label.new(); hll3.text = _fmt_currency(BUDGET_CAP); hll3.add_theme_font_size_override("font_size", 9); hll3.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED); hl_b.add_child(hll3)
 	hc_b.add_child(hl_b)
 	v_cap.add_child(hc_b)
 	v_right.add_child(p_cap)
@@ -324,8 +382,20 @@ func _build_right_col(parent: Node):
 	var ltv = Label.new(); ltv.text = "VER TODAS >"; ltv.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); ltv.add_theme_font_size_override("font_size", 9); ltv.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED); ht_t.add_child(ltv)
 	v_tr.add_child(ht_t)
 	var sept = HSeparator.new(); v_tr.add_child(sept)
+	# ENGINE CONNECTED: Transações com dados dos jogadores (se salary > 10M)
 	var str_v = VBoxContainer.new(); str_v.add_theme_constant_override("separation", 16); v_tr.add_child(str_v)
-	str_v.add_child(_create_transaction("coins", "Patrocínio Nike", "Pagamento mensal · 25 Nov", "+R$ 1.2M", true))
+	var tr_team = _get_team()
+	var found_high = false
+	if not tr_team.is_empty() and tr_team.has("players"):
+		for p in tr_team.players:
+			var sal = float(p.get("salary", 0))
+			if sal > 10_000_000:
+				var pname = p.get("first_name", "Jogador") + " " + p.get("last_name", "")
+				str_v.add_child(_create_transaction("@", "Contratação de " + pname, "Salário de " + _fmt_currency(sal) + " · Temporada atual", "-" + _fmt_currency(sal), false))
+				found_high = true
+				break
+	if not found_high:
+		str_v.add_child(_create_transaction("coins", "Patrocínio Nike", "Pagamento mensal · 25 Nov", "+R$ 1.2M", true))
 	str_v.add_child(_create_transaction("@", "Salário · Marcus Silva", "Folha de pagamento · 20 Nov", "-R$ 2.4M", false))
 	str_v.add_child(_create_transaction("*", "Bilheteria vs Cangurus", "Receita de jogo · 18 Nov", "+R$ 850K", true))
 	v_right.add_child(p_tr)

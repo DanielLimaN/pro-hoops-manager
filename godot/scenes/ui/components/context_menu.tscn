@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://context_menu_component"]
+
+[ext_resource type="Script" path="res://scenes/ui/components/context_menu.gd" id="1_script"]
+
+[node name="ContextMenu" type="PanelContainer"]
+anchors_preset = 0
+custom_minimum_size = Vector2(180, 0)
+mouse_filter = 1
+script = ExtResource("1_script")

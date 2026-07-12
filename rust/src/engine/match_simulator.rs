@@ -1204,8 +1204,9 @@ mod tests {
 
     #[test]
     fn check_score_pace() {
-        let home = Team::generate(1, "Lakers", "Los Angeles", "LAL", 80.0);
-        let away = Team::generate(2, "Celtics", "Boston", "BOS", 78.0);
+        let mut used = std::collections::HashSet::new();
+        let home = Team::generate(1, "Lakers", "Los Angeles", "LAL", 80.0, &mut used);
+        let away = Team::generate(2, "Celtics", "Boston", "BOS", 78.0, &mut used);
         let mut sim = MatchSimulator::new(home, away);
         sim.simulate_full();
         println!("FINAL: {} {} x {} {} ({} ticks)", sim.home_team.city, sim.home_score, sim.away_score, sim.away_team.city, sim.tick_count);
@@ -1214,10 +1215,11 @@ mod tests {
 
     #[test]
     fn generate_calibration_baseline() {
+        let mut used = std::collections::HashSet::new();
         let cal_dir = "target/calibration";
         fs::create_dir_all(cal_dir).ok();
-        let home = Team::generate(1, "Lakers", "Los Angeles", "LAL", 80.0);
-        let away = Team::generate(2, "Celtics", "Boston", "BOS", 78.0);
+        let home = Team::generate(1, "Lakers", "Los Angeles", "LAL", 80.0, &mut used);
+        let away = Team::generate(2, "Celtics", "Boston", "BOS", 78.0, &mut used);
         let mut sim = MatchSimulator::new(home, away);
         sim.start_logging(&format!("{}/match.simlog", cal_dir), &format!("{}/match.calibration.json", cal_dir));
         sim.simulate_full();

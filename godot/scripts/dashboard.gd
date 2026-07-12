@@ -111,9 +111,38 @@ func _populate_next_game():
 			break
 
 func _populate_stats(team: Dictionary):
-	# Just some placeholder stats to fill the bottom-left panel
-	%PPGLabel.text = "104.5 PPG"
-	%OPPLabel.text = "98.2 OPP"
+	# Compute PPG and OPP from the schedule
+	var schedule = GameManager.get_schedule()
+	var user_id = GameManager.user_team_id
+	var total_pts_scored = 0.0
+	var total_pts_conceded = 0.0
+	var games_count = 0
+
+	for game in schedule:
+		if not game.played:
+			continue
+		var is_user_home = game.home_team == user_id
+		var is_user_away = game.away_team == user_id
+		if not is_user_home and not is_user_away:
+			continue
+		var home_score = float(game.get("home_score", 0))
+		var away_score = float(game.get("away_score", 0))
+		if is_user_home:
+			total_pts_scored += home_score
+			total_pts_conceded += away_score
+		else:
+			total_pts_scored += away_score
+			total_pts_conceded += home_score
+		games_count += 1
+
+	var ppg = "0.0"
+	var opp = "0.0"
+	if games_count > 0:
+		ppg = str(round((total_pts_scored / games_count) * 10.0) / 10.0)
+		opp = str(round((total_pts_conceded / games_count) * 10.0) / 10.0)
+
+	%PPGLabel.text = ppg + " PPG"
+	%OPPLabel.text = opp + " OPP"
 
 func _find_team(teams: Array, team_id: int) -> Dictionary:
 	for t in teams:

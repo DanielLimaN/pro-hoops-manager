@@ -28,8 +28,12 @@ const COL_HIGHLIGHT := Color("#F472B6")
 var _active_filter: String = "TODOS"
 var _edit_mode: bool = false
 var _selected_player_idx: int = -1
+var _replacement_source: Dictionary = {}  # Starter being replaced (set by right-click context menu)
 
 var _player_data_cache: Array = []
+
+var _swapped_rows: Array = []  # Array[int] — indices that were recently swapped (shows -> <- arrows)
+var _swap_feedback_timer: Timer
 
 var _player_rows: Array = []
 var _filter_btns = {}
@@ -62,6 +66,13 @@ func _ready():
 	_build_content(vbox)
 
 	_load_roster()
+	
+	# Swap feedback timer (auto-clears -> <- indicators)
+	_swap_feedback_timer = Timer.new()
+	_swap_feedback_timer.one_shot = true
+	_swap_feedback_timer.timeout.connect(_clear_swap_indicators)
+	add_child(_swap_feedback_timer)
+	
 	quick_action_requested.connect(_on_quick_action_requested)
 	edit_rotation_requested.connect(_on_edit_rotation_requested)
 	cancel_rotation_requested.connect(_on_cancel_rotation_requested)
@@ -175,11 +186,36 @@ func _build_kpis(parent: VBoxContainer):
 	hbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	hbox.add_theme_constant_override("separation", 12)
 
+	var team = GameManager.get_user_team()
+	var players = team.get("players", [])
+	var count = players.size()
+
+	# Compute average OVR and age from engine players
+	var total_ovr = 0.0
+	var total_age = 0.0
+	for p in players:
+		total_ovr += float(p.get("overall", 50))
+		total_age += float(p.get("age", 20))
+
+	var avg_ovr = "0.0"
+	var avg_age = "0.0"
+	if count > 0:
+		avg_ovr = str(round((total_ovr / count) * 10.0) / 10.0)
+		avg_age = str(round((total_age / count) * 10.0) / 10.0)
+
+	# Get salary total from engine finances
+	var finances = GameManager.get_finances()
+	var salary_total = float(finances.get("total_salary", 0))
+	var salary_str = _format_salary(int(salary_total))
+
+	# Get chemistry from engine team
+	var chemistry = str(round(team.get("chemistry", 94.0)))
+
 	var kpis = [
-		{icon = "star", title = "OVERALL MÉDIO", val = "82.4", sub = "/100", color = COL_BRAND},
-		{icon = "calendar", title = "IDADE MÉDIA", val = "26.3", sub = "anos", color = COL_INFO},
-		{icon = "coins", title = "SALÁRIO TOTAL", val = "R$ 8.2", sub = "M/mês", color = COL_SUCCESS},
-		{icon = "beaker", title = "QUÍMICA", val = "94", sub = "/100", color = COL_HIGHLIGHT},
+		{icon = "star", title = "OVERALL MÉDIO", val = avg_ovr, sub = "/100", color = COL_BRAND},
+		{icon = "calendar", title = "IDADE MÉDIA", val = avg_age, sub = "anos", color = COL_INFO},
+		{icon = "coins", title = "SALÁRIO TOTAL", val = salary_str, sub = "", color = COL_SUCCESS},
+		{icon = "beaker", title = "QUÍMICA", val = chemistry, sub = "/100", color = COL_HIGHLIGHT},
 	]
 
 	for k in kpis:
@@ -352,6 +388,7 @@ func _build_player_table(parent: HBoxContainer):
 	parent.add_child(card)
 
 func _refresh_player_rows():
+	_player_rows.clear()
 	var list = find_child("PlayerList", true, false)
 	if not list:
 		return
@@ -521,6 +558,29 @@ func _make_player_row(d: Dictionary, idx: int) -> PanelContainer:
 	salary_lbl.add_theme_font_size_override("font_size", 13)
 	salary_lbl.add_theme_color_override("font_color", COL_TEXT)
 
+	# Swap indicator (→ ← for recently swapped rows)
+	var swap_indicator = HBoxContainer.new()
+	swap_indicator.name = "SwapIndicator"
+	swap_indicator.add_theme_constant_override("separation", 4)
+	swap_indicator.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	swap_indicator.visible = idx in _swapped_rows
+
+	var arrow_left = Label.new()
+	arrow_left.text = "→"
+	arrow_left.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
+	arrow_left.add_theme_font_size_override("font_size", 14)
+	arrow_left.add_theme_color_override("font_color", COL_BRAND)
+	swap_indicator.add_child(arrow_left)
+
+	var arrow_right = Label.new()
+	arrow_right.text = "←"
+	arrow_right.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
+	arrow_right.add_theme_font_size_override("font_size", 14)
+	arrow_right.add_theme_color_override("font_color", COL_BRAND)
+	swap_indicator.add_child(arrow_right)
+
+	hbox.add_child(swap_indicator)
+
 	# Quick Action button
 	var qa_btn = PanelContainer.new()
 	qa_btn.custom_minimum_size = Vector2(32, 24)
@@ -576,11 +636,25 @@ func _make_player_row(d: Dictionary, idx: int) -> PanelContainer:
 	row_click.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	row_click.mouse_filter = Control.MOUSE_FILTER_PASS
 	row_click.pressed.connect(func():
+		if not _replacement_source.is_empty():
+			_execute_player_swap(_replacement_source, d)
+			return
 		_selected_player_idx = idx
 		_refresh_all()
 		player_selected.emit(d)
 	)
 	row.add_child(row_click)
+
+	# Right-click guard overlay
+	var rclick_guard = Button.new()
+	rclick_guard.flat = true
+	rclick_guard.mouse_filter = Control.MOUSE_FILTER_STOP
+	rclick_guard.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	rclick_guard.gui_input.connect(func(event: InputEvent):
+		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
+			_on_player_right_clicked(d, get_global_mouse_position())
+	)
+	row.add_child(rclick_guard)
 
 	return row
 
@@ -1121,8 +1195,122 @@ func _on_cancel_rotation_requested():
 	set_edit_mode(false)
 
 func _on_save_rotation_requested():
-	print("Rotation saved")
+	var team_id = GameManager.user_team_id
+	var player_ids: Array[int] = []
+	for p in _player_data_cache:
+		var pid = p.get("player_id", 0)
+		if pid > 0:
+			player_ids.append(pid)
+	if player_ids.size() > 0:
+		GameManager.set_rotation_order(team_id, player_ids)
+		print("[Team] Rotation saved: ", player_ids)
+	else:
+		print("[Team] No player IDs in cache - saving order as player names")
 	set_edit_mode(false)
+
+# ─── Context Menu (Right-click) ──────────────────────────────────────────────
+
+func _on_player_right_clicked(player_data: Dictionary, global_pos: Vector2) -> void:
+	# Only show context menu for starters (indices 0-4)
+	var idx = _player_data_cache.find(player_data)
+	if idx < 0 or idx >= 5:
+		return
+
+	# Collect same-position candidates (excluding the clicked player)
+	var pos = player_data.get("pos", "")
+	var same_pos_players: Array = []
+	var bench_players_list: Array = []
+	for p in _player_data_cache:
+		if p == player_data:
+			continue
+		if p.get("pos", "") == pos:
+			same_pos_players.append(p)
+		var p_idx = _player_data_cache.find(p)
+		if p_idx >= 5:
+			bench_players_list.append(p)
+
+	# Create and show context menu
+	var menu = preload("res://scenes/ui/components/context_menu.tscn").instantiate()
+	menu.global_position = global_pos
+	menu.set_menu_data(player_data, pos, same_pos_players, bench_players_list)
+	menu.menu_item_selected.connect(_on_context_menu_action)
+	menu.player_swap_requested.connect(_on_submenu_swap_requested)
+	menu.closed.connect(func():
+		if menu and is_instance_valid(menu):
+			menu.queue_free()
+	)
+	add_child(menu)
+
+
+func _on_submenu_swap_requested(source: Dictionary, target: Dictionary) -> void:
+	_execute_player_swap(source, target)
+
+
+func _on_context_menu_action(action_id: String, player_data: Dictionary) -> void:
+	match action_id:
+		"view_profile":
+			print("[Team] View profile for: ", player_data.get("name", ""))
+
+
+func _execute_player_swap(source: Dictionary, target: Dictionary) -> void:
+	if source == target:
+		return
+
+	var src_idx = _player_data_cache.find(source)
+	var tgt_idx = _player_data_cache.find(target)
+
+	if src_idx < 0 or tgt_idx < 0:
+		return
+
+	# Swap positions in cache
+	_player_data_cache[src_idx] = target
+	_player_data_cache[tgt_idx] = source
+
+	# Persist new order to engine
+	_on_save_rotation_requested()
+
+	# Set swap indicators for feedback
+	_swapped_rows = [src_idx, tgt_idx]
+	_swap_feedback_timer.start(3.0)
+
+	# Reset replacement state and highlight the new starter
+	_replacement_source = {}
+	_active_filter = "TODOS"
+	_selected_player_idx = src_idx  # Now holds the replacement player
+	_refresh_all()
+
+
+func _update_filter_visuals() -> void:
+	for f in _filter_btns:
+		var btn = _filter_btns[f]
+		var counts = _compute_filter_counts()
+		var count = counts.get(f, 0)
+		var is_active = f == _active_filter
+
+		var s = StyleBoxFlat.new()
+		if is_active:
+			s.bg_color = COL_BRAND
+			btn.add_theme_color_override("font_color", COL_TEXT)
+		else:
+			s.bg_color = Color(1, 1, 1, 0.05)
+			btn.add_theme_color_override("font_color", COL_TEXT_MUTED)
+		s.corner_radius_top_left = 16
+		s.corner_radius_top_right = 16
+		s.corner_radius_bottom_left = 16
+		s.corner_radius_bottom_right = 16
+		s.content_margin_left = 16
+		s.content_margin_right = 16
+		s.content_margin_top = 8
+		s.content_margin_bottom = 8
+		btn.add_theme_stylebox_override("normal", s)
+		btn.add_theme_stylebox_override("hover", s)
+		btn.add_theme_stylebox_override("pressed", s)
+		btn.add_theme_stylebox_override("focus", s)
+
+		var count_str = str(count)
+		var name_part = f
+		btn.text = name_part + "  " + count_str
+
 
 # ─── Utilities ───────────────────────────────────────────────────────────────
 
@@ -1146,20 +1334,49 @@ func _load_roster():
 		var team = GameManager.get_user_team()
 		if team and team.has("players"):
 			for p in team.players:
+				var attrs = p.get("attributes", {})
+				var injury_days = int(p.get("injury_days", 0))
+				var status = "LESIONADO" if injury_days > 0 else "ATIVO"
+				var stamina_val = int(attrs.get("stamina", 100))
+				if stamina_val < 40 and status == "ATIVO":
+					status = "CANSADO"
+
+				var height_cm = float(attrs.get("height_cm", 190.0))
+				var height_str = "%0.2fm" % (height_cm / 100.0)
+
 				_player_data_cache.append({
-					pos = p.get("position", p.get("pos", "PG")),
+					player_id = p.get("id", 0),
+					pos = p.get("position", "PG"),
 					name = p.get("first_name", "") + " " + p.get("last_name", "Jogador"),
-					nickname = p.get("nickname", ""),
+					nickname = "",
 					age = p.get("age", 20),
-					ovr = p.get("overall", p.get("ovr", 50)),
-					energy = p.get("energy", 100),
-					contract = str(p.get("contract_year", p.get("contract_years", 0))) + " anos",
+					ovr = round(p.get("overall", 50)),
+					energy = stamina_val,
+					contract = str(p.get("contract_year", 1)) + " anos",
 					salary = _format_salary(p.get("salary", 0)),
-					status = p.get("status", "ATIVO"),
-					number = p.get("number", 0),
-					height = p.get("height", "1.90m"),
-					attrs = p.get("attributes", p.get("attrs", {})),
+					status = status,
+					number = 0,
+					height = height_str,
+					attrs = attrs,
 				})
+		
+		# Reorder cache to match engine rotation_order if set
+		var rotation_order = team.get("rotation_order", [])
+		if rotation_order.size() > 0:
+			var reordered = []
+			for pid in rotation_order:
+				var idx = -1
+				for i in range(_player_data_cache.size()):
+					if _player_data_cache[i].get("player_id", 0) == pid:
+						idx = i
+						break
+				if idx >= 0:
+					reordered.append(_player_data_cache[idx])
+			# Append any players not in rotation_order
+			for p in _player_data_cache:
+				if not reordered.has(p):
+					reordered.append(p)
+			_player_data_cache = reordered
 
 func _format_salary(val) -> String:
 	if typeof(val) == TYPE_STRING:
@@ -1175,6 +1392,7 @@ func _get_filtered_players() -> Array:
 	if _active_filter == "TODOS":
 		return _player_data_cache
 	var result = []
+	var is_pos_filter = _active_filter in ["PG", "SG", "SF", "PF", "C"]
 	for p in _player_data_cache:
 		var status = p.get("status", "ATIVO")
 		var age = p.get("age", 20)
@@ -1190,6 +1408,9 @@ func _get_filtered_players() -> Array:
 					result.append(p)
 			"JOVENS":
 				if age <= 23:
+					result.append(p)
+			_:
+				if is_pos_filter and p.get("pos", "") == _active_filter:
 					result.append(p)
 	return result
 
@@ -1221,42 +1442,18 @@ func _ovr_color(ovr: int) -> Color:
 	return COL_TEXT_MUTED
 
 func _on_filter_changed(filter: String):
+	_replacement_source = {}  # Exit replacement mode when user clicks a filter tab
 	_active_filter = filter
-	for f in _filter_btns:
-		var btn = _filter_btns[f]
-		var counts = _compute_filter_counts()
-		var count = counts.get(f, 0)
-		var is_active = f == _active_filter
-
-		var s = StyleBoxFlat.new()
-		if is_active:
-			s.bg_color = COL_BRAND
-			btn.add_theme_color_override("font_color", COL_TEXT)
-		else:
-			s.bg_color = Color(1, 1, 1, 0.05)
-			btn.add_theme_color_override("font_color", COL_TEXT_MUTED)
-		s.corner_radius_top_left = 16
-		s.corner_radius_top_right = 16
-		s.corner_radius_bottom_left = 16
-		s.corner_radius_bottom_right = 16
-		s.content_margin_left = 16
-		s.content_margin_right = 16
-		s.content_margin_top = 8
-		s.content_margin_bottom = 8
-		btn.add_theme_stylebox_override("normal", s)
-		btn.add_theme_stylebox_override("hover", s)
-		btn.add_theme_stylebox_override("pressed", s)
-		btn.add_theme_stylebox_override("focus", s)
-
-		var count_str = str(count)
-		var name_part = f
-		btn.text = name_part + "  " + count_str
-
+	_update_filter_visuals()
 	_refresh_all()
 
 func _refresh_all():
 	_refresh_player_rows()
 	_refresh_detail()
+
+func _clear_swap_indicators():
+	_swapped_rows = []
+	_refresh_player_rows()
 
 func set_edit_mode(enabled: bool):
 	_edit_mode = enabled

@@ -26,6 +26,10 @@ impl Team {
             player_id += 1;
         }
 
+        let total_salary: f64 = players.iter().map(|p| p.salary as f64).sum();
+        let salary_cap = 150_000_000.0;
+        let budget = salary_cap * 0.8 - total_salary; // start with 80% of cap minus salaries
+
         Self {
             id,
             name: name.to_string(),
@@ -37,10 +41,44 @@ impl Team {
             wins: 0,
             losses: 0,
             training_focus: TrainingFocus::default(),
+            training_intensity: "MÉDIA".to_string(),
+            finances: crate::engine::types::TeamFinances {
+                budget: budget.max(10_000_000.0),
+                total_salary,
+                salary_cap,
+                ..Default::default()
+            },
+            rotation_order: Vec::new(),
+            transactions: Vec::new(),
+            sponsors: Vec::new(),
         }
     }
 
     pub fn starters(&self) -> Vec<&Player> {
+        // If user has set a rotation order, use its first 5 playable players
+        if !self.rotation_order.is_empty() {
+            let mut result: Vec<&Player> = Vec::new();
+            for pid in &self.rotation_order {
+                if result.len() >= 5 { break; }
+                if let Some(p) = self.players.iter().find(|p| p.id == *pid) {
+                    result.push(p);
+                }
+            }
+            // Fill remaining spots with highest-OVR players not yet included
+            if result.len() < 5 {
+                let mut remaining: Vec<&Player> = self.players.iter()
+                    .filter(|p| !result.iter().any(|r| r.id == p.id))
+                    .collect();
+                remaining.sort_by(|a, b| b.attributes.overall().partial_cmp(&a.attributes.overall()).unwrap());
+                for p in remaining {
+                    if result.len() >= 5 { break; }
+                    result.push(p);
+                }
+            }
+            return result;
+        }
+
+        // Fallback: auto-select best lineup
         let mut sorted: Vec<&Player> = self.players.iter().collect();
         sorted.sort_by(|a, b| b.attributes.overall().partial_cmp(&a.attributes.overall()).unwrap());
         let mut starters = Vec::new();

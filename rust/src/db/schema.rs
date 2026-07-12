@@ -104,6 +104,26 @@ pub fn create_tables(conn: &Connection) -> Result<()> {
             key TEXT PRIMARY KEY,
             value TEXT NOT NULL
         );
+        CREATE TABLE IF NOT EXISTS transactions (
+            id INTEGER PRIMARY KEY,
+            team_id INTEGER NOT NULL,
+            amount REAL NOT NULL,
+            category TEXT NOT NULL,
+            description TEXT NOT NULL,
+            week INTEGER NOT NULL,
+            season INTEGER NOT NULL,
+            FOREIGN KEY (team_id) REFERENCES teams(id)
+        );
+        CREATE TABLE IF NOT EXISTS sponsors (
+            id INTEGER PRIMARY KEY,
+            team_id INTEGER NOT NULL,
+            name TEXT NOT NULL,
+            amount_per_year REAL NOT NULL,
+            years_remaining INTEGER NOT NULL,
+            total_years INTEGER NOT NULL,
+            category TEXT NOT NULL,
+            FOREIGN KEY (team_id) REFERENCES teams(id)
+        );
     ")?;
     Ok(())
 }

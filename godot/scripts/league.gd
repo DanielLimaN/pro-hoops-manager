@@ -1,5 +1,13 @@
 extends Control
 
+# ENGINE CONNECTED - Member variables for dynamic data
+var _display_month: int = 11
+var _display_year: int = 2026
+var _month_label: Label
+var _year_label: Label
+var _calendar_vb: VBoxContainer
+var _grid_scroll: ScrollContainer
+
 func _ready():
 	for c in get_children():
 		c.queue_free()
@@ -20,6 +28,13 @@ func _ready():
 	var vbox = VBoxContainer.new()
 	vbox.add_theme_constant_override("separation", 24)
 	margin.add_child(vbox)
+	
+	# ENGINE CONNECTED - Inicializa mês do calendário a partir da liga real
+	var season = GameManager.league.get("season", 2026)
+	var current_week = GameManager.league.get("current_week", 1)
+	var current_date = SimulationBridge._week_to_date(season, current_week)
+	_display_month = current_date.month
+	_display_year = current_date.year
 	
 	_build_top_bar(vbox)
 	_build_tabs_bar(vbox)
@@ -56,9 +71,30 @@ func _build_top_bar(parent: Node):
 	right_actions.add_theme_constant_override("separation", 12)
 	right_actions.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	
-	_create_pill(right_actions, "$", "ORÇAMENTO", "R$ 12.4M", ThemeConfig.SUCCESS)
-	_create_pill(right_actions, "+", "MORAL", "87%", ThemeConfig.WARNING)
-	_create_pill(right_actions, "E", "ENERGIA", "92%", ThemeConfig.INFO)
+	# ENGINE CONNECTED - Dados reais do time do usuário
+	var user_team = GameManager.get_user_team()
+	var total_salary := 0
+	var total_morale := 0.0
+	var total_stamina := 0.0
+	var player_count := 0
+	if not user_team.is_empty() and user_team.has("players"):
+		var players = user_team["players"]
+		for p in players:
+			total_salary += p.get("salary", 0)
+			total_morale += p.get("morale", 0.0)
+			total_stamina += p.get("attributes", {}).get("stamina", 0)
+			player_count += 1
+	
+	var budget_str = "R$ 0"
+	if player_count > 0:
+		budget_str = "R$ %.1fM" % (float(total_salary) / 1000000.0)
+	
+	var morale_str = str(int(total_morale / float(max(player_count, 1)))) + "%" if player_count > 0 else "0%"
+	var stamina_str = str(int(total_stamina / float(max(player_count, 1)))) + "%" if player_count > 0 else "0%"
+	
+	_create_pill(right_actions, "$", "ORÇAMENTO", budget_str, ThemeConfig.SUCCESS)
+	_create_pill(right_actions, "+", "MORAL", morale_str, ThemeConfig.WARNING)
+	_create_pill(right_actions, "E", "ENERGIA", stamina_str, ThemeConfig.INFO)
 	
 	# Bell Icon
 	var bell = PanelContainer.new()
@@ -143,20 +179,25 @@ func _build_tabs_bar(parent: Node):
 	var right = HBoxContainer.new()
 	right.add_theme_constant_override("separation", 12)
 	
-	# Month selector
+	# ENGINE CONNECTED - Month selector with real navigation
 	var msel = PanelContainer.new()
 	var ms_st = StyleBoxFlat.new()
 	ms_st.bg_color = ThemeConfig.BG_ELEVATED
 	ms_st.corner_radius_top_left = 6; ms_st.corner_radius_top_right = 6; ms_st.corner_radius_bottom_left = 6; ms_st.corner_radius_bottom_right = 6
 	msel.add_theme_stylebox_override("panel", ms_st)
 	var mh = HBoxContainer.new()
-	var larr = Label.new(); larr.text = " < "; larr.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED)
-	var rarr = Label.new(); rarr.text = " > "; rarr.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED)
+	var larr = Button.new(); larr.text = " < "; larr.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED)
+	var larr_st = StyleBoxFlat.new(); larr_st.bg_color = Color(0,0,0,0); larr.add_theme_stylebox_override("normal", larr_st)
+	larr.pressed.connect(_on_prev_month)
+	var rarr = Button.new(); rarr.text = " > "; rarr.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED)
+	var rarr_st = StyleBoxFlat.new(); rarr_st.bg_color = Color(0,0,0,0); rarr.add_theme_stylebox_override("normal", rarr_st)
+	rarr.pressed.connect(_on_next_month)
 	var mtxt = VBoxContainer.new()
 	mtxt.custom_minimum_size = Vector2(100, 0)
 	mtxt.alignment = BoxContainer.ALIGNMENT_CENTER
-	var m1 = Label.new(); m1.text = "Novembro"; m1.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); m1.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	var m2 = Label.new(); m2.text = "2026"; m2.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED); m2.add_theme_font_size_override("font_size", 10); m2.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var m1 = Label.new(); _month_label = m1; m1.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); m1.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var m2 = Label.new(); _year_label = m2; m2.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED); m2.add_theme_font_size_override("font_size", 10); m2.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_update_month_label()
 	mtxt.add_child(m1); mtxt.add_child(m2)
 	mh.add_child(larr); mh.add_child(mtxt); mh.add_child(rarr)
 	msel.add_child(mh)
@@ -212,6 +253,7 @@ func _build_calendar(parent: Node):
 	
 	var vb = VBoxContainer.new()
 	vb.add_theme_constant_override("separation", 0)
+	_calendar_vb = vb
 	
 	# Days Header
 	var dh = HBoxContainer.new()
@@ -236,7 +278,40 @@ func _build_calendar(parent: Node):
 	var div = ColorRect.new(); div.custom_minimum_size = Vector2(0,1); div.color = ThemeConfig.BORDER_SUBTLE
 	vb.add_child(div)
 	
-	# Grid
+	# ENGINE CONNECTED - Grid com dados reais
+	_rebuild_calendar_grid()
+	
+	pnl.add_child(vb)
+	parent.add_child(pnl)
+
+# ENGINE CONNECTED - Reconstrói o grid do calendário com dados reais
+func _rebuild_calendar_grid():
+	# Remove grid_scroll antigo se existir
+	if _grid_scroll and _grid_scroll.get_parent() == _calendar_vb:
+		_calendar_vb.remove_child(_grid_scroll)
+		_grid_scroll.queue_free()
+	
+	# Busca partidas reais do mês
+	var matches = SimulationBridge.get_matches_for_month(_display_month, _display_year)
+	
+	# Lookup por dia
+	var match_by_day := {}
+	for m in matches:
+		match_by_day[m.get("day", 0)] = m
+	
+	# Primeiro dia da semana do mês (0=DOM, 6=SAB)
+	var first_weekday = _get_weekday(_display_year, _display_month, 1)
+	
+	# Dias no mês
+	var dim = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+	var days_in_month = dim[_display_month - 1]
+	if _display_month == 2 and (_display_year % 4 == 0 and (_display_year % 100 != 0 or _display_year % 400 == 0)):
+		days_in_month = 29
+	
+	var total_needed = first_weekday + days_in_month
+	var rows = ceili(float(total_needed) / 7.0)
+	var total_cells = rows * 7
+	
 	var grid_scroll = ScrollContainer.new()
 	grid_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	grid_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -248,8 +323,16 @@ func _build_calendar(parent: Node):
 	grid.add_theme_constant_override("h_separation", 0)
 	grid.add_theme_constant_override("v_separation", 0)
 	
-	var start_day = 26
-	for i in range(35):
+	var day = 1
+	var prev_month_days = _get_days_in_month(_display_month - 1, _display_year)
+	var prev_day = prev_month_days - first_weekday + 1
+	
+	# Data atual da liga para destacar "hoje"
+	var season = GameManager.league.get("season", 2026)
+	var current_week = GameManager.league.get("current_week", 1)
+	var current_date = SimulationBridge._week_to_date(season, current_week)
+	
+	for i in range(total_cells):
 		var cell = PanelContainer.new()
 		cell.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		cell.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -268,36 +351,107 @@ func _build_calendar(parent: Node):
 		
 		var cvb = VBoxContainer.new()
 		
-		var day_num = start_day + i
-		if day_num > 31 and start_day == 26: day_num = day_num - 31
-		elif day_num > 30 and start_day == 26 and i > 6: day_num = day_num - 30
-		
 		var num_lbl = Label.new()
-		num_lbl.text = str(day_num)
 		num_lbl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
-		if i < 5: num_lbl.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED)
+		
+		if i < first_weekday:
+			# Dias do mês anterior (acinzentados)
+			num_lbl.text = str(prev_day)
+			num_lbl.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED)
+			prev_day += 1
+		elif day <= days_in_month:
+			num_lbl.text = str(day)
+			
+			# Destaca o dia atual
+			if day == current_date.day and _display_month == current_date.month and _display_year == current_date.year:
+				num_lbl.add_theme_color_override("font_color", ThemeConfig.BRAND_PRIMARY)
+			
+			# ENGINE CONNECTED - Badge de partida real
+			var match_data = match_by_day.get(day)
+			if match_data:
+				_add_match_badge_from_data(cvb, match_data)
+			
+			day += 1
+		else:
+			# Dias do próximo mês (acinzentados)
+			var next_day_num = day - days_in_month
+			num_lbl.text = str(next_day_num)
+			num_lbl.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED)
+			day += 1
+		
 		cvb.add_child(num_lbl)
-		
-		# Add fake match badges
-		if i == 5: _add_match_badge(cvb, "20h00", "@ BHE", "98-91", true)
-		if i == 8: _add_match_badge(cvb, "20h30", "vs RJF", "108-94", true)
-		if i == 11: _add_match_badge(cvb, "21h00", "@ BSB", "112-105", true)
-		if i == 14: _add_match_badge(cvb, "20h00", "vs REC", "98-103", false)
-		if i == 17: _add_match_badge(cvb, "19h30", "@ POA", "118-99", true)
-		if i == 20: _add_match_badge(cvb, "20h30", "vs CWB", "121-115", true)
-		if i == 24: _add_match_badge(cvb, "20h00", "vs REC", "HOJE", null)
-		if i == 26: _add_match_badge(cvb, "20h30", "@ POA", "", null)
-		if i == 30: _add_match_badge(cvb, "19h30", "vs FOR", "", null)
-		if i == 33: _add_match_badge(cvb, "20h00", "vs GNC", "", null)
-		
 		cm.add_child(cvb)
 		cell.add_child(cm)
 		grid.add_child(cell)
-		
+	
 	grid_scroll.add_child(grid)
-	vb.add_child(grid_scroll)
-	pnl.add_child(vb)
-	parent.add_child(pnl)
+	_grid_scroll = grid_scroll
+	_calendar_vb.add_child(grid_scroll)
+
+# ENGINE CONNECTED - Cria badge de partida a partir dos dados da engine
+func _add_match_badge_from_data(parent: Node, match_data: Dictionary):
+	var time = match_data.get("time", "20h00")
+	var is_home = match_data.get("is_home", true)
+	var opp_abbr = match_data.get("away_abbr", "???")
+	var opp = ("vs " if is_home else "@ ") + opp_abbr
+	var played = match_data.get("played", false)
+	
+	var score_str := ""
+	var won = null
+	
+	if played:
+		var home_score = match_data.get("home_score", 0)
+		var away_score = match_data.get("away_score", 0)
+		score_str = str(home_score) + "-" + str(away_score)
+		if is_home:
+			won = home_score > away_score
+		else:
+			won = away_score > home_score
+	
+	_add_match_badge(parent, time, opp, score_str, won)
+
+func _get_weekday(year: int, month: int, day: int) -> int:
+	var unix = Time.get_unix_time_from_datetime_dict({
+		"year": year, "month": month, "day": day, "hour": 12, "minute": 0, "second": 0
+	})
+	var dict = Time.get_datetime_dict_from_unix_time(unix)
+	return dict["weekday"] % 7  # 0=DOM, 6=SAB
+
+func _get_days_in_month(month: int, year: int) -> int:
+	var m = month
+	var y = year
+	if m < 1:
+		m = 12
+		y -= 1
+	elif m > 12:
+		m = 1
+		y += 1
+	var dim = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+	var days = dim[m - 1]
+	if m == 2 and (y % 4 == 0 and (y % 100 != 0 or y % 400 == 0)):
+		days = 29
+	return days
+
+func _update_month_label():
+	var months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
+	_month_label.text = months[_display_month - 1]
+	_year_label.text = str(_display_year)
+
+func _on_prev_month():
+	_display_month -= 1
+	if _display_month < 1:
+		_display_month = 12
+		_display_year -= 1
+	_update_month_label()
+	_rebuild_calendar_grid()
+
+func _on_next_month():
+	_display_month += 1
+	if _display_month > 12:
+		_display_month = 1
+		_display_year += 1
+	_update_month_label()
+	_rebuild_calendar_grid()
 
 func _add_match_badge(parent: Node, time: String, opp: String, score: String, won):
 	var p = PanelContainer.new()
@@ -421,42 +575,62 @@ func _build_right_sidebar(parent: Node):
 	var v1 = VBoxContainer.new()
 	v1.add_theme_constant_override("separation", 16)
 	var h1 = HBoxContainer.new()
-	var t1 = Label.new(); t1.text = "TOP 6 • CONF. SUL"; t1.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); t1.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED); t1.add_theme_font_size_override("font_size", 12); t1.add_theme_constant_override("letter_spacing", 1)
+	var t1 = Label.new(); t1.text = "CLASSIFICAÇÃO"; t1.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); t1.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED); t1.add_theme_font_size_override("font_size", 12); t1.add_theme_constant_override("letter_spacing", 1)
 	var vt = Label.new(); vt.text = "VER TUDO >"; vt.add_theme_font_size_override("font_size", 10); vt.size_flags_horizontal = Control.SIZE_EXPAND_FILL; vt.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	h1.add_child(t1); h1.add_child(vt)
 	v1.add_child(h1)
 	
 	var div1 = ColorRect.new(); div1.custom_minimum_size = Vector2(0,1); div1.color = ThemeConfig.BORDER_SUBTLE; v1.add_child(div1)
 	
-	var teams = [
-		{"n": "SP Phoenix", "w": "8-2", "p": ".800", "c": ThemeConfig.BRAND_PRIMARY},
-		{"n": "Cangurus RJ", "w": "7-3", "p": ".700", "c": ThemeConfig.SUCCESS},
-		{"n": "Jaguars BSB", "w": "7-3", "p": ".700", "c": ThemeConfig.WARNING},
-		{"n": "Trovões CWB", "w": "6-4", "p": ".600", "c": ThemeConfig.SUCCESS},
-		{"n": "Tubarões REC", "w": "5-5", "p": ".500", "c": ThemeConfig.SUCCESS},
-		{"n": "Fênix MAN", "w": "5-5", "p": ".500", "c": ThemeConfig.SUCCESS}
-	]
-	var idx = 1
-	for t in teams:
+	# ENGINE CONNECTED - Classificação real da liga
+	var all_teams = GameManager.league.get("teams", [])
+	var sorted = all_teams.duplicate()
+	sorted.sort_custom(func(a, b):
+		if a.get("wins", 0) != b.get("wins", 0):
+			return a.get("wins", 0) > b.get("wins", 0)
+		return a.get("losses", 0) < b.get("losses", 0)
+	)
+	var top6 = sorted.slice(0, 6)
+	var position = 1
+	for t in top6:
 		var r = HBoxContainer.new(); r.add_theme_constant_override("separation", 12)
 		var badge = PanelContainer.new(); badge.custom_minimum_size = Vector2(20,20); badge.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-		var bs = StyleBoxFlat.new(); bs.bg_color = ThemeConfig.SUCCESS; bs.corner_radius_top_left=10; bs.corner_radius_bottom_right=10; bs.corner_radius_top_right=10; bs.corner_radius_bottom_left=10
+		var bs = StyleBoxFlat.new()
+		if position == 1:
+			bs.bg_color = ThemeConfig.BRAND_PRIMARY
+		elif position <= 4:
+			bs.bg_color = ThemeConfig.SUCCESS
+		else:
+			bs.bg_color = ThemeConfig.TEXT_MUTED
+		bs.corner_radius_top_left=10; bs.corner_radius_bottom_right=10; bs.corner_radius_top_right=10; bs.corner_radius_bottom_left=10
 		badge.add_theme_stylebox_override("panel", bs)
-		var bl = Label.new(); bl.text = str(idx); bl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; bl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); bl.add_theme_font_size_override("font_size", 10)
+		var bl = Label.new(); bl.text = str(position); bl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; bl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); bl.add_theme_font_size_override("font_size", 10)
 		badge.add_child(bl)
 		r.add_child(badge)
+		var is_user_team = t.get("id", 0) == GameManager.user_team_id
 		var dot = PanelContainer.new(); dot.custom_minimum_size = Vector2(6,6); dot.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-		var ds = StyleBoxFlat.new(); ds.bg_color = t.c; ds.corner_radius_top_left=3; ds.corner_radius_bottom_right=3; ds.corner_radius_top_right=3; ds.corner_radius_bottom_left=3
+		var ds = StyleBoxFlat.new(); ds.bg_color = ThemeConfig.BRAND_PRIMARY if is_user_team else ThemeConfig.SUCCESS; ds.corner_radius_top_left=3; ds.corner_radius_bottom_right=3; ds.corner_radius_top_right=3; ds.corner_radius_bottom_left=3
 		dot.add_theme_stylebox_override("panel", ds)
 		r.add_child(dot)
-		var nl = Label.new(); nl.text = t.n; nl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); nl.size_flags_horizontal = Control.SIZE_EXPAND_FILL; nl.add_theme_font_size_override("font_size", 12)
+		var city_name = t.get("city", "")
+		var team_name = t.get("name", "")
+		var display_name = (city_name + " " + team_name).strip_edges()
+		var nl = Label.new(); nl.text = display_name; nl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); nl.size_flags_horizontal = Control.SIZE_EXPAND_FILL; nl.add_theme_font_size_override("font_size", 12)
+		if is_user_team:
+			nl.add_theme_color_override("font_color", ThemeConfig.BRAND_PRIMARY)
 		r.add_child(nl)
-		var wl = Label.new(); wl.text = t.w; wl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); wl.add_theme_font_size_override("font_size", 12)
+		var w = t.get("wins", 0)
+		var l = t.get("losses", 0)
+		var wl = Label.new(); wl.text = str(w) + "-" + str(l); wl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); wl.add_theme_font_size_override("font_size", 12)
+		if is_user_team:
+			wl.add_theme_color_override("font_color", ThemeConfig.BRAND_PRIMARY)
 		r.add_child(wl)
-		var pl = Label.new(); pl.text = t.p; pl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); pl.add_theme_color_override("font_color", ThemeConfig.BRAND_PRIMARY); pl.add_theme_font_size_override("font_size", 12)
+		var total_g = w + l
+		var pct = "%.3f" % (float(w) / float(max(total_g, 1)))
+		var pl = Label.new(); pl.text = pct; pl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); pl.add_theme_color_override("font_color", ThemeConfig.BRAND_PRIMARY); pl.add_theme_font_size_override("font_size", 12)
 		r.add_child(pl)
 		v1.add_child(r)
-		idx += 1
+		position += 1
 	m1.add_child(v1); p1.add_child(m1); vb.add_child(p1)
 	
 	# Lideres
@@ -473,14 +647,92 @@ func _build_right_sidebar(parent: Node):
 	v2.add_child(h2)
 	var div2 = ColorRect.new(); div2.custom_minimum_size = Vector2(0,1); div2.color = ThemeConfig.BORDER_SUBTLE; v2.add_child(div2)
 	
-	_add_lider(v2, "PONTOS/JOGO", "Marcus Silva", "SP Phoenix • PG", "28.4", Color("#2E1065"))
-	_add_lider(v2, "ASSISTÊNCIAS/JOGO", "L. Henrique", "Cangurus RJ • PG", "11.2", Color("#1E3A8A"))
-	_add_lider(v2, "REBOTES/JOGO", "K. Patterson", "Jaguars BSB • C", "14.6", Color("#064E3B"))
-	_add_lider(v2, "ROUBOS/JOGO", "D. Santos", "Trovões CWB • SG", "3.2", Color("#451A03"))
+	# ENGINE CONNECTED - Líderes reais da liga
+	var points_leader = {"name": "", "team_pos": "", "value": 0.0}
+	var assists_leader = {"name": "", "team_pos": "", "value": 0.0}
+	var rebounds_leader = {"name": "", "team_pos": "", "value": 0.0}
+	var steals_leader = {"name": "", "team_pos": "", "value": 0.0}
+	
+	for t in all_teams:
+		var t_abbr = t.get("abbreviation", "")
+		for p in t.get("players", []):
+			var stats_season = p.get("stats_season", {})
+			var gp = stats_season.get("games_played", 1)
+			if gp <= 0: gp = 1
+			
+			var full_name = (p.get("first_name", "") + " " + p.get("last_name", "")).strip_edges()
+			var pos = p.get("position", "")
+			var team_pos = t_abbr + " • " + pos
+			
+			var pts = stats_season.get("points", 0)
+			var ppg = float(pts) / float(gp)
+			if ppg > points_leader.value:
+				points_leader = {"name": full_name, "team_pos": team_pos, "value": ppg}
+			
+			var ast = stats_season.get("assists", 0)
+			var apg = float(ast) / float(gp)
+			if apg > assists_leader.value:
+				assists_leader = {"name": full_name, "team_pos": team_pos, "value": apg}
+			
+			var reb = stats_season.get("rebounds", 0)
+			var rpg = float(reb) / float(gp)
+			if rpg > rebounds_leader.value:
+				rebounds_leader = {"name": full_name, "team_pos": team_pos, "value": rpg}
+			
+			var stl = stats_season.get("steals", 0)
+			var spg = float(stl) / float(gp)
+			if spg > steals_leader.value:
+				steals_leader = {"name": full_name, "team_pos": team_pos, "value": spg}
+	
+	_add_lider(v2, "PONTOS/JOGO", points_leader.name, points_leader.team_pos, "%.1f" % points_leader.value, Color("#2E1065"))
+	_add_lider(v2, "ASSISTÊNCIAS/JOGO", assists_leader.name, assists_leader.team_pos, "%.1f" % assists_leader.value, Color("#1E3A8A"))
+	_add_lider(v2, "REBOTES/JOGO", rebounds_leader.name, rebounds_leader.team_pos, "%.1f" % rebounds_leader.value, Color("#064E3B"))
+	_add_lider(v2, "ROUBOS/JOGO", steals_leader.name, steals_leader.team_pos, "%.1f" % steals_leader.value, Color("#451A03"))
 	
 	m2.add_child(v2); p2.add_child(m2); vb.add_child(p2)
 	
-	# Proximo Jogo
+	# ENGINE CONNECTED - Próximo Jogo real
+	var next_match = EventManager.get_next_match()
+	var has_next = not next_match.is_empty()
+	
+	var next_opp_abbr = "---"
+	var next_is_home = true
+	var next_opp_id = 0
+	var next_date_str = "---"
+	var next_day = 0
+	var next_month = 0
+	var next_year = 0
+	var next_hour = 20
+	var next_minute = 0
+	
+	if has_next:
+		next_is_home = next_match.get("home_team_id", 0) == GameManager.user_team_id
+		next_opp_id = next_match.get("away_team_id", 0) if next_is_home else next_match.get("home_team_id", 0)
+		for t in all_teams:
+			if t.get("id") == next_opp_id:
+				next_opp_abbr = t.get("abbreviation", "---")
+				break
+		
+		next_day = next_match.get("day", 0)
+		next_month = next_match.get("month", 0)
+		next_year = next_match.get("year", 0)
+		next_hour = next_match.get("hour", 20)
+		next_minute = next_match.get("minute", 0)
+		
+		var day_names = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"]
+		var month_names = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"]
+		var unix = Time.get_unix_time_from_datetime_dict({"year": next_year, "month": next_month, "day": next_day, "hour": 12, "minute": 0, "second": 0})
+		var date_dict = Time.get_datetime_dict_from_unix_time(unix)
+		var weekday_name = day_names[date_dict["weekday"] % 7]
+		next_date_str = "%s, %d %s • %02dh%02d" % [weekday_name, next_day, month_names[next_month - 1], next_hour, next_minute]
+	
+	# Abreviação do time do usuário
+	var user_abbr = "???"
+	for t in all_teams:
+		if t.get("id") == GameManager.user_team_id:
+			user_abbr = t.get("abbreviation", "???")
+			break
+	
 	var p3 = PanelContainer.new()
 	p3.add_theme_stylebox_override("panel", s1)
 	var m3 = MarginContainer.new()
@@ -493,7 +745,7 @@ func _build_right_sidebar(parent: Node):
 	h3.add_child(d3)
 	var t3 = Label.new(); t3.text = "PRÓXIMO JOGO"; t3.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); t3.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED); t3.add_theme_font_size_override("font_size", 12); t3.add_theme_constant_override("letter_spacing", 1)
 	h3.add_child(t3)
-	var am = Label.new(); am.text = "AMANHÃ"; am.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); am.add_theme_color_override("font_color", ThemeConfig.WARNING); am.add_theme_font_size_override("font_size", 10); am.size_flags_horizontal = Control.SIZE_EXPAND_FILL; am.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	var am = Label.new(); am.text = "PRÓXIMO"; am.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); am.add_theme_color_override("font_color", ThemeConfig.WARNING); am.add_theme_font_size_override("font_size", 10); am.size_flags_horizontal = Control.SIZE_EXPAND_FILL; am.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	h3.add_child(am)
 	v3.add_child(h3)
 	var div3 = ColorRect.new(); div3.custom_minimum_size = Vector2(0,1); div3.color = ThemeConfig.BORDER_SUBTLE; v3.add_child(div3)
@@ -501,30 +753,44 @@ func _build_right_sidebar(parent: Node):
 	var teams_h = HBoxContainer.new()
 	teams_h.alignment = BoxContainer.ALIGNMENT_CENTER
 	teams_h.add_theme_constant_override("separation", 16)
-	var phx = PanelContainer.new(); phx.custom_minimum_size = Vector2(48,48)
-	var phxs = StyleBoxFlat.new(); phxs.bg_color = ThemeConfig.BRAND_PRIMARY; phxs.corner_radius_top_left=24; phxs.corner_radius_bottom_right=24; phxs.corner_radius_top_right=24; phxs.corner_radius_bottom_left=24; phx.add_theme_stylebox_override("panel", phxs)
-	var phxl = Label.new(); phxl.text = "PHX"; phxl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); phxl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; phxl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	phx.add_child(phxl); teams_h.add_child(phx)
+	
+	var home_abbr = user_abbr if next_is_home else next_opp_abbr
+	var away_abbr = next_opp_abbr if next_is_home else user_abbr
+	
+	var home_circle = PanelContainer.new(); home_circle.custom_minimum_size = Vector2(48,48)
+	var home_cs = StyleBoxFlat.new(); home_cs.bg_color = ThemeConfig.BRAND_PRIMARY; home_cs.corner_radius_top_left=24; home_cs.corner_radius_bottom_right=24; home_cs.corner_radius_top_right=24; home_cs.corner_radius_bottom_left=24; home_circle.add_theme_stylebox_override("panel", home_cs)
+	var home_lbl = Label.new(); home_lbl.text = home_abbr; home_lbl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); home_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; home_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	home_circle.add_child(home_lbl); teams_h.add_child(home_circle)
 	
 	var vs_v = VBoxContainer.new(); vs_v.alignment = BoxContainer.ALIGNMENT_CENTER
-	var fora = Label.new(); fora.text = "FORA"; fora.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); fora.add_theme_font_size_override("font_size", 9); fora.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; fora.add_theme_color_override("font_color", Color.BLACK)
+	var fora = Label.new(); fora.text = "CASA" if next_is_home else "FORA"; fora.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); fora.add_theme_font_size_override("font_size", 9); fora.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; fora.add_theme_color_override("font_color", Color.BLACK)
 	var fora_p = PanelContainer.new(); var fs = StyleBoxFlat.new(); fs.bg_color = ThemeConfig.TEXT_MUTED; fs.corner_radius_top_left=4; fs.corner_radius_bottom_right=4; fs.corner_radius_top_right=4; fs.corner_radius_bottom_left=4; fora_p.add_theme_stylebox_override("panel", fs)
 	var fora_m = MarginContainer.new(); fora_m.add_theme_constant_override("margin_left",4); fora_m.add_theme_constant_override("margin_right",4); fora_m.add_child(fora); fora_p.add_child(fora_m); vs_v.add_child(fora_p)
 	var vs = Label.new(); vs.text = "VS"; vs.add_theme_font_override("font", ThemeConfig.FONT_INTER_BLACK); vs.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED); vs.add_theme_font_size_override("font_size", 20); vs_v.add_child(vs)
 	teams_h.add_child(vs_v)
 	
-	var poa = PanelContainer.new(); poa.custom_minimum_size = Vector2(48,48)
-	var poas = StyleBoxFlat.new(); poas.bg_color = ThemeConfig.DANGER; poas.corner_radius_top_left=24; poas.corner_radius_bottom_right=24; poas.corner_radius_top_right=24; poas.corner_radius_bottom_left=24; poa.add_theme_stylebox_override("panel", poas)
-	var poal = Label.new(); poal.text = "POA"; poal.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); poal.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; poal.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	poa.add_child(poal); teams_h.add_child(poa)
+	var away_circle = PanelContainer.new(); away_circle.custom_minimum_size = Vector2(48,48)
+	var away_cs = StyleBoxFlat.new(); away_cs.bg_color = Color("#EF4444"); away_cs.corner_radius_top_left=24; away_cs.corner_radius_bottom_right=24; away_cs.corner_radius_top_right=24; away_cs.corner_radius_bottom_left=24; away_circle.add_theme_stylebox_override("panel", away_cs)
+	var away_lbl = Label.new(); away_lbl.text = away_abbr; away_lbl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD); away_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; away_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	away_circle.add_child(away_lbl); teams_h.add_child(away_circle)
 	v3.add_child(teams_h)
 	
-	var date = Label.new(); date.text = "Sex, 25 Nov • 20h30"; date.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; date.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED); date.add_theme_font_size_override("font_size", 12)
+	var date = Label.new(); date.text = next_date_str; date.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER; date.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED); date.add_theme_font_size_override("font_size", 12)
 	v3.add_child(date)
 	
 	var btn = Button.new(); btn.text = "JOGAR AGORA"
 	var b_st = StyleBoxFlat.new(); b_st.bg_color = ThemeConfig.BRAND_PRIMARY; b_st.corner_radius_top_left=8; b_st.corner_radius_bottom_right=8; b_st.corner_radius_top_right=8; b_st.corner_radius_bottom_left=8; b_st.content_margin_top=12; b_st.content_margin_bottom=12
 	btn.add_theme_stylebox_override("normal", b_st); btn.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
+	if has_next:
+		var n_home_id = next_match.get("home_team_id", 0)
+		var n_away_id = next_match.get("away_team_id", 0)
+		btn.pressed.connect(func():
+			GameManager.pending_home_id = n_home_id
+			GameManager.pending_away_id = n_away_id
+			get_tree().change_scene_to_file("res://scenes/match.tscn")
+		)
+	else:
+		btn.disabled = true
 	v3.add_child(btn)
 	
 	m3.add_child(v3); p3.add_child(m3); vb.add_child(p3)
