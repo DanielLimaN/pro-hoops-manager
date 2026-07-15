@@ -1299,13 +1299,13 @@ func _execute_player_swap(source: Dictionary, target: Dictionary) -> void:
 	print("[SWAP]   after _on_save_rotation_requested")
 
 	# Set substitution marker — the bench player who entered is now at src_idx
-	# The icon badge appears on the substitute's row, showing position info
+	# The icon badge appears on the substitute's row, showing position info.
+	# Persists until the next swap or screen change (no auto-clear timer).
 	_substitution_marker = {
 		"idx": src_idx,
 		"pos": target.get("pos", ""),
 		"name": target.get("name", "?")
 	}
-	_substitution_marker_timer.start(8.0)  # Visible for 8 seconds — long enough to notice
 
 	# Reset replacement state and highlight the new starter
 	_replacement_source = {}
