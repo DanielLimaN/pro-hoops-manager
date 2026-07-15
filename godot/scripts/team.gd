@@ -391,17 +391,21 @@ func _refresh_player_rows():
 	_player_rows.clear()
 	var list = find_child("PlayerList", true, false)
 	if not list:
+		print("[REFRESH] PlayerList NOT FOUND!")
 		return
+	var child_count_before = list.get_child_count()
+	var filtered = _get_filtered_players()
+	print("[REFRESH] _refresh_player_rows: list=", list.name, " children_before=", child_count_before, " filtered=", filtered.size())
 	for c in list.get_children():
 		c.queue_free()
 
-	var filtered = _get_filtered_players()
 	for i in range(filtered.size()):
 		var d = filtered[i]
 		var idx = _player_data_cache.find(d)
 		var row = _make_player_row(d, idx)
 		list.add_child(row)
 		_player_rows.append(row)
+	print("[REFRESH] _refresh_player_rows DONE: list children now=", list.get_child_count())
 
 func _make_player_row(d: Dictionary, idx: int) -> PanelContainer:
 	var row = PanelContainer.new()
@@ -1195,6 +1199,7 @@ func _on_cancel_rotation_requested():
 	set_edit_mode(false)
 
 func _on_save_rotation_requested():
+	print("[ROTATION] _on_save_rotation_requested START _edit_mode=", _edit_mode)
 	var team_id = GameManager.user_team_id
 	var player_ids: Array[int] = []
 	for p in _player_data_cache:
@@ -1207,13 +1212,16 @@ func _on_save_rotation_requested():
 	else:
 		print("[Team] No player IDs in cache - saving order as player names")
 	set_edit_mode(false)
+	print("[ROTATION] _on_save_rotation_requested END")
 
 # ─── Context Menu (Right-click) ──────────────────────────────────────────────
 
 func _on_player_right_clicked(player_data: Dictionary, global_pos: Vector2) -> void:
 	# Only show context menu for starters (indices 0-4)
 	var idx = _player_data_cache.find(player_data)
+	print("[RIGHTCLICK] player=", player_data.get("name","?"), " idx=", idx)
 	if idx < 0 or idx >= 5:
+		print("[RIGHTCLICK] Not a starter, returning")
 		return
 
 	# Collect same-position candidates (excluding the clicked player)
@@ -1229,6 +1237,8 @@ func _on_player_right_clicked(player_data: Dictionary, global_pos: Vector2) -> v
 		if p_idx >= 5:
 			bench_players_list.append(p)
 
+	print("[RIGHTCLICK] same_pos=", same_pos_players.size(), " bench=", bench_players_list.size())
+
 	# Create and show context menu
 	var menu = preload("res://scenes/ui/components/context_menu.tscn").instantiate()
 	menu.global_position = global_pos
@@ -1240,10 +1250,13 @@ func _on_player_right_clicked(player_data: Dictionary, global_pos: Vector2) -> v
 			menu.queue_free()
 	)
 	add_child(menu)
+	print("[RIGHTCLICK] ContextMenu added as child")
 
 
 func _on_submenu_swap_requested(source: Dictionary, target: Dictionary) -> void:
+	print("[SUB] _on_submenu_swap_requested: source=", source.get("name", "?"), " target=", target.get("name", "?"))
 	_execute_player_swap(source, target)
+	print("[SUB] _on_submenu_swap_requested END")
 
 
 func _on_context_menu_action(action_id: String, player_data: Dictionary) -> void:
@@ -1253,21 +1266,30 @@ func _on_context_menu_action(action_id: String, player_data: Dictionary) -> void
 
 
 func _execute_player_swap(source: Dictionary, target: Dictionary) -> void:
+	print("[SWAP] _execute_player_swap START")
+	print("[SWAP]   source=", source.get("name", "?"), " target=", target.get("name", "?"))
 	if source == target:
+		print("[SWAP]   source == target, returning")
 		return
 
 	var src_idx = _player_data_cache.find(source)
 	var tgt_idx = _player_data_cache.find(target)
+	print("[SWAP]   src_idx=", src_idx, " tgt_idx=", tgt_idx)
 
 	if src_idx < 0 or tgt_idx < 0:
+		print("[SWAP]   index < 0, returning")
 		return
 
 	# Swap positions in cache
+	print("[SWAP]   BEFORE: [", src_idx, "]=", _player_data_cache[src_idx].get("name","?"), " [", tgt_idx, "]=", _player_data_cache[tgt_idx].get("name","?"))
 	_player_data_cache[src_idx] = target
 	_player_data_cache[tgt_idx] = source
+	print("[SWAP]   AFTER:  [", src_idx, "]=", _player_data_cache[src_idx].get("name","?"), " [", tgt_idx, "]=", _player_data_cache[tgt_idx].get("name","?"))
+	print("[SWAP]   Cache order now: ", get_cache_names())
 
 	# Persist new order to engine
 	_on_save_rotation_requested()
+	print("[SWAP]   after _on_save_rotation_requested")
 
 	# Set swap indicators for feedback
 	_swapped_rows = [src_idx, tgt_idx]
@@ -1277,7 +1299,16 @@ func _execute_player_swap(source: Dictionary, target: Dictionary) -> void:
 	_replacement_source = {}
 	_active_filter = "TODOS"
 	_selected_player_idx = src_idx  # Now holds the replacement player
+	print("[SWAP]   _active_filter=", _active_filter, " _selected_player_idx=", _selected_player_idx)
+	print("[SWAP]   calling _refresh_all()")
 	_refresh_all()
+	print("[SWAP] _execute_player_swap END")
+
+func get_cache_names() -> Array:
+	var names = []
+	for p in _player_data_cache:
+		names.append(p.get("name", "?"))
+	return names
 
 
 func _update_filter_visuals() -> void:
@@ -1390,7 +1421,11 @@ func _format_salary(val) -> String:
 
 func _get_filtered_players() -> Array:
 	if _active_filter == "TODOS":
-		return _player_data_cache
+		var names = []
+		for p in _player_data_cache:
+			names.append(p.get("name","?"))
+		var result = _player_data_cache
+		return result
 	var result = []
 	var is_pos_filter = _active_filter in ["PG", "SG", "SF", "PF", "C"]
 	for p in _player_data_cache:
@@ -1448,8 +1483,11 @@ func _on_filter_changed(filter: String):
 	_refresh_all()
 
 func _refresh_all():
+	print("[REFRESH] _refresh_all() called (stack: ", get_stack()[1].function if get_stack().size() > 1 else "root", ")")
+	var before = Time.get_ticks_msec()
 	_refresh_player_rows()
 	_refresh_detail()
+	print("[REFRESH] _refresh_all() DONE (took ", Time.get_ticks_msec() - before, "ms)")
 
 func _clear_swap_indicators():
 	_swapped_rows = []

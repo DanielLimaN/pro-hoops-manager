@@ -366,7 +366,18 @@ func _show_submenu():
 		vbox.add_child(item)
 
 	_submenu.add_child(vbox)
-	add_child(_submenu)
+
+	# Add submenu to the *parent* (Team screen) instead of self (PanelContainer).
+	# PanelContainer calls fit_child_in_rect which overrides the submenu's position,
+	# making mouse clicks miss the candidates. Adding to the parent avoids this.
+	var parent = get_parent()
+	if parent and is_instance_valid(parent):
+		parent.add_child(_submenu)
+		# Keep submenu on top of everything else
+		parent.move_child(_submenu, parent.get_child_count() - 1)
+	else:
+		# Fallback: add to self (submenu will be overlapped but works via MCP)
+		add_child(_submenu)
 
 	# Position submenu to the right of the main menu, aligned with the triggering item
 	_position_submenu()
