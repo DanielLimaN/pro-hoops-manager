@@ -32,8 +32,10 @@ var _replacement_source: Dictionary = {}  # Starter being replaced (set by right
 
 var _player_data_cache: Array = []
 
-var _swapped_rows: Array = []  # Array[int] — indices that were recently swapped (shows -> <- arrows)
-var _swap_feedback_timer: Timer
+# Substitution marker: tracks which player was subbed in at which position
+# { "idx": int, "pos": String, "name": String }
+var _substitution_marker: Dictionary = {}
+var _substitution_marker_timer: Timer
 
 var _player_rows: Array = []
 var _filter_btns = {}
@@ -67,11 +69,11 @@ func _ready():
 
 	_load_roster()
 	
-	# Swap feedback timer (auto-clears -> <- indicators)
-	_swap_feedback_timer = Timer.new()
-	_swap_feedback_timer.one_shot = true
-	_swap_feedback_timer.timeout.connect(_clear_swap_indicators)
-	add_child(_swap_feedback_timer)
+	# Substitution marker timer (auto-clears the icon badge after delay)
+	_substitution_marker_timer = Timer.new()
+	_substitution_marker_timer.one_shot = true
+	_substitution_marker_timer.timeout.connect(_clear_substitution_marker)
+	add_child(_substitution_marker_timer)
 	
 	quick_action_requested.connect(_on_quick_action_requested)
 	edit_rotation_requested.connect(_on_edit_rotation_requested)
@@ -562,28 +564,33 @@ func _make_player_row(d: Dictionary, idx: int) -> PanelContainer:
 	salary_lbl.add_theme_font_size_override("font_size", 13)
 	salary_lbl.add_theme_color_override("font_color", COL_TEXT)
 
-	# Swap indicator (→ ← for recently swapped rows)
-	var swap_indicator = HBoxContainer.new()
-	swap_indicator.name = "SwapIndicator"
-	swap_indicator.add_theme_constant_override("separation", 4)
-	swap_indicator.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	swap_indicator.visible = idx in _swapped_rows
+	# Substitution marker — icon badge showing a player was subbed in at this position
+	var is_substitute = idx == _substitution_marker.get("idx", -1)
+	var sub_marker = HBoxContainer.new()
+	sub_marker.name = "SubstitutionMarker"
+	sub_marker.add_theme_constant_override("separation", 4)
+	sub_marker.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	sub_marker.visible = is_substitute
 
-	var arrow_left = Label.new()
-	arrow_left.text = "→"
-	arrow_left.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
-	arrow_left.add_theme_font_size_override("font_size", 14)
-	arrow_left.add_theme_color_override("font_color", COL_BRAND)
-	swap_indicator.add_child(arrow_left)
+	# Icon (arrow_merge = two arrows converging, classic "substitution" symbol)
+	var sub_icon = TextureRect.new()
+	sub_icon.texture = load("res://addons/at-icons/control/arrow_right_arrow_left.svg")
+	sub_icon.custom_minimum_size = Vector2(14, 14)
+	sub_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	sub_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	sub_icon.modulate = Color.ORANGE
+	sub_icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	sub_marker.add_child(sub_icon)
 
-	var arrow_right = Label.new()
-	arrow_right.text = "←"
-	arrow_right.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
-	arrow_right.add_theme_font_size_override("font_size", 14)
-	arrow_right.add_theme_color_override("font_color", COL_BRAND)
-	swap_indicator.add_child(arrow_right)
+	# Position label (e.g., "PG") — reinforces which position the sub occupies
+	var sub_pos_lbl = Label.new()
+	sub_pos_lbl.text = _substitution_marker.get("pos", "")
+	sub_pos_lbl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
+	sub_pos_lbl.add_theme_font_size_override("font_size", 10)
+	sub_pos_lbl.add_theme_color_override("font_color", Color.ORANGE)
+	sub_marker.add_child(sub_pos_lbl)
 
-	hbox.add_child(swap_indicator)
+	hbox.add_child(sub_marker)
 
 	# Quick Action button
 	var qa_btn = PanelContainer.new()
@@ -1291,9 +1298,14 @@ func _execute_player_swap(source: Dictionary, target: Dictionary) -> void:
 	_on_save_rotation_requested()
 	print("[SWAP]   after _on_save_rotation_requested")
 
-	# Set swap indicators for feedback
-	_swapped_rows = [src_idx, tgt_idx]
-	_swap_feedback_timer.start(3.0)
+	# Set substitution marker — the bench player who entered is now at src_idx
+	# The icon badge appears on the substitute's row, showing position info
+	_substitution_marker = {
+		"idx": src_idx,
+		"pos": target.get("pos", ""),
+		"name": target.get("name", "?")
+	}
+	_substitution_marker_timer.start(8.0)  # Visible for 8 seconds — long enough to notice
 
 	# Reset replacement state and highlight the new starter
 	_replacement_source = {}
@@ -1489,8 +1501,8 @@ func _refresh_all():
 	_refresh_detail()
 	print("[REFRESH] _refresh_all() DONE (took ", Time.get_ticks_msec() - before, "ms)")
 
-func _clear_swap_indicators():
-	_swapped_rows = []
+func _clear_substitution_marker():
+	_substitution_marker = {}
 	_refresh_player_rows()
 
 func set_edit_mode(enabled: bool):
