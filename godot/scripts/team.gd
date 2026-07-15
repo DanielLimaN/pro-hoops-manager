@@ -32,9 +32,10 @@ var _replacement_source: Dictionary = {}  # Starter being replaced (set by right
 
 var _player_data_cache: Array = []
 
-# Substitution markers: tracks which players were subbed in (accumulates until screen exit).
-# Stores references to the player data dictionaries — survives cache reordering.
-var _substitution_markers: Array = []
+# Substitution markers: separate arrays for players subbed IN (green) and OUT (red).
+# Stores references to player data dictionaries — survives cache reordering.
+var _substitutions_in: Array = []   # bench players who entered the lineup
+var _substitutions_out: Array = []  # starters who were replaced
 
 var _player_rows: Array = []
 var _filter_btns = {}
@@ -557,23 +558,29 @@ func _make_player_row(d: Dictionary, idx: int) -> PanelContainer:
 	salary_lbl.add_theme_font_size_override("font_size", 13)
 	salary_lbl.add_theme_color_override("font_color", COL_TEXT)
 
-	# Substitution marker — icon badge showing a player was subbed in at this position
-	# Uses dictionary reference identity (d in _substitution_markers), not index,
-	# so markers survive cache reordering from subsequent swaps.
-	var is_substitute = d in _substitution_markers
+	# Substitution marker — icon badge showing substitution role at this position.
+	# Green (arrow_right_to_bracket): bench player who ENTERED the lineup.
+	# Red (arrow_right_from_bracket): starter who was REPLACED.
+	# Uses dictionary reference identity, so markers survive cache reordering.
+	var is_in = d in _substitutions_in
+	var is_out = d in _substitutions_out
+	var is_sub = is_in or is_out
+
 	var sub_marker = HBoxContainer.new()
 	sub_marker.name = "SubstitutionMarker"
 	sub_marker.add_theme_constant_override("separation", 4)
 	sub_marker.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	sub_marker.visible = is_substitute
+	sub_marker.visible = is_sub
 
-	# Icon (arrow_right_arrow_left = classic "substitution" swap symbol)
+	var icon_path = "res://addons/at-icons/control/arrow_right_to_bracket.svg" if is_in else "res://addons/at-icons/control/arrow_right_from_bracket.svg"
+	var icon_color = Color.GREEN if is_in else Color.RED
+
 	var sub_icon = TextureRect.new()
-	sub_icon.texture = load("res://addons/at-icons/control/arrow_right_arrow_left.svg")
+	sub_icon.texture = load(icon_path)
 	sub_icon.custom_minimum_size = Vector2(14, 14)
 	sub_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	sub_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	sub_icon.modulate = Color.ORANGE
+	sub_icon.modulate = icon_color
 	sub_icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	sub_marker.add_child(sub_icon)
 
@@ -582,7 +589,7 @@ func _make_player_row(d: Dictionary, idx: int) -> PanelContainer:
 	sub_pos_lbl.text = d.get("pos", "")
 	sub_pos_lbl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
 	sub_pos_lbl.add_theme_font_size_override("font_size", 10)
-	sub_pos_lbl.add_theme_color_override("font_color", Color.ORANGE)
+	sub_pos_lbl.add_theme_color_override("font_color", icon_color)
 	sub_marker.add_child(sub_pos_lbl)
 
 	hbox.add_child(sub_marker)
@@ -1293,9 +1300,10 @@ func _execute_player_swap(source: Dictionary, target: Dictionary) -> void:
 	_on_save_rotation_requested()
 	print("[SWAP]   after _on_save_rotation_requested")
 
-	# Register substitution — add target player to the persistent markers array.
+	# Register substitution — target (bench) entered (green), source (starter) left (red).
 	# Uses dictionary reference identity, so markers follow players across reorderings.
-	_substitution_markers.append(target)
+	_substitutions_in.append(target)
+	_substitutions_out.append(source)
 
 	# Reset replacement state and highlight the new starter
 	_replacement_source = {}
@@ -1492,7 +1500,8 @@ func _refresh_all():
 	print("[REFRESH] _refresh_all() DONE (took ", Time.get_ticks_msec() - before, "ms)")
 
 func _clear_substitution_marker():
-	_substitution_markers.clear()
+	_substitutions_in.clear()
+	_substitutions_out.clear()
 	_refresh_player_rows()
 
 func set_edit_mode(enabled: bool):
