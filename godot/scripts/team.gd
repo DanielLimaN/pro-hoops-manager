@@ -32,10 +32,9 @@ var _replacement_source: Dictionary = {}  # Starter being replaced (set by right
 
 var _player_data_cache: Array = []
 
-# Substitution marker: tracks which player was subbed in at which position
-# { "idx": int, "pos": String, "name": String }
-var _substitution_marker: Dictionary = {}
-var _substitution_marker_timer: Timer
+# Substitution markers: tracks which players were subbed in (accumulates until screen exit).
+# Stores references to the player data dictionaries — survives cache reordering.
+var _substitution_markers: Array = []
 
 var _player_rows: Array = []
 var _filter_btns = {}
@@ -68,12 +67,6 @@ func _ready():
 	_build_content(vbox)
 
 	_load_roster()
-	
-	# Substitution marker timer (auto-clears the icon badge after delay)
-	_substitution_marker_timer = Timer.new()
-	_substitution_marker_timer.one_shot = true
-	_substitution_marker_timer.timeout.connect(_clear_substitution_marker)
-	add_child(_substitution_marker_timer)
 	
 	quick_action_requested.connect(_on_quick_action_requested)
 	edit_rotation_requested.connect(_on_edit_rotation_requested)
@@ -565,14 +558,16 @@ func _make_player_row(d: Dictionary, idx: int) -> PanelContainer:
 	salary_lbl.add_theme_color_override("font_color", COL_TEXT)
 
 	# Substitution marker — icon badge showing a player was subbed in at this position
-	var is_substitute = idx == _substitution_marker.get("idx", -1)
+	# Uses dictionary reference identity (d in _substitution_markers), not index,
+	# so markers survive cache reordering from subsequent swaps.
+	var is_substitute = d in _substitution_markers
 	var sub_marker = HBoxContainer.new()
 	sub_marker.name = "SubstitutionMarker"
 	sub_marker.add_theme_constant_override("separation", 4)
 	sub_marker.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	sub_marker.visible = is_substitute
 
-	# Icon (arrow_merge = two arrows converging, classic "substitution" symbol)
+	# Icon (arrow_right_arrow_left = classic "substitution" swap symbol)
 	var sub_icon = TextureRect.new()
 	sub_icon.texture = load("res://addons/at-icons/control/arrow_right_arrow_left.svg")
 	sub_icon.custom_minimum_size = Vector2(14, 14)
@@ -582,9 +577,9 @@ func _make_player_row(d: Dictionary, idx: int) -> PanelContainer:
 	sub_icon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	sub_marker.add_child(sub_icon)
 
-	# Position label (e.g., "PG") — reinforces which position the sub occupies
+	# Position label (e.g., "PG") — uses the player's own position
 	var sub_pos_lbl = Label.new()
-	sub_pos_lbl.text = _substitution_marker.get("pos", "")
+	sub_pos_lbl.text = d.get("pos", "")
 	sub_pos_lbl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
 	sub_pos_lbl.add_theme_font_size_override("font_size", 10)
 	sub_pos_lbl.add_theme_color_override("font_color", Color.ORANGE)
@@ -1298,14 +1293,9 @@ func _execute_player_swap(source: Dictionary, target: Dictionary) -> void:
 	_on_save_rotation_requested()
 	print("[SWAP]   after _on_save_rotation_requested")
 
-	# Set substitution marker — the bench player who entered is now at src_idx
-	# The icon badge appears on the substitute's row, showing position info.
-	# Persists until the next swap or screen change (no auto-clear timer).
-	_substitution_marker = {
-		"idx": src_idx,
-		"pos": target.get("pos", ""),
-		"name": target.get("name", "?")
-	}
+	# Register substitution — add target player to the persistent markers array.
+	# Uses dictionary reference identity, so markers follow players across reorderings.
+	_substitution_markers.append(target)
 
 	# Reset replacement state and highlight the new starter
 	_replacement_source = {}
@@ -1502,7 +1492,7 @@ func _refresh_all():
 	print("[REFRESH] _refresh_all() DONE (took ", Time.get_ticks_msec() - before, "ms)")
 
 func _clear_substitution_marker():
-	_substitution_marker = {}
+	_substitution_markers.clear()
 	_refresh_player_rows()
 
 func set_edit_mode(enabled: bool):
