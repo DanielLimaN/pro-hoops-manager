@@ -1,5 +1,7 @@
 extends Control
 
+var inbox_row_scene = preload("res://scenes/ui/dashboard/components/dashboard_inbox_row.tscn")
+var recent_row_scene = preload("res://scenes/ui/dashboard/components/dashboard_recent_row.tscn")
 var kpi_scene = preload("res://scenes/ui/components/status_card.tscn")
 var hero_scene = preload("res://scenes/ui/dashboard/components/next_match_hero.tscn")
 var standings_scene = preload("res://scenes/ui/dashboard/components/standings_table.tscn")
@@ -19,12 +21,6 @@ func _ready() -> void:
 	SimulationBridge.on_stats_updated.connect(_on_stats_updated)
 	EventBus.day_completed.connect(_on_day_completed)
 	EventBus.stats_updated.connect(_on_stats_updated)
-	
-	var bg = ColorRect.new()
-	bg.color = ThemeConfig.BG_APP
-	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	add_child(bg)
-	move_child(bg, 0)
 	
 	_setup_kpis()
 	
@@ -69,60 +65,10 @@ func _setup_kpis() -> void:
 		c.set_data(k.l, k.v, k.t, k.up, k.s)
 
 func _populate_inbox():
-	var inbox = $Margin/VBox/MainGrid/RightCol/InboxPanel
-	for c in inbox.get_children():
-		c.queue_free()
+	var inbox_list = %InboxList
+	for child in inbox_list.get_children():
+		child.queue_free()
 		
-	var vb = VBoxContainer.new()
-	vb.add_theme_constant_override("separation", 12)
-	
-	# Header
-	var h = HBoxContainer.new()
-	h.add_theme_constant_override("separation", 12)
-	var ic_path = "res://addons/at-icons/control/mailbox.svg"
-	var ic = TextureRect.new()
-	if ResourceLoader.exists(ic_path):
-		ic.texture = load(ic_path)
-	ic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	ic.custom_minimum_size = Vector2(16, 16)
-	ic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	ic.modulate = ThemeConfig.BRAND_PRIMARY
-	h.add_child(ic)
-	
-	var l = Label.new()
-	l.text = "CAIXA DE ENTRADA"
-	l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	l.add_theme_color_override("font_color", ThemeConfig.BRAND_PRIMARY)
-	l.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
-	l.add_theme_constant_override("letter_spacing", 2)
-	h.add_child(l)
-	
-	var pill = Label.new()
-	pill.text = " 12 NOVAS "
-	var ps = StyleBoxFlat.new()
-	ps.bg_color = ThemeConfig.DANGER
-	ps.corner_radius_top_left = 6; ps.corner_radius_bottom_right = 6; ps.corner_radius_top_right = 6; ps.corner_radius_bottom_left = 6
-	pill.add_theme_stylebox_override("normal", ps)
-	pill.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
-	pill.add_theme_font_size_override("font_size", 11)
-	h.add_child(pill)
-	vb.add_child(h)
-	
-	var div = ColorRect.new()
-	div.custom_minimum_size = Vector2(0, 1)
-	div.color = Color("#2D1B4E")
-	vb.add_child(div)
-	
-	var scroll = ScrollContainer.new()
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	
-	var msg_vbox = VBoxContainer.new()
-	msg_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	msg_vbox.add_theme_constant_override("separation", 16)
-	scroll.add_child(msg_vbox)
-	vb.add_child(scroll)
-	
 	# Messages from Engine
 	var raw_msgs = GameManager.get_inbox()
 	var msgs = []
@@ -162,116 +108,30 @@ func _populate_inbox():
 			"unread": unread
 		})
 
-	pill.text = " %d NOVAS " % unread_count
+	var badge = %UnreadBadge
+	if badge:
+		badge.text = " %d NOVAS " % unread_count
 	
 	for m in msgs:
-		var root = MarginContainer.new()
-		var btn = Button.new()
-		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		btn.size_flags_vertical = Control.SIZE_EXPAND_FILL
-		var n_style = StyleBoxEmpty.new()
-		var h_style = StyleBoxFlat.new()
-		h_style.bg_color = ThemeConfig.BG_ELEVATED
-		h_style.corner_radius_top_left = 6; h_style.corner_radius_bottom_right = 6; h_style.corner_radius_top_right = 6; h_style.corner_radius_bottom_left = 6
-		btn.add_theme_stylebox_override("normal", n_style)
-		btn.add_theme_stylebox_override("hover", h_style)
-		btn.add_theme_stylebox_override("pressed", h_style)
-		btn.add_theme_stylebox_override("focus", n_style)
-		root.add_child(btn)
+		var row = inbox_row_scene.instantiate()
+		inbox_list.add_child(row)
 		
-		var pad = MarginContainer.new()
-		pad.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		pad.add_theme_constant_override("margin_left", 16)
-		pad.add_theme_constant_override("margin_right", 16)
-		pad.add_theme_constant_override("margin_top", 12)
-		pad.add_theme_constant_override("margin_bottom", 12)
-		root.add_child(pad)
+		row.get_node("%Title").text = m.t
+		row.get_node("%Subtitle").text = m.s
+		row.get_node("%Time").text = m.time
 		
-		var row = HBoxContainer.new()
-		row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		row.add_theme_constant_override("separation", 16)
-		pad.add_child(row)
-		
-		# Icon Box
-		var ic_pnl = PanelContainer.new()
-		ic_pnl.custom_minimum_size = Vector2(40, 40)
-		ic_pnl.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-		ic_pnl.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		var ics = StyleBoxFlat.new()
-		ics.bg_color = m.c_bg
-		ics.corner_radius_top_left = 8; ics.corner_radius_bottom_right = 8; ics.corner_radius_top_right = 8; ics.corner_radius_bottom_left = 8
-		ic_pnl.add_theme_stylebox_override("panel", ics)
-		
-		var ic_tex = TextureRect.new()
 		var p = "res://addons/at-icons/control/" + m.icon + ".svg"
 		if ResourceLoader.exists(p):
-			ic_tex.texture = load(p)
-		ic_tex.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		ic_tex.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		ic_tex.custom_minimum_size = Vector2(20, 20)
-		ic_tex.modulate = m.c_ic
+			row.get_node("%Icon").texture = load(p)
+		row.get_node("%Icon").modulate = m.c_ic
 		
-		var ic_c = CenterContainer.new()
-		ic_c.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		ic_c.add_child(ic_tex)
-		ic_pnl.add_child(ic_c)
-		row.add_child(ic_pnl)
+		var ic_pnl = row.get_node("%IconPanel")
+		var sb = StyleBoxFlat.new()
+		sb.bg_color = m.c_bg
+		sb.corner_radius_top_left = 8; sb.corner_radius_bottom_right = 8; sb.corner_radius_top_right = 8; sb.corner_radius_bottom_left = 8
+		ic_pnl.add_theme_stylebox_override("panel", sb)
 		
-		# Text Column
-		var text_col = VBoxContainer.new()
-		text_col.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		text_col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		text_col.alignment = BoxContainer.ALIGNMENT_CENTER
-		var title = Label.new()
-		title.text = m.t
-		title.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
-		title.add_theme_color_override("font_color", Color.WHITE)
-		title.add_theme_font_size_override("font_size", 13)
-		var sub = Label.new()
-		sub.text = m.s
-		sub.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED)
-		sub.add_theme_font_size_override("font_size", 12)
-		text_col.add_child(title)
-		text_col.add_child(sub)
-		row.add_child(text_col)
-		
-		# Time & Dot Column
-		var r_col = VBoxContainer.new()
-		r_col.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		r_col.alignment = BoxContainer.ALIGNMENT_CENTER
-		r_col.add_theme_constant_override("separation", 6)
-		var t_lbl = Label.new()
-		t_lbl.text = m.time
-		t_lbl.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED)
-		t_lbl.add_theme_font_size_override("font_size", 11)
-		t_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-		r_col.add_child(t_lbl)
-		
-		if m.unread:
-			var d_pnl = PanelContainer.new()
-			d_pnl.custom_minimum_size = Vector2(6, 6)
-			d_pnl.size_flags_horizontal = Control.SIZE_SHRINK_END
-			var ds = StyleBoxFlat.new()
-			ds.bg_color = ThemeConfig.BRAND_PRIMARY
-			ds.corner_radius_top_left = 3; ds.corner_radius_bottom_right = 3; ds.corner_radius_top_right = 3; ds.corner_radius_bottom_left = 3
-			d_pnl.add_theme_stylebox_override("panel", ds)
-			r_col.add_child(d_pnl)
-		else:
-			var dot = ColorRect.new()
-			dot.custom_minimum_size = Vector2(6, 6)
-			dot.color = Color(0,0,0,0)
-			r_col.add_child(dot)
-			
-		row.add_child(r_col)
-		msg_vbox.add_child(root)
-		
-	var m_cont = MarginContainer.new()
-	m_cont.add_theme_constant_override("margin_left", 32)
-	m_cont.add_theme_constant_override("margin_top", 24)
-	m_cont.add_theme_constant_override("margin_right", 32)
-	m_cont.add_theme_constant_override("margin_bottom", 24)
-	m_cont.add_child(vb)
-	inbox.add_child(m_cont)
+		row.get_node("%UnreadDot").visible = m.unread
 
 func _refresh_data() -> void:
 	var next_match = EventManager.get_next_match()
@@ -290,24 +150,10 @@ func _refresh_data() -> void:
 	_update_kpis()
 
 func _populate_recent():
-	var panel = $Margin/VBox/MainGrid/RightCol/RecentPanel
-	for c in panel.get_children():
-		c.queue_free()
+	var recent_list = %RecentList
+	for child in recent_list.get_children():
+		child.queue_free()
 		
-	var vb = VBoxContainer.new()
-	vb.add_theme_constant_override("separation", 16)
-	
-	# Header
-	var header = HBoxContainer.new()
-	var tit = Label.new()
-	tit.text = "ÚLTIMOS RESULTADOS"
-	tit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	tit.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
-	tit.add_theme_color_override("font_color", ThemeConfig.BRAND_PRIMARY)
-	tit.add_theme_constant_override("letter_spacing", 2)
-	tit.add_theme_font_size_override("font_size", 12)
-	header.add_child(tit)
-	
 	var user_team = GameManager.user_team_id
 	var sched = GameManager.get_schedule()
 	var recent_games = []
@@ -319,48 +165,32 @@ func _populate_recent():
 	if recent_games.size() > 5:
 		recent_games = recent_games.slice(recent_games.size() - 5, recent_games.size())
 		
-	var form_box = HBoxContainer.new()
-	form_box.add_theme_constant_override("separation", 4)
-	for g in recent_games:
-		var is_home = g.get("home_team", -1) == user_team
-		var h_score = g.get("home_score", 0)
-		var a_score = g.get("away_score", 0)
-		var won = (is_home and h_score > a_score) or (not is_home and a_score > h_score)
-		var pnl = PanelContainer.new()
-		pnl.custom_minimum_size = Vector2(16, 16)
-		pnl.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-		var ps = StyleBoxFlat.new()
-		ps.bg_color = Color("#06030E")
-		ps.corner_radius_top_left = 4; ps.corner_radius_bottom_right = 4; ps.corner_radius_top_right = 4; ps.corner_radius_bottom_left = 4
-		ps.border_width_left = 1; ps.border_width_top = 1; ps.border_width_right = 1; ps.border_width_bottom = 1
-		ps.border_color = ThemeConfig.SUCCESS if won else ThemeConfig.DANGER
-		pnl.add_theme_stylebox_override("panel", ps)
-		var l = Label.new()
-		l.text = "V" if won else "D"
-		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		l.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
-		l.add_theme_font_size_override("font_size", 9)
-		l.add_theme_color_override("font_color", ThemeConfig.SUCCESS if won else ThemeConfig.DANGER)
-		pnl.add_child(l)
-		form_box.add_child(pnl)
-		
-	header.add_child(form_box)
-	vb.add_child(header)
-	
-	var div = ColorRect.new()
-	div.custom_minimum_size = Vector2(0, 1)
-	div.color = Color("#2D1B4E")
-	vb.add_child(div)
-	
-	var scroll = ScrollContainer.new()
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	
-	var list_vbox = VBoxContainer.new()
-	list_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	list_vbox.add_theme_constant_override("separation", 24)
-	scroll.add_child(list_vbox)
-	vb.add_child(scroll)
+	var form_box = %FormBox
+	if form_box:
+		for c in form_box.get_children():
+			c.queue_free()
+		for g in recent_games:
+			var is_home = g.get("home_team", -1) == user_team
+			var h_score = g.get("home_score", 0)
+			var a_score = g.get("away_score", 0)
+			var won = (is_home and h_score > a_score) or (not is_home and a_score > h_score)
+			var pnl = PanelContainer.new()
+			pnl.custom_minimum_size = Vector2(16, 16)
+			pnl.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+			var ps = StyleBoxFlat.new()
+			ps.bg_color = Color("#06030E")
+			ps.corner_radius_top_left = 4; ps.corner_radius_bottom_right = 4; ps.corner_radius_top_right = 4; ps.corner_radius_bottom_left = 4
+			ps.border_width_left = 1; ps.border_width_top = 1; ps.border_width_right = 1; ps.border_width_bottom = 1
+			ps.border_color = ThemeConfig.SUCCESS if won else ThemeConfig.DANGER
+			pnl.add_theme_stylebox_override("panel", ps)
+			var l = Label.new()
+			l.text = "V" if won else "D"
+			l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			l.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
+			l.add_theme_font_size_override("font_size", 9)
+			l.add_theme_color_override("font_color", ThemeConfig.SUCCESS if won else ThemeConfig.DANGER)
+			pnl.add_child(l)
+			form_box.add_child(pnl)
 	
 	recent_games.reverse() # newest first
 	for g in recent_games:
@@ -370,81 +200,35 @@ func _populate_recent():
 		var won = (is_home and h_score > a_score) or (not is_home and a_score > h_score)
 		var opp_id = g.get("away_team", -1) if is_home else g.get("home_team", -1)
 		var opp = _find_team(GameManager.league.teams, opp_id)
+		var us_score = h_score if is_home else a_score
+		var them_score = a_score if is_home else h_score
 		
-		var row = HBoxContainer.new()
-		row.add_theme_constant_override("separation", 16)
+		var row = recent_row_scene.instantiate()
+		recent_list.add_child(row)
 		
-		# V/D Badge
-		var badge = PanelContainer.new()
-		badge.custom_minimum_size = Vector2(24, 24)
-		badge.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		var result_label = row.get_node("%ResultLabel")
+		result_label.text = "V" if won else "D"
+		result_label.add_theme_color_override("font_color", ThemeConfig.SUCCESS if won else ThemeConfig.DANGER)
+		
+		var result_panel = row.get_node("%ResultPanel")
 		var bs = StyleBoxFlat.new()
 		bs.bg_color = Color("#06030E")
 		bs.corner_radius_top_left = 6; bs.corner_radius_bottom_right = 6; bs.corner_radius_top_right = 6; bs.corner_radius_bottom_left = 6
 		bs.border_width_left = 1; bs.border_width_top = 1; bs.border_width_right = 1; bs.border_width_bottom = 1
 		bs.border_color = ThemeConfig.SUCCESS if won else ThemeConfig.DANGER
-		badge.add_theme_stylebox_override("panel", bs)
-		var bl = Label.new()
-		bl.text = "V" if won else "D"
-		bl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		bl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
-		bl.add_theme_color_override("font_color", ThemeConfig.SUCCESS if won else ThemeConfig.DANGER)
-		bl.add_theme_font_size_override("font_size", 12)
-		badge.add_child(bl)
-		row.add_child(badge)
+		result_panel.add_theme_stylebox_override("panel", bs)
 		
-		# Home/Away indicator
-		var ha = Label.new()
-		ha.text = "vs" if is_home else "@"
-		ha.custom_minimum_size = Vector2(16, 0)
-		ha.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		ha.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED)
-		ha.add_theme_font_size_override("font_size", 12)
-		row.add_child(ha)
+		row.get_node("%OpponentLabel").text = opp.get("name", "Opponent") if opp else "Opponent"
+		row.get_node("%ScoreLabel").text = str(us_score) + "-" + str(them_score)
 		
-		# Opponent Name
-		var opp_lbl = Label.new()
-		opp_lbl.text = opp.get("name", "Opponent") if opp else "Opponent"
-		opp_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		opp_lbl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
-		opp_lbl.add_theme_color_override("font_color", Color.WHITE)
-		opp_lbl.add_theme_font_size_override("font_size", 13)
-		row.add_child(opp_lbl)
-		
-		# Score
-		var score_lbl = Label.new()
-		var us_score = h_score if is_home else a_score
-		var them_score = a_score if is_home else h_score
-		score_lbl.text = str(us_score) + "-" + str(them_score)
-		score_lbl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
-		score_lbl.add_theme_color_override("font_color", Color.WHITE)
-		score_lbl.add_theme_font_size_override("font_size", 13)
-		row.add_child(score_lbl)
-		
-		# Diff
 		var diff = us_score - them_score
-		var diff_lbl = Label.new()
-		diff_lbl.text = ("+" if diff > 0 else "") + str(diff)
-		diff_lbl.custom_minimum_size = Vector2(24, 0)
-		diff_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-		diff_lbl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
-		diff_lbl.add_theme_color_override("font_color", ThemeConfig.SUCCESS if diff > 0 else ThemeConfig.DANGER)
-		diff_lbl.add_theme_font_size_override("font_size", 12)
-		row.add_child(diff_lbl)
+		var diff_label = row.get_node("%DiffLabel")
+		diff_label.text = ("+" if diff > 0 else "") + str(diff)
+		diff_label.add_theme_color_override("font_color", ThemeConfig.SUCCESS if diff > 0 else ThemeConfig.DANGER)
 		
-		var r_pad = MarginContainer.new()
-		r_pad.add_theme_constant_override("margin_left", 8)
-		r_pad.add_theme_constant_override("margin_right", 8)
-		r_pad.add_child(row)
-		list_vbox.add_child(r_pad)
-		
-	var pad = MarginContainer.new()
-	pad.add_theme_constant_override("margin_left", 32)
-	pad.add_theme_constant_override("margin_top", 24)
-	pad.add_theme_constant_override("margin_right", 32)
-	pad.add_theme_constant_override("margin_bottom", 24)
-	pad.add_child(vb)
-	panel.add_child(pad)
+		var type_label = row.get_node("%TypeLabel")
+		if type_label:
+			type_label.text = "vs" if is_home else "@"
 
 func _update_pills():
 	var user_team = GameManager.user_team_id
