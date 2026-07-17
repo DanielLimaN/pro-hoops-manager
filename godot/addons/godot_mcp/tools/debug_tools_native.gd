@@ -430,7 +430,7 @@ func _register_get_debug_output(server_core: RefCounted) -> void:
 				"count": {"type": "integer", "default": 100},
 				"offset": {"type": "integer", "default": 0},
 				"order": {"type": "string", "enum": ["asc", "desc"], "default": "desc"},
-				"category": {"type": "string", "enum": ["", "stdout", "stderr", "stdout_rich"], "default": ""}
+				"category": {"type": "string", "enum": ["stdout", "stderr", "stdout_rich"], "default": ""}
 			}
 		},
 		Callable(self, "_tool_get_debug_output"),

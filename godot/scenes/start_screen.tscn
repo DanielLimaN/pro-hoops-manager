@@ -1,8 +1,184 @@
 [gd_scene format=3 uid="uid://bn7no3fbaqs4g"]
 
 [ext_resource type="Script" uid="uid://btmlqcx4u7vjj" path="res://scripts/start_screen.gd" id="1_start"]
+[ext_resource type="Script" uid="uid://cthrldgh76l4c" path="res://scripts/court_lines.gd" id="2_court"]
+[ext_resource type="Texture2D" uid="uid://dsd8jdpasgd7q" path="res://assets/ui/logo-basketball.png" id="3_l1xhf"]
+[ext_resource type="Texture2D" uid="uid://crtwt3fydxtsu" path="res://addons/at-icons/control/play.svg" id="8_play"]
+[ext_resource type="Texture2D" uid="uid://cbr4lmlmv0jiv" path="res://addons/at-icons/control/arrow_right.svg" id="9_arrow_right"]
+[ext_resource type="Texture2D" uid="uid://c20kuvsc771iv" path="res://addons/at-icons/control/calendar.svg" id="10_calendar"]
+[ext_resource type="Texture2D" uid="uid://c40nwtw0p5v35" path="res://addons/at-icons/control/plus.svg" id="12_plus"]
+[ext_resource type="Texture2D" uid="uid://bwvkqaqffqo6o" path="res://addons/at-icons/control/folder_open.svg" id="13_folder_open"]
+[ext_resource type="Texture2D" uid="uid://dn374v8kif85u" path="res://addons/at-icons/control/globe.svg" id="14_globe"]
+[ext_resource type="Texture2D" uid="uid://cfl2nnwxdefkh" path="res://addons/at-icons/control/trophy.svg" id="15_trophy"]
+[ext_resource type="Texture2D" uid="uid://c71bgbph0aydj" path="res://theme/gradients/bg_main.tres" id="19_grad_bg_main"]
+[ext_resource type="Texture2D" uid="uid://ck4nw3q10nor2" path="res://theme/gradients/stadium_top.tres" id="20_grad_stadium_top"]
+[ext_resource type="Texture2D" uid="uid://dxnbifsnhxl17" path="res://theme/gradients/crowd_glow.tres" id="21_grad_crowd_glow"]
 
-[node name="StartScreen" type="Control" unique_id=1560948750]
+[sub_resource type="SystemFont" id="4"]
+font_names = PackedStringArray("Inter", "Helvetica Neue", "Arial", "sans-serif")
+font_weight = 900
+subpixel_positioning = 0
+
+[sub_resource type="SystemFont" id="2"]
+font_names = PackedStringArray("Inter", "Helvetica Neue", "Arial", "sans-serif")
+font_weight = 700
+
+[sub_resource type="StyleBoxFlat" id="5"]
+content_margin_left = 10.0
+content_margin_top = 4.0
+content_margin_right = 10.0
+content_margin_bottom = 4.0
+bg_color = Color(0.03922, 0.01961, 0.11373, 0.53333)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.17647, 0.10588, 0.30588, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="26"]
+bg_color = Color(0.06275, 0.72549, 0.50588, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="SystemFont" id="3"]
+font_names = PackedStringArray("Inter", "Helvetica Neue", "Arial", "sans-serif")
+font_weight = 800
+subpixel_positioning = 0
+
+[sub_resource type="SystemFont" id="1"]
+font_names = PackedStringArray("Inter", "Helvetica Neue", "Arial", "sans-serif")
+font_weight = 500
+subpixel_positioning = 0
+
+[sub_resource type="StyleBoxFlat" id="8"]
+bg_color = Color(0.05882, 0.02745, 0.12549, 0.8)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.6549, 0.5451, 0.98039, 0.25)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(0, 0, 0, 0.3)
+shadow_size = 20
+
+[sub_resource type="StyleBoxFlat" id="9"]
+content_margin_left = 16.0
+content_margin_top = 12.0
+content_margin_right = 16.0
+content_margin_bottom = 12.0
+bg_color = Color(0, 0, 0, 0)
+
+[sub_resource type="StyleBoxFlat" id="10"]
+content_margin_left = 20.0
+content_margin_top = 18.0
+content_margin_right = 20.0
+content_margin_bottom = 18.0
+bg_color = Color(0, 0, 0, 0)
+
+[sub_resource type="StyleBoxFlat" id="11"]
+bg_color = Color(0.6549, 0.5451, 0.98039, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.35686, 0.12941, 0.71373, 1)
+corner_radius_top_left = 36
+corner_radius_top_right = 36
+corner_radius_bottom_right = 36
+corner_radius_bottom_left = 36
+
+[sub_resource type="StyleBoxFlat" id="12"]
+content_margin_left = 20.0
+content_margin_top = 12.0
+content_margin_right = 20.0
+content_margin_bottom = 12.0
+bg_color = Color(0.04314, 0.01961, 0.07843, 0.66667)
+
+[sub_resource type="StyleBoxFlat" id="13"]
+content_margin_left = 20.0
+content_margin_top = 12.0
+content_margin_right = 20.0
+content_margin_bottom = 12.0
+bg_color = Color(0, 0, 0, 0)
+
+[sub_resource type="StyleBoxFlat" id="14"]
+bg_color = Color(0.37647, 0.64706, 0.98039, 0.13333)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.37647, 0.64706, 0.98039, 0.37647)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="15"]
+content_margin_left = 20.0
+content_margin_top = 16.0
+content_margin_right = 20.0
+content_margin_bottom = 16.0
+bg_color = Color(0.6549, 0.5451, 0.98039, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="19"]
+content_margin_left = 16.0
+content_margin_top = 16.0
+content_margin_right = 16.0
+content_margin_bottom = 16.0
+bg_color = Color(0.05882, 0.02745, 0.12549, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.6549, 0.5451, 0.9804, 0.2)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="20"]
+bg_color = Color(0.06275, 0.72549, 0.50588, 0.13333)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="21"]
+bg_color = Color(0.37647, 0.64706, 0.98039, 0.13333)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="22"]
+bg_color = Color(0.6549, 0.5451, 0.98039, 0.13333)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="23"]
+bg_color = Color(0.98431, 0.74902, 0.14118, 0.13333)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[node name="StartScreen" type="Control" unique_id=470877312]
+unique_name_in_owner = true
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -10,3 +186,781 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_start")
+
+[node name="SolidBg" type="ColorRect" parent="." unique_id=258140357]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.0235, 0.0118, 0.0549, 1)
+
+[node name="BackgroundGradient" type="TextureRect" parent="." unique_id=487605493]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("19_grad_bg_main")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="StadiumTop" type="TextureRect" parent="." unique_id=1717659008]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 200.0
+grow_horizontal = 2
+mouse_filter = 2
+texture = ExtResource("20_grad_stadium_top")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CrowdGlow" type="TextureRect" parent="." unique_id=1406820779]
+layout_mode = 0
+offset_left = 220.0
+offset_top = -200.0
+offset_right = 1220.0
+offset_bottom = 500.0
+mouse_filter = 2
+texture = ExtResource("21_grad_crowd_glow")
+expand_mode = 1
+
+[node name="CourtPerspective" type="Control" parent="." unique_id=2138875665]
+layout_mode = 1
+anchor_top = 0.6
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+mouse_filter = 2
+script = ExtResource("2_court")
+
+[node name="PlayerSilhouette" type="ColorRect" parent="." unique_id=630494276]
+visible = false
+layout_mode = 0
+offset_left = 200.0
+offset_top = 350.0
+offset_right = 440.0
+offset_bottom = 710.0
+mouse_filter = 2
+color = Color(1, 1, 1, 0.35)
+
+[node name="TopBar" type="Control" parent="." unique_id=981850629]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 25.0
+offset_right = 2.0
+offset_bottom = 225.0
+grow_horizontal = 2
+
+[node name="TopBarHBox" type="HBoxContainer" parent="TopBar" unique_id=761567288]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 40.0
+offset_right = -40.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="LogoWrap" type="HBoxContainer" parent="TopBar/TopBarHBox" unique_id=1175441016]
+layout_mode = 2
+size_flags_vertical = 4
+alignment = 1
+
+[node name="LogoBasket" type="TextureRect" parent="TopBar/TopBarHBox/LogoWrap" unique_id=2127431924]
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+texture = ExtResource("3_l1xhf")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LogoTextWrap" type="VBoxContainer" parent="TopBar/TopBarHBox/LogoWrap" unique_id=475670906]
+layout_mode = 2
+
+[node name="ProHoopsLabel" type="Label" parent="TopBar/TopBarHBox/LogoWrap/LogoTextWrap" unique_id=30859050]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = SubResource("4")
+theme_override_font_sizes/font_size = 22
+text = "PRO HOOPS"
+
+[node name="ManagerLabel" type="Label" parent="TopBar/TopBarHBox/LogoWrap/LogoTextWrap" unique_id=635270828]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6549, 0.5451, 0.98039, 1)
+theme_override_fonts/font = SubResource("2")
+theme_override_font_sizes/font_size = 12
+text = "MANAGER"
+
+[node name="TopSpacer" type="Control" parent="TopBar/TopBarHBox" unique_id=362523091]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+
+[node name="TopRightWrap" type="HBoxContainer" parent="TopBar/TopBarHBox" unique_id=171746174]
+layout_mode = 2
+size_flags_vertical = 4
+alignment = 1
+
+[node name="VersionPanel" type="PanelContainer" parent="TopBar/TopBarHBox/TopRightWrap" unique_id=650355508]
+layout_mode = 2
+theme_override_styles/panel = SubResource("5")
+
+[node name="VersionHBox" type="HBoxContainer" parent="TopBar/TopBarHBox/TopRightWrap/VersionPanel" unique_id=502932420]
+layout_mode = 2
+
+[node name="VersionDot" type="PanelContainer" parent="TopBar/TopBarHBox/TopRightWrap/VersionPanel/VersionHBox" unique_id=371541748]
+custom_minimum_size = Vector2(5, 5)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("26")
+
+[node name="VersionLabel" type="Label" parent="TopBar/TopBarHBox/TopRightWrap/VersionPanel/VersionHBox" unique_id=1243134086]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.58039, 0.63922, 0.72157, 1)
+theme_override_fonts/font = SubResource("3")
+theme_override_font_sizes/font_size = 9
+text = "v1.0.0 · ONLINE"
+
+[node name="CenterArea" type="Control" parent="." unique_id=1805947536]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -1.0
+offset_top = 195.0
+offset_right = -1.0
+offset_bottom = 73.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MainHBox" type="HBoxContainer" parent="CenterArea" unique_id=61944926]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 60.0
+offset_right = -60.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HeroSection" type="VBoxContainer" parent="CenterArea/MainHBox" unique_id=1076221441]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HeroTitle" type="Label" parent="CenterArea/MainHBox/HeroSection" unique_id=2106400486]
+custom_minimum_size = Vector2(620, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_constants/line_spacing = -2
+theme_override_fonts/font = SubResource("4")
+theme_override_font_sizes/font_size = 56
+text = "Construa sua
+dinastia."
+autowrap_mode = 3
+
+[node name="HeroSubtitle" type="Label" parent="CenterArea/MainHBox/HeroSection" unique_id=2067042633]
+custom_minimum_size = Vector2(540, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.58039, 0.63922, 0.72157, 1)
+theme_override_constants/line_spacing = 1
+theme_override_fonts/font = SubResource("1")
+theme_override_font_sizes/font_size = 14
+text = "Vença campeonatos, descubra talentos e escreva sua história na maior liga de basquete simulado."
+autowrap_mode = 3
+
+[node name="HeroStats" type="HBoxContainer" parent="CenterArea/MainHBox/HeroSection" unique_id=1384403452]
+layout_mode = 2
+theme_override_constants/separation = 24
+
+[node name="StatTempVBox" type="VBoxContainer" parent="CenterArea/MainHBox/HeroSection/HeroStats" unique_id=126118404]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="StatTempLabel" type="Label" parent="CenterArea/MainHBox/HeroSection/HeroStats/StatTempVBox" unique_id=46430207]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.41961, 0.35686, 0.58431, 1)
+theme_override_fonts/font = SubResource("1")
+theme_override_font_sizes/font_size = 9
+text = "TEMPORADAS"
+
+[node name="StatTempValue" type="Label" parent="CenterArea/MainHBox/HeroSection/HeroStats/StatTempVBox" unique_id=555310650]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6549, 0.5451, 0.98039, 1)
+theme_override_fonts/font = SubResource("4")
+theme_override_font_sizes/font_size = 22
+text = "-"
+
+[node name="StatGamesVBox" type="VBoxContainer" parent="CenterArea/MainHBox/HeroSection/HeroStats" unique_id=1557947021]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="StatGamesLabel" type="Label" parent="CenterArea/MainHBox/HeroSection/HeroStats/StatGamesVBox" unique_id=1406501382]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.41961, 0.35686, 0.58431, 1)
+theme_override_fonts/font = SubResource("1")
+theme_override_font_sizes/font_size = 9
+text = "JOGOS"
+
+[node name="StatGamesValue" type="Label" parent="CenterArea/MainHBox/HeroSection/HeroStats/StatGamesVBox" unique_id=638181717]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.98431, 0.74902, 0.14118, 1)
+theme_override_fonts/font = SubResource("4")
+theme_override_font_sizes/font_size = 22
+text = "-"
+
+[node name="StatWinsVBox" type="VBoxContainer" parent="CenterArea/MainHBox/HeroSection/HeroStats" unique_id=1928684571]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="StatWinsLabel" type="Label" parent="CenterArea/MainHBox/HeroSection/HeroStats/StatWinsVBox" unique_id=82578328]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.41961, 0.35686, 0.58431, 1)
+theme_override_fonts/font = SubResource("1")
+theme_override_font_sizes/font_size = 9
+text = "VITÓRIAS"
+
+[node name="StatWinsValue" type="Label" parent="CenterArea/MainHBox/HeroSection/HeroStats/StatWinsVBox" unique_id=810348394]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.37647, 0.64706, 0.98039, 1)
+theme_override_fonts/font = SubResource("4")
+theme_override_font_sizes/font_size = 22
+text = "-"
+
+[node name="StatPosVBox" type="VBoxContainer" parent="CenterArea/MainHBox/HeroSection/HeroStats" unique_id=1033234733]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="StatPosLabel" type="Label" parent="CenterArea/MainHBox/HeroSection/HeroStats/StatPosVBox" unique_id=1174993221]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.41961, 0.35686, 0.58431, 1)
+theme_override_fonts/font = SubResource("1")
+theme_override_font_sizes/font_size = 9
+text = "POSIÇÃO"
+
+[node name="StatPosValue" type="Label" parent="CenterArea/MainHBox/HeroSection/HeroStats/StatPosVBox" unique_id=434492729]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.06275, 0.72549, 0.50588, 1)
+theme_override_fonts/font = SubResource("4")
+theme_override_font_sizes/font_size = 22
+text = "-"
+
+[node name="RightPanel" type="VBoxContainer" parent="CenterArea/MainHBox" unique_id=1866592477]
+custom_minimum_size = Vector2(480, 0)
+layout_mode = 2
+
+[node name="ContinueCard" type="PanelContainer" parent="CenterArea/MainHBox/RightPanel" unique_id=1132054149]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="CardPanel" type="PanelContainer" parent="CenterArea/MainHBox/RightPanel/ContinueCard" unique_id=1111862427]
+layout_mode = 2
+theme_override_styles/panel = SubResource("8")
+
+[node name="CardVBox" type="VBoxContainer" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel" unique_id=1951815051]
+layout_mode = 2
+
+[node name="CardHeaderWrap" type="PanelContainer" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox" unique_id=1673240035]
+layout_mode = 2
+theme_override_styles/panel = SubResource("9")
+
+[node name="CardHeaderVBox" type="VBoxContainer" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardHeaderWrap" unique_id=136815547]
+layout_mode = 2
+
+[node name="CardHeaderHBox" type="HBoxContainer" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardHeaderWrap/CardHeaderVBox" unique_id=2106233105]
+layout_mode = 2
+alignment = 1
+
+[node name="CardHeaderLeft" type="HBoxContainer" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardHeaderWrap/CardHeaderVBox/CardHeaderHBox" unique_id=338447029]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="CardHeaderDot" type="PanelContainer" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardHeaderWrap/CardHeaderVBox/CardHeaderHBox/CardHeaderLeft" unique_id=2142936524]
+custom_minimum_size = Vector2(6, 6)
+layout_mode = 2
+theme_override_styles/panel = SubResource("26")
+
+[node name="CardHeaderLabel" type="Label" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardHeaderWrap/CardHeaderVBox/CardHeaderHBox/CardHeaderLeft" unique_id=863027795]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.06275, 0.72549, 0.50588, 1)
+theme_override_fonts/font = SubResource("3")
+theme_override_font_sizes/font_size = 10
+text = "ÚLTIMA CARREIRA"
+
+[node name="CardHeaderSpacer" type="Control" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardHeaderWrap/CardHeaderVBox/CardHeaderHBox" unique_id=2003010633]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CardHeaderTime" type="Label" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardHeaderWrap/CardHeaderVBox/CardHeaderHBox" unique_id=420407852]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.41961, 0.35686, 0.58431, 1)
+theme_override_fonts/font = SubResource("1")
+theme_override_font_sizes/font_size = 9
+text = "SALVO"
+
+[node name="CardHeaderLine" type="ColorRect" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardHeaderWrap/CardHeaderVBox" unique_id=1904089823]
+custom_minimum_size = Vector2(0, 1)
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0.6549, 0.5451, 0.98039, 0.13333)
+
+[node name="CardBodyWrap" type="PanelContainer" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox" unique_id=1830600264]
+layout_mode = 2
+theme_override_styles/panel = SubResource("10")
+
+[node name="CardBodyHBox" type="HBoxContainer" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardBodyWrap" unique_id=1576879457]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="CardBadge" type="PanelContainer" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardBodyWrap/CardBodyHBox" unique_id=1878688205]
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+theme_override_styles/panel = SubResource("11")
+
+[node name="CardBadgeLabel" type="Label" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardBodyWrap/CardBodyHBox/CardBadge" unique_id=62800827]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = SubResource("4")
+theme_override_font_sizes/font_size = 24
+text = "PH"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CardInfoVBox" type="VBoxContainer" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardBodyWrap/CardBodyHBox" unique_id=1480090834]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 4
+
+[node name="CardInfoTag" type="Label" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardBodyWrap/CardBodyHBox/CardInfoVBox" unique_id=1282968179]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6549, 0.5451, 0.98039, 1)
+theme_override_fonts/font = SubResource("3")
+theme_override_font_sizes/font_size = 9
+text = "PH · CONFERÊNCIA SUL"
+
+[node name="CardInfoName" type="Label" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardBodyWrap/CardBodyHBox/CardInfoVBox" unique_id=1870488281]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_constants/line_spacing = -2
+theme_override_fonts/font = SubResource("4")
+theme_override_font_sizes/font_size = 18
+text = "Treinador"
+
+[node name="CardInfoSeasonHBox" type="HBoxContainer" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardBodyWrap/CardBodyHBox/CardInfoVBox" unique_id=313823148]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="CardInfoSeason" type="Label" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardBodyWrap/CardBodyHBox/CardInfoVBox/CardInfoSeasonHBox" unique_id=1012467060]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.58039, 0.63922, 0.72157, 1)
+theme_override_fonts/font = SubResource("1")
+theme_override_font_sizes/font_size = 11
+text = "Temporada 2025"
+
+[node name="CardInfoDot" type="ColorRect" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardBodyWrap/CardBodyHBox/CardInfoVBox/CardInfoSeasonHBox" unique_id=1619179338]
+custom_minimum_size = Vector2(3, 3)
+layout_mode = 2
+size_flags_vertical = 4
+color = Color(0.41961, 0.35686, 0.58431, 1)
+
+[node name="CardInfoWeek" type="Label" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardBodyWrap/CardBodyHBox/CardInfoVBox/CardInfoSeasonHBox" unique_id=1122048423]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.58039, 0.63922, 0.72157, 1)
+theme_override_fonts/font = SubResource("1")
+theme_override_font_sizes/font_size = 11
+text = "Semana 1"
+
+[node name="CardStatsPanel" type="PanelContainer" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox" unique_id=456818340]
+layout_mode = 2
+theme_override_styles/panel = SubResource("12")
+
+[node name="CardStatsHBox" type="HBoxContainer" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardStatsPanel" unique_id=1534154530]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="StatRecordVBox" type="VBoxContainer" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardStatsPanel/CardStatsHBox" unique_id=1077223571]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 2
+
+[node name="StatRecordLabel" type="Label" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardStatsPanel/CardStatsHBox/StatRecordVBox" unique_id=724592143]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.41961, 0.35686, 0.58431, 1)
+theme_override_fonts/font = SubResource("1")
+theme_override_font_sizes/font_size = 8
+text = "RECORD"
+
+[node name="StatRecordValue" type="Label" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardStatsPanel/CardStatsHBox/StatRecordVBox" unique_id=1475122658]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.06275, 0.72549, 0.50588, 1)
+theme_override_fonts/font = SubResource("4")
+theme_override_font_sizes/font_size = 16
+text = "-"
+
+[node name="StatRankVBox" type="VBoxContainer" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardStatsPanel/CardStatsHBox" unique_id=1185786805]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 2
+
+[node name="StatRankLabel" type="Label" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardStatsPanel/CardStatsHBox/StatRankVBox" unique_id=1500346322]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.41961, 0.35686, 0.58431, 1)
+theme_override_fonts/font = SubResource("1")
+theme_override_font_sizes/font_size = 8
+text = "POSIÇÃO"
+
+[node name="StatRankValue" type="Label" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardStatsPanel/CardStatsHBox/StatRankVBox" unique_id=1007353707]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.37647, 0.64706, 0.98039, 1)
+theme_override_fonts/font = SubResource("4")
+theme_override_font_sizes/font_size = 16
+text = "-"
+
+[node name="StatBudgetVBox" type="VBoxContainer" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardStatsPanel/CardStatsHBox" unique_id=697998602]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 2
+
+[node name="StatBudgetLabel" type="Label" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardStatsPanel/CardStatsHBox/StatBudgetVBox" unique_id=208172574]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.41961, 0.35686, 0.58431, 1)
+theme_override_fonts/font = SubResource("1")
+theme_override_font_sizes/font_size = 8
+text = "ORÇAMENTO"
+
+[node name="StatBudgetValue" type="Label" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardStatsPanel/CardStatsHBox/StatBudgetVBox" unique_id=1771769019]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.98431, 0.74902, 0.14118, 1)
+theme_override_fonts/font = SubResource("4")
+theme_override_font_sizes/font_size = 16
+text = "-"
+
+[node name="CardNextWrap" type="PanelContainer" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox" unique_id=1294022463]
+layout_mode = 2
+theme_override_styles/panel = SubResource("13")
+
+[node name="CardNextVBox" type="VBoxContainer" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardNextWrap" unique_id=1692694834]
+layout_mode = 2
+
+[node name="CardNextLine" type="ColorRect" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardNextWrap/CardNextVBox" unique_id=1565531016]
+custom_minimum_size = Vector2(0, 1)
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0.12157, 0.07843, 0.19608, 1)
+
+[node name="CardNextHBox" type="HBoxContainer" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardNextWrap/CardNextVBox" unique_id=1435646725]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="CardNextCalendar" type="TextureRect" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardNextWrap/CardNextVBox/CardNextHBox" unique_id=148317324]
+modulate = Color(0.6549, 0.5451, 0.98039, 1)
+custom_minimum_size = Vector2(14, 14)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("10_calendar")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CardNextTextVBox" type="VBoxContainer" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardNextWrap/CardNextVBox/CardNextHBox" unique_id=1847346200]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 2
+
+[node name="CardNextTitle" type="Label" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardNextWrap/CardNextVBox/CardNextHBox/CardNextTextVBox" unique_id=135002102]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.41961, 0.35686, 0.58431, 1)
+theme_override_fonts/font = SubResource("1")
+theme_override_font_sizes/font_size = 8
+text = "PRÓXIMO JOGO"
+
+[node name="CardNextMatch" type="Label" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardNextWrap/CardNextVBox/CardNextHBox/CardNextTextVBox" unique_id=1787868932]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = SubResource("1")
+theme_override_font_sizes/font_size = 12
+text = "Nenhum jogo agendado"
+
+[node name="CardNextCompBadge" type="PanelContainer" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardNextWrap/CardNextVBox/CardNextHBox" unique_id=1531696438]
+layout_mode = 2
+theme_override_styles/panel = SubResource("14")
+
+[node name="CardNextCompLabel" type="Label" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardNextWrap/CardNextVBox/CardNextHBox/CardNextCompBadge" unique_id=1377497257]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.37647, 0.64706, 0.98039, 1)
+theme_override_fonts/font = SubResource("1")
+theme_override_font_sizes/font_size = 9
+text = "LIGA"
+
+[node name="CardBtnMargin" type="MarginContainer" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox" unique_id=370426238]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="CardBtnWrap" type="PanelContainer" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardBtnMargin" unique_id=1040641041]
+layout_mode = 2
+theme_override_styles/panel = SubResource("15")
+
+[node name="CardBtnHBox" type="HBoxContainer" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardBtnMargin/CardBtnWrap" unique_id=1084632253]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="CardBtnPlay" type="TextureRect" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardBtnMargin/CardBtnWrap/CardBtnHBox" unique_id=630391842]
+custom_minimum_size = Vector2(18, 18)
+layout_mode = 2
+texture = ExtResource("8_play")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CardBtnLabel" type="Label" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardBtnMargin/CardBtnWrap/CardBtnHBox" unique_id=289518763]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = SubResource("3")
+theme_override_font_sizes/font_size = 14
+text = "CONTINUAR CARREIRA"
+
+[node name="CardBtnArrow" type="TextureRect" parent="CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardBtnMargin/CardBtnWrap/CardBtnHBox" unique_id=1790040206]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+texture = ExtResource("9_arrow_right")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="MenuGrid" type="VBoxContainer" parent="CenterArea/MainHBox/RightPanel" unique_id=1656915613]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="MenuRow1" type="HBoxContainer" parent="CenterArea/MainHBox/RightPanel/MenuGrid" unique_id=1789364642]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="MenuItemNewCareer" type="PanelContainer" parent="CenterArea/MainHBox/RightPanel/MenuGrid/MenuRow1" unique_id=1331598077]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("19")
+
+[node name="ItemNCHBox" type="HBoxContainer" parent="CenterArea/MainHBox/RightPanel/MenuGrid/MenuRow1/MenuItemNewCareer" unique_id=123375765]
+layout_mode = 2
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="ItemNCIconWrap" type="PanelContainer" parent="CenterArea/MainHBox/RightPanel/MenuGrid/MenuRow1/MenuItemNewCareer/ItemNCHBox" unique_id=734042930]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+theme_override_styles/panel = SubResource("20")
+
+[node name="ItemNCIcon" type="TextureRect" parent="CenterArea/MainHBox/RightPanel/MenuGrid/MenuRow1/MenuItemNewCareer/ItemNCHBox/ItemNCIconWrap" unique_id=1217386090]
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+texture = ExtResource("12_plus")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ItemNCTextVBox" type="VBoxContainer" parent="CenterArea/MainHBox/RightPanel/MenuGrid/MenuRow1/MenuItemNewCareer/ItemNCHBox" unique_id=1125214101]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 2
+
+[node name="ItemNCTitle" type="Label" parent="CenterArea/MainHBox/RightPanel/MenuGrid/MenuRow1/MenuItemNewCareer/ItemNCHBox/ItemNCTextVBox" unique_id=123710197]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = SubResource("3")
+theme_override_font_sizes/font_size = 13
+text = "NOVA CARREIRA"
+
+[node name="ItemNCDesc" type="Label" parent="CenterArea/MainHBox/RightPanel/MenuGrid/MenuRow1/MenuItemNewCareer/ItemNCHBox/ItemNCTextVBox" unique_id=948045696]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.41961, 0.35686, 0.58431, 1)
+theme_override_fonts/font = SubResource("1")
+theme_override_font_sizes/font_size = 10
+text = "Comece do zero"
+
+[node name="ItemNCChevron" type="TextureRect" parent="CenterArea/MainHBox/RightPanel/MenuGrid/MenuRow1/MenuItemNewCareer/ItemNCHBox" unique_id=306708405]
+modulate = Color(0.41961, 0.35686, 0.58431, 1)
+custom_minimum_size = Vector2(14, 14)
+layout_mode = 2
+texture = ExtResource("9_arrow_right")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="MenuItemLoadGame" type="PanelContainer" parent="CenterArea/MainHBox/RightPanel/MenuGrid/MenuRow1" unique_id=332098903]
+modulate = Color(1, 1, 1, 0.5)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("19")
+
+[node name="ItemLGHBox" type="HBoxContainer" parent="CenterArea/MainHBox/RightPanel/MenuGrid/MenuRow1/MenuItemLoadGame" unique_id=141968348]
+layout_mode = 2
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="ItemLGIconWrap" type="PanelContainer" parent="CenterArea/MainHBox/RightPanel/MenuGrid/MenuRow1/MenuItemLoadGame/ItemLGHBox" unique_id=1351351438]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+theme_override_styles/panel = SubResource("21")
+
+[node name="ItemLGIcon" type="TextureRect" parent="CenterArea/MainHBox/RightPanel/MenuGrid/MenuRow1/MenuItemLoadGame/ItemLGHBox/ItemLGIconWrap" unique_id=1236133161]
+modulate = Color(0.41961, 0.35686, 0.58431, 1)
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+texture = ExtResource("13_folder_open")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ItemLGTextVBox" type="VBoxContainer" parent="CenterArea/MainHBox/RightPanel/MenuGrid/MenuRow1/MenuItemLoadGame/ItemLGHBox" unique_id=606118916]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 2
+
+[node name="ItemLGTitle" type="Label" parent="CenterArea/MainHBox/RightPanel/MenuGrid/MenuRow1/MenuItemLoadGame/ItemLGHBox/ItemLGTextVBox" unique_id=766683854]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.41961, 0.35686, 0.58431, 1)
+theme_override_fonts/font = SubResource("3")
+theme_override_font_sizes/font_size = 13
+text = "CARREGAR JOGO"
+
+[node name="ItemLGDesc" type="Label" parent="CenterArea/MainHBox/RightPanel/MenuGrid/MenuRow1/MenuItemLoadGame/ItemLGHBox/ItemLGTextVBox" unique_id=1782932218]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.41961, 0.35686, 0.58431, 1)
+theme_override_fonts/font = SubResource("1")
+theme_override_font_sizes/font_size = 10
+text = "Nenhum save"
+
+[node name="ItemLGChevron" type="TextureRect" parent="CenterArea/MainHBox/RightPanel/MenuGrid/MenuRow1/MenuItemLoadGame/ItemLGHBox" unique_id=2138726012]
+modulate = Color(0.41961, 0.35686, 0.58431, 1)
+custom_minimum_size = Vector2(14, 14)
+layout_mode = 2
+texture = ExtResource("9_arrow_right")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="MenuRow2" type="HBoxContainer" parent="CenterArea/MainHBox/RightPanel/MenuGrid" unique_id=2138253784]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="MenuItemOnline" type="PanelContainer" parent="CenterArea/MainHBox/RightPanel/MenuGrid/MenuRow2" unique_id=1352259680]
+modulate = Color(1, 1, 1, 0.5)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("19")
+
+[node name="ItemONHBox" type="HBoxContainer" parent="CenterArea/MainHBox/RightPanel/MenuGrid/MenuRow2/MenuItemOnline" unique_id=1218694136]
+layout_mode = 2
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="ItemONIconWrap" type="PanelContainer" parent="CenterArea/MainHBox/RightPanel/MenuGrid/MenuRow2/MenuItemOnline/ItemONHBox" unique_id=464477753]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+theme_override_styles/panel = SubResource("22")
+
+[node name="ItemONIcon" type="TextureRect" parent="CenterArea/MainHBox/RightPanel/MenuGrid/MenuRow2/MenuItemOnline/ItemONHBox/ItemONIconWrap" unique_id=85871376]
+modulate = Color(0.41961, 0.35686, 0.58431, 1)
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+texture = ExtResource("14_globe")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ItemONTextVBox" type="VBoxContainer" parent="CenterArea/MainHBox/RightPanel/MenuGrid/MenuRow2/MenuItemOnline/ItemONHBox" unique_id=2075334648]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 2
+
+[node name="ItemONTitle" type="Label" parent="CenterArea/MainHBox/RightPanel/MenuGrid/MenuRow2/MenuItemOnline/ItemONHBox/ItemONTextVBox" unique_id=322025359]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.41961, 0.35686, 0.58431, 1)
+theme_override_fonts/font = SubResource("3")
+theme_override_font_sizes/font_size = 13
+text = "MODO ONLINE"
+
+[node name="ItemONDesc" type="Label" parent="CenterArea/MainHBox/RightPanel/MenuGrid/MenuRow2/MenuItemOnline/ItemONHBox/ItemONTextVBox" unique_id=830690006]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.41961, 0.35686, 0.58431, 1)
+theme_override_fonts/font = SubResource("1")
+theme_override_font_sizes/font_size = 10
+text = "Liga competitiva"
+
+[node name="ItemONChevron" type="TextureRect" parent="CenterArea/MainHBox/RightPanel/MenuGrid/MenuRow2/MenuItemOnline/ItemONHBox" unique_id=1809456023]
+modulate = Color(0.41961, 0.35686, 0.58431, 1)
+custom_minimum_size = Vector2(14, 14)
+layout_mode = 2
+texture = ExtResource("9_arrow_right")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="MenuItemAchievements" type="PanelContainer" parent="CenterArea/MainHBox/RightPanel/MenuGrid/MenuRow2" unique_id=521800380]
+modulate = Color(1, 1, 1, 0.5)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("19")
+
+[node name="ItemACHBox" type="HBoxContainer" parent="CenterArea/MainHBox/RightPanel/MenuGrid/MenuRow2/MenuItemAchievements" unique_id=286997614]
+layout_mode = 2
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="ItemACIconWrap" type="PanelContainer" parent="CenterArea/MainHBox/RightPanel/MenuGrid/MenuRow2/MenuItemAchievements/ItemACHBox" unique_id=1390937905]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+theme_override_styles/panel = SubResource("23")
+
+[node name="ItemACIcon" type="TextureRect" parent="CenterArea/MainHBox/RightPanel/MenuGrid/MenuRow2/MenuItemAchievements/ItemACHBox/ItemACIconWrap" unique_id=859047959]
+modulate = Color(0.41961, 0.35686, 0.58431, 1)
+custom_minimum_size = Vector2(15, 15)
+layout_mode = 2
+texture = ExtResource("15_trophy")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ItemACTextVBox" type="VBoxContainer" parent="CenterArea/MainHBox/RightPanel/MenuGrid/MenuRow2/MenuItemAchievements/ItemACHBox" unique_id=844065919]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 2
+
+[node name="ItemACTitle" type="Label" parent="CenterArea/MainHBox/RightPanel/MenuGrid/MenuRow2/MenuItemAchievements/ItemACHBox/ItemACTextVBox" unique_id=1952232862]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.41961, 0.35686, 0.58431, 1)
+theme_override_fonts/font = SubResource("3")
+theme_override_font_sizes/font_size = 13
+text = "CONQUISTAS"
+
+[node name="ItemACDesc" type="Label" parent="CenterArea/MainHBox/RightPanel/MenuGrid/MenuRow2/MenuItemAchievements/ItemACHBox/ItemACTextVBox" unique_id=2135185048]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.41961, 0.35686, 0.58431, 1)
+theme_override_fonts/font = SubResource("1")
+theme_override_font_sizes/font_size = 10
+text = "8/24 desbloqueadas"
+
+[node name="ItemACChevron" type="TextureRect" parent="CenterArea/MainHBox/RightPanel/MenuGrid/MenuRow2/MenuItemAchievements/ItemACHBox" unique_id=1751917347]
+modulate = Color(0.41961, 0.35686, 0.58431, 1)
+custom_minimum_size = Vector2(14, 14)
+layout_mode = 2
+texture = ExtResource("9_arrow_right")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="NewsTicker" type="Control" parent="." unique_id=1361904973]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -44.0
+grow_horizontal = 2
+grow_vertical = 0
