@@ -1,0 +1,109 @@
+[gd_scene format=3]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4aoiy"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2uidb"]
+bg_color = Color(0.05882353, 0.02745098, 0.1254902, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w0xp0"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cyew8"]
+bg_color = Color(0.654902, 0.54509807, 0.98039216, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[node name="DashboardInboxRow" type="MarginContainer" unique_id=922487198]
+
+[node name="BackgroundButton" type="Button" parent="." unique_id=295659334]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/normal = SubResource("StyleBoxEmpty_4aoiy")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_2uidb")
+theme_override_styles/hover = SubResource("StyleBoxFlat_2uidb")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_4aoiy")
+
+[node name="Padding" type="MarginContainer" parent="." unique_id=1267189851]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 12
+
+[node name="HBox" type="HBoxContainer" parent="Padding" unique_id=1780254165]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 16
+
+[node name="IconPanel" type="PanelContainer" parent="Padding/HBox" unique_id=1627659844]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_w0xp0")
+
+[node name="Center" type="CenterContainer" parent="Padding/HBox/IconPanel" unique_id=942894155]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Icon" type="TextureRect" parent="Padding/HBox/IconPanel/Center" unique_id=517591704]
+unique_name_in_owner = true
+modulate = Color(0.23137255, 0.50980395, 0.9647059, 1)
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextCol" type="VBoxContainer" parent="Padding/HBox" unique_id=338511864]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+alignment = 1
+
+[node name="Title" type="Label" parent="Padding/HBox/TextCol" unique_id=148976210]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Message Title"
+
+[node name="Subtitle" type="Label" parent="Padding/HBox/TextCol" unique_id=2120667590]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.5803922, 0.6392157, 0.72156864, 1)
+text = "Sender - preview..."
+
+[node name="RightCol" type="VBoxContainer" parent="Padding/HBox" unique_id=686770718]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 6
+alignment = 1
+
+[node name="Time" type="Label" parent="Padding/HBox/RightCol" unique_id=1176117398]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.5803922, 0.6392157, 0.72156864, 1)
+text = "10:00"
+horizontal_alignment = 2
+
+[node name="UnreadDot" type="PanelContainer" parent="Padding/HBox/RightCol" unique_id=1876077886]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(6, 6)
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_styles/panel = SubResource("StyleBoxFlat_cyew8")

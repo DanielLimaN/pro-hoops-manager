@@ -2,7 +2,25 @@
 
 [ext_resource type="Script" path="res://scenes/ui/components/status_card.gd" id="1_script"]
 
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_status"]
+bg_color = Color(0.0588, 0.0275, 0.1255, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.1765, 0.1059, 0.3059, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+content_margin_left = 16.0
+content_margin_top = 16.0
+content_margin_right = 16.0
+content_margin_bottom = 16.0
+
 [node name="StatusCard" type="PanelContainer"]
+theme_override_styles/panel = SubResource("StyleBoxFlat_status")
 custom_minimum_size = Vector2(0, 80)
 size_flags_horizontal = 3
 script = ExtResource("1_script")

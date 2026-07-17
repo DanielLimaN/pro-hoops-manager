@@ -1,10 +1,145 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=5 format=3 uid="uid://dpwxb2y1h2n8c"]
 
-[ext_resource type="Script" path="res://scenes/ui/dashboard/components/next_match_hero.gd" id="1_nmh"]
+[ext_resource type="Script" uid="uid://dtn1l1gxhvqf0" path="res://scenes/ui/dashboard/components/next_match_hero.gd" id="1_nmh"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hero"]
+bg_color = Color(0.0823529, 0.0313726, 0.14902, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.176471, 0.105882, 0.305882, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="Gradient" id="Gradient_hero"]
+colors = PackedColorArray(0.14902, 0.0745098, 0.278431, 1, 0.0588235, 0.027451, 0.12549, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_hero"]
+gradient = SubResource("Gradient_hero")
+fill_from = Vector2(0, 0)
+fill_to = Vector2(1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_home_circle"]
+bg_color = Color(0.654902, 0.545098, 0.980392, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 0.2)
+corner_radius_top_left = 48
+corner_radius_top_right = 48
+corner_radius_bottom_right = 48
+corner_radius_bottom_left = 48
+shadow_color = Color(0.654902, 0.545098, 0.980392, 0.4)
+shadow_size = 32
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_away_circle"]
+bg_color = Color(0.937255, 0.266667, 0.266667, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.498039, 0.113725, 0.113725, 1)
+corner_radius_top_left = 48
+corner_radius_top_right = 48
+corner_radius_bottom_right = 48
+corner_radius_bottom_left = 48
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pill"]
+bg_color = Color(0.117647, 0.227451, 0.541176, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.231373, 0.509804, 0.964706, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+content_margin_left = 6.0
+content_margin_top = 2.0
+content_margin_right = 6.0
+content_margin_bottom = 2.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ha_pill"]
+bg_color = Color(0.654902, 0.545098, 0.980392, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+content_margin_left = 12.0
+content_margin_top = 4.0
+content_margin_right = 12.0
+content_margin_bottom = 4.0
+
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_secondary_normal"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.176471, 0.105882, 0.305882, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 16.0
+content_margin_top = 16.0
+content_margin_right = 16.0
+content_margin_bottom = 16.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_secondary_hover"]
+bg_color = Color(0.0823529, 0.0313726, 0.14902, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.176471, 0.105882, 0.305882, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 16.0
+content_margin_top = 16.0
+content_margin_right = 16.0
+content_margin_bottom = 16.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_primary_normal"]
+bg_color = Color(0.486275, 0.227451, 0.929412, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 16.0
+content_margin_top = 16.0
+content_margin_right = 16.0
+content_margin_bottom = 16.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_primary_hover"]
+bg_color = Color(0.654902, 0.545098, 0.980392, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 16.0
+content_margin_top = 16.0
+content_margin_right = 16.0
+content_margin_bottom = 16.0
 
 [node name="NextMatchHero" type="PanelContainer"]
 custom_minimum_size = Vector2(0, 240)
+theme_override_styles/panel = SubResource("StyleBoxFlat_hero")
 script = ExtResource("1_nmh")
+clip_contents = true
+
+[node name="GradientBg" type="TextureRect" parent="."]
+layout_mode = 2
+texture = SubResource("GradientTexture2D_hero")
+expand_mode = 1
 
 [node name="Margin" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -15,97 +150,203 @@ theme_override_constants/margin_bottom = 24
 
 [node name="VBox" type="VBoxContainer" parent="Margin"]
 layout_mode = 2
+theme_override_constants/separation = 24
 
 [node name="Top" type="HBoxContainer" parent="Margin/VBox"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Margin/VBox/Top"]
+[node name="TitleBox" type="HBoxContainer" parent="Margin/VBox/Top"]
 layout_mode = 2
 size_flags_horizontal = 3
+alignment = 0
+
+[node name="DotPanel" type="PanelContainer" parent="Margin/VBox/Top/TitleBox"]
+custom_minimum_size = Vector2(8, 8)
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="Dot" type="ColorRect" parent="Margin/VBox/Top/TitleBox/DotPanel"]
+layout_mode = 2
+color = Color(0.654902, 0.545098, 0.980392, 1)
+
+[node name="Label" type="Label" parent="Margin/VBox/Top/TitleBox"]
+layout_mode = 2
 text = "PRÓXIMO JOGO"
-theme_override_colors/font_color = Color(0.65, 0.54, 0.98, 1)
+theme_override_colors/font_color = Color(0.580392, 0.639216, 0.721569, 1)
+theme_override_constants/letter_spacing = 2
 
-[node name="DateLabel" type="Label" parent="Margin/VBox/Top"]
+[node name="RightTop" type="HBoxContainer" parent="Margin/VBox/Top"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.65, 0.65, 0.7, 1)
+theme_override_constants/separation = 12
 
-[node name="HAStatus" type="Label" parent="Margin/VBox/Top"]
+[node name="DateLabel" type="Label" parent="Margin/VBox/Top/RightTop"]
+unique_name_in_owner = true
 layout_mode = 2
+text = "SEX, 25 NOV • 20H30"
+theme_override_colors/font_color = Color(0.580392, 0.639216, 0.721569, 1)
+theme_override_font_sizes/font_size = 12
+theme_override_constants/letter_spacing = 1
+
+[node name="TypePill" type="Label" parent="Margin/VBox/Top/RightTop"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_pill")
+theme_override_colors/font_color = Color(0.576471, 0.772549, 0.996078, 1)
+theme_override_font_sizes/font_size = 11
+text = " LIGA "
 
 [node name="Matchup" type="HBoxContainer" parent="Margin/VBox"]
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_constants/separation = 64
 alignment = 1
 
-[node name="HomeCircle" type="PanelContainer" parent="Margin/VBox/Matchup"]
-custom_minimum_size = Vector2(80, 80)
+[node name="HomeCol" type="VBoxContainer" parent="Margin/VBox/Matchup"]
+layout_mode = 2
+alignment = 1
+
+[node name="HcCenter" type="CenterContainer" parent="Margin/VBox/Matchup/HomeCol"]
 layout_mode = 2
 
-[node name="Abbr" type="Label" parent="Margin/VBox/Matchup/HomeCircle"]
+[node name="HomeCircle" type="PanelContainer" parent="Margin/VBox/Matchup/HomeCol/HcCenter"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(96, 96)
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_home_circle")
+
+[node name="Center" type="CenterContainer" parent="Margin/VBox/Matchup/HomeCol/HcCenter/HomeCircle"]
+layout_mode = 2
+
+[node name="HomeAbbr" type="Label" parent="Margin/VBox/Matchup/HomeCol/HcCenter/HomeCircle/Center"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "PHX"
+
+[node name="HomeName" type="Label" parent="Margin/VBox/Matchup/HomeCol"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "SP PHOENIX"
 horizontal_alignment = 1
 
-[node name="HomeInfo" type="VBoxContainer" parent="Margin/VBox/Matchup"]
+[node name="HomeRecord" type="Label" parent="Margin/VBox/Matchup/HomeCol"]
+unique_name_in_owner = true
 layout_mode = 2
-alignment = 1
-
-[node name="Name" type="Label" parent="Margin/VBox/Matchup/HomeInfo"]
-layout_mode = 2
-
-[node name="Record" type="Label" parent="Margin/VBox/Matchup/HomeInfo"]
-layout_mode = 2
+theme_override_colors/font_color = Color(0.580392, 0.639216, 0.721569, 1)
+theme_override_font_sizes/font_size = 12
+text = "8V - 2D"
+horizontal_alignment = 1
 
 [node name="VSBox" type="VBoxContainer" parent="Margin/VBox/Matchup"]
 layout_mode = 2
-size_flags_horizontal = 3
+theme_override_constants/separation = 8
 alignment = 1
+
+[node name="Hac" type="CenterContainer" parent="Margin/VBox/Matchup/VSBox"]
+layout_mode = 2
+
+[node name="HaPill" type="Label" parent="Margin/VBox/Matchup/VSBox/Hac"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_ha_pill")
+theme_override_colors/font_color = Color(0.0235294, 0.0117647, 0.054902, 1)
+theme_override_font_sizes/font_size = 11
+text = "FORA"
 
 [node name="VS" type="Label" parent="Margin/VBox/Matchup/VSBox"]
 layout_mode = 2
 text = "VS"
 horizontal_alignment = 1
-theme_override_colors/font_color = Color(0.4, 0.4, 0.45, 1)
+theme_override_colors/font_color = Color(0.580392, 0.639216, 0.721569, 1)
+theme_override_font_sizes/font_size = 32
 
 [node name="Prediction" type="Label" parent="Margin/VBox/Matchup/VSBox"]
+unique_name_in_owner = true
 layout_mode = 2
 horizontal_alignment = 1
-theme_override_colors/font_color = Color(0.2, 0.8, 0.5, 1)
+theme_override_colors/font_color = Color(0.133333, 0.772549, 0.368627, 1)
+theme_override_font_sizes/font_size = 12
+text = "Previsão: 58% V"
 
-[node name="AwayInfo" type="VBoxContainer" parent="Margin/VBox/Matchup"]
+[node name="AwayCol" type="VBoxContainer" parent="Margin/VBox/Matchup"]
 layout_mode = 2
 alignment = 1
 
-[node name="Name" type="Label" parent="Margin/VBox/Matchup/AwayInfo"]
-layout_mode = 2
-horizontal_alignment = 2
-
-[node name="Record" type="Label" parent="Margin/VBox/Matchup/AwayInfo"]
-layout_mode = 2
-horizontal_alignment = 2
-
-[node name="AwayCircle" type="PanelContainer" parent="Margin/VBox/Matchup"]
-custom_minimum_size = Vector2(80, 80)
+[node name="AcCenter" type="CenterContainer" parent="Margin/VBox/Matchup/AwayCol"]
 layout_mode = 2
 
-[node name="Abbr" type="Label" parent="Margin/VBox/Matchup/AwayCircle"]
+[node name="AwayCircle" type="PanelContainer" parent="Margin/VBox/Matchup/AwayCol/AcCenter"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(96, 96)
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_away_circle")
+
+[node name="Center" type="CenterContainer" parent="Margin/VBox/Matchup/AwayCol/AcCenter/AwayCircle"]
+layout_mode = 2
+
+[node name="AwayAbbr" type="Label" parent="Margin/VBox/Matchup/AwayCol/AcCenter/AwayCircle/Center"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "POA"
+
+[node name="AwayName" type="Label" parent="Margin/VBox/Matchup/AwayCol"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "PORTO ALEGRE"
+horizontal_alignment = 1
+
+[node name="AwayRecord" type="Label" parent="Margin/VBox/Matchup/AwayCol"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.580392, 0.639216, 0.721569, 1)
+theme_override_font_sizes/font_size = 12
+text = "3V - 7D"
 horizontal_alignment = 1
 
 [node name="Bottom" type="HBoxContainer" parent="Margin/VBox"]
 layout_mode = 2
 theme_override_constants/separation = 16
+alignment = 1
 
 [node name="EscalacaoBtn" type="Button" parent="Margin/VBox/Bottom"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-text = "DEFINIR ESCALAÇÃO"
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_constants/icon_max_width = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_secondary_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_secondary_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_secondary_hover")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_secondary_normal")
+text = "  DEFINIR ESCALAÇÃO"
 
 [node name="AnaliseBtn" type="Button" parent="Margin/VBox/Bottom"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-text = "ANALISAR ADVERSÁRIO"
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_constants/icon_max_width = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_secondary_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_secondary_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_secondary_hover")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_secondary_normal")
+text = "  ANALISAR ADVERSÁRIO"
 
 [node name="SimBtn" type="Button" parent="Margin/VBox/Bottom"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-text = "ASSISTIR SIMULAÇÃO"
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_constants/icon_max_width = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_primary_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_primary_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_primary_hover")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_primary_normal")
+text = "  ASSISTIR SIMULAÇÃO"

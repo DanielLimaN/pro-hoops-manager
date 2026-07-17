@@ -1,19 +1,43 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3]
 
-[ext_resource type="Script" path="res://scenes/ui/dashboard/dashboard.gd" id="1_db"]
-[ext_resource type="PackedScene" uid="uid://topbar_comp_001" path="res://scenes/components/topbar.tscn" id="2_topbar"]
+[ext_resource type="Script" uid="uid://bboe3ee5ldix8" path="res://scenes/ui/dashboard/dashboard.gd" id="1_db"]
+[ext_resource type="PackedScene" path="res://scenes/components/topbar.tscn" id="2_topbar"]
+[ext_resource type="Texture2D" path="res://addons/at-icons/control/mailbox.svg" id="2_w5vpx"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nr0nf"]
+bg_color = Color(0.9372549, 0.26666668, 0.26666668, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panels"]
+bg_color = Color(0.0588235, 0.027451, 0.12549, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
 
 [node name="Dashboard" type="Control"]
+script = ExtResource("1_db")
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_db")
 
 
-[node name="Margin" type="MarginContainer" parent="."]
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0235294, 0.0117647, 0.054902, 1)
+
+[node name="Margin" type="MarginContainer" parent="." unique_id=974622384]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -22,60 +46,141 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_type_variation = &"ScreenMargin"
 
-[node name="VBox" type="VBoxContainer" parent="Margin"]
+[node name="VBox" type="VBoxContainer" parent="Margin" unique_id=1957334430]
 layout_mode = 2
 theme_type_variation = &"ScreenVBox"
 
-[node name="TopBar" parent="Margin/VBox" instance=ExtResource("2_topbar")]
+[node name="TopBar" type="PanelContainer" parent="Margin/VBox" unique_id=1090573983 instance=ExtResource("2_topbar")]
 layout_mode = 2
-screen_title = "DASHBOARD"
 
-[node name="KPIRow" type="HBoxContainer" parent="Margin/VBox"]
+[node name="KPIRow" type="HBoxContainer" parent="Margin/VBox" unique_id=880547887]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="MainGrid" type="HBoxContainer" parent="Margin/VBox"]
+[node name="MainGrid" type="HBoxContainer" parent="Margin/VBox" unique_id=1321022178]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 24
 
-[node name="LeftCol" type="VBoxContainer" parent="Margin/VBox/MainGrid"]
+[node name="LeftCol" type="VBoxContainer" parent="Margin/VBox/MainGrid" unique_id=1437663214]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 24
 
-[node name="NextMatchHost" type="MarginContainer" parent="Margin/VBox/MainGrid/LeftCol"]
+[node name="NextMatchHost" type="MarginContainer" parent="Margin/VBox/MainGrid/LeftCol" unique_id=1961260952]
 layout_mode = 2
 
-[node name="StandingsHost" type="MarginContainer" parent="Margin/VBox/MainGrid/LeftCol"]
+[node name="StandingsHost" type="MarginContainer" parent="Margin/VBox/MainGrid/LeftCol" unique_id=1057806850]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="RightCol" type="VBoxContainer" parent="Margin/VBox/MainGrid"]
-layout_mode = 2
+[node name="RightCol" type="VBoxContainer" parent="Margin/VBox/MainGrid" unique_id=2099903033]
 custom_minimum_size = Vector2(380, 0)
+layout_mode = 2
 theme_override_constants/separation = 24
 
-[node name="InboxPanel" type="PanelContainer" parent="Margin/VBox/MainGrid/RightCol"]
+[node name="InboxPanel" type="PanelContainer" parent="Margin/VBox/MainGrid/RightCol" unique_id=1253449282]
+theme_override_styles/panel = SubResource("StyleBoxFlat_panels")
 custom_minimum_size = Vector2(0, 320)
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Margin/VBox/MainGrid/RightCol/InboxPanel"]
-layout_mode = 2
-text = "CAIXA DE ENTRADA"
-horizontal_alignment = 1
 
-[node name="RecentPanel" type="PanelContainer" parent="Margin/VBox/MainGrid/RightCol"]
+[node name="Margin" type="MarginContainer" parent="Margin/VBox/MainGrid/RightCol/InboxPanel" unique_id=567724102]
+layout_mode = 2
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 24
+
+[node name="VBox" type="VBoxContainer" parent="Margin/VBox/MainGrid/RightCol/InboxPanel/Margin" unique_id=20788495]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Header" type="HBoxContainer" parent="Margin/VBox/MainGrid/RightCol/InboxPanel/Margin/VBox" unique_id=1541762256]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Icon" type="TextureRect" parent="Margin/VBox/MainGrid/RightCol/InboxPanel/Margin/VBox/Header" unique_id=1237860370]
+modulate = Color(0.654902, 0.54509807, 0.98039216, 1)
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+texture = ExtResource("2_w5vpx")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Title" type="Label" parent="Margin/VBox/MainGrid/RightCol/InboxPanel/Margin/VBox/Header" unique_id=1331570274]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.654902, 0.54509807, 0.98039216, 1)
+text = "CAIXA DE ENTRADA"
+
+[node name="UnreadBadge" type="Label" parent="Margin/VBox/MainGrid/RightCol/InboxPanel/Margin/VBox/Header" unique_id=1451235593]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_nr0nf")
+theme_override_font_sizes/font_size = 11
+text = " 12 NOVAS "
+
+[node name="Divider" type="ColorRect" parent="Margin/VBox/MainGrid/RightCol/InboxPanel/Margin/VBox" unique_id=1338743732]
+custom_minimum_size = Vector2(0, 1)
+layout_mode = 2
+color = Color(0.1764706, 0.105882354, 0.30588236, 1)
+
+[node name="Scroll" type="ScrollContainer" parent="Margin/VBox/MainGrid/RightCol/InboxPanel/Margin/VBox" unique_id=1580088623]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="InboxList" type="VBoxContainer" parent="Margin/VBox/MainGrid/RightCol/InboxPanel/Margin/VBox/Scroll" unique_id=36487042]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 16
+
+[node name="RecentPanel" type="PanelContainer" parent="Margin/VBox/MainGrid/RightCol" unique_id=422791855]
+theme_override_styles/panel = SubResource("StyleBoxFlat_panels")
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="VBox" type="VBoxContainer" parent="Margin/VBox/MainGrid/RightCol/RecentPanel"]
+
+[node name="Margin" type="MarginContainer" parent="Margin/VBox/MainGrid/RightCol/RecentPanel" unique_id=1985630587]
+layout_mode = 2
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 24
+
+[node name="VBox" type="VBoxContainer" parent="Margin/VBox/MainGrid/RightCol/RecentPanel/Margin" unique_id=500437927]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Header" type="HBoxContainer" parent="Margin/VBox/MainGrid/RightCol/RecentPanel/Margin/VBox" unique_id=213589609]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Margin/VBox/MainGrid/RightCol/RecentPanel/VBox"]
+[node name="Title" type="Label" parent="Margin/VBox/MainGrid/RightCol/RecentPanel/Margin/VBox/Header" unique_id=1044471901]
 layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.654902, 0.54509807, 0.98039216, 1)
 text = "ÚLTIMOS RESULTADOS"
-horizontal_alignment = 1
 
-[node name="RecentList" type="VBoxContainer" parent="Margin/VBox/MainGrid/RightCol/RecentPanel/VBox"]
+[node name="FormBox" type="HBoxContainer" parent="Margin/VBox/MainGrid/RightCol/RecentPanel/Margin/VBox/Header" unique_id=370995889]
+unique_name_in_owner = true
 layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Divider" type="ColorRect" parent="Margin/VBox/MainGrid/RightCol/RecentPanel/Margin/VBox" unique_id=197440086]
+custom_minimum_size = Vector2(0, 1)
+layout_mode = 2
+color = Color(0.1764706, 0.105882354, 0.30588236, 1)
+
+[node name="Scroll" type="ScrollContainer" parent="Margin/VBox/MainGrid/RightCol/RecentPanel/Margin/VBox" unique_id=939873884]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="RecentList" type="VBoxContainer" parent="Margin/VBox/MainGrid/RightCol/RecentPanel/Margin/VBox/Scroll" unique_id=1859309085]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 24

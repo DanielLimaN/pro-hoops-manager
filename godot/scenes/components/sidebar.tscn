@@ -1,33 +1,22 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://5pwgysyrk20r"]
 
 [ext_resource type="Script" uid="uid://cv5r2ii3jslun" path="res://scenes/components/sidebar.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://dwb4vixm7d75a" path="res://addons/at-icons/control/cog.svg" id="2_cog"]
-[ext_resource type="Texture2D" path="res://addons/at-icons/control/grid_coarse.svg" id="2_sifgt"]
-[ext_resource type="Texture2D" path="res://addons/at-icons/control/human.svg" id="3_d2swu"]
-[ext_resource type="Texture2D" path="res://addons/at-icons/control/rotate.svg" id="3_rotate"]
-[ext_resource type="Texture2D" path="res://assets/ui/logo-basketball.png" id="4_logo"]
-[ext_resource type="Texture2D" path="res://addons/at-icons/control/calendar.svg" id="4_vh2wu"]
-[ext_resource type="Texture2D" path="res://addons/at-icons/control/clipboard.svg" id="5_5ookd"]
-[ext_resource type="Texture2D" path="res://addons/at-icons/control/weight.svg" id="6_jr1xf"]
+[ext_resource type="Texture2D" uid="uid://bnfls2n5qleqj" path="res://addons/at-icons/control/grid_coarse.svg" id="2_sifgt"]
+[ext_resource type="Texture2D" uid="uid://6p53r3iau5x8" path="res://addons/at-icons/control/human.svg" id="3_d2swu"]
+[ext_resource type="Texture2D" uid="uid://dsd8jdpasgd7q" path="res://assets/ui/logo-basketball.png" id="4_logo"]
+[ext_resource type="Texture2D" uid="uid://c20kuvsc771iv" path="res://addons/at-icons/control/calendar.svg" id="4_vh2wu"]
+[ext_resource type="Texture2D" uid="uid://ccaokboo7yt5x" path="res://addons/at-icons/control/clipboard.svg" id="5_5ookd"]
+[ext_resource type="Texture2D" uid="uid://bjiiumcughrp0" path="res://addons/at-icons/control/weight.svg" id="6_jr1xf"]
 [ext_resource type="Texture2D" uid="uid://jmqhdreesaho" path="res://addons/at-icons/control/envelope.svg" id="7_ak6h5"]
 [ext_resource type="Texture2D" uid="uid://b8fc5knxqtsf4" path="res://addons/at-icons/control/arrow_right_arrow_left.svg" id="8_nmxr4"]
-[ext_resource type="Texture2D" path="res://addons/at-icons/control/coins.svg" id="9_yn8iv"]
-[ext_resource type="Texture2D" path="res://addons/at-icons/control/bar_graph.svg" id="10_8pvdc"]
-[ext_resource type="Texture2D" path="res://addons/at-icons/control/trophy.svg" id="11_dn1id"]
+[ext_resource type="Texture2D" uid="uid://buavn2kigkjrw" path="res://addons/at-icons/control/coins.svg" id="9_yn8iv"]
+[ext_resource type="Texture2D" uid="uid://nqqy4mwbdnvd" path="res://addons/at-icons/control/bar_graph.svg" id="10_8pvdc"]
+[ext_resource type="Texture2D" uid="uid://cfl2nnwxdefkh" path="res://addons/at-icons/control/trophy.svg" id="11_dn1id"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sidebar"]
 bg_color = Color(0.043, 0.02, 0.078, 1)
 border_width_right = 1
 border_color = Color(0.122, 0.078, 0.196, 1)
-
-[sub_resource type="Gradient" id="Gradient_avatar"]
-colors = PackedColorArray(0.655, 0.545, 0.98, 1, 0.486, 0.227, 0.929, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_avatar"]
-gradient = SubResource("Gradient_avatar")
-width = 38
-height = 38
-fill_to = Vector2(1, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_avatarcircle"]
 bg_color = Color(0.57, 0.38, 0.95, 1)
@@ -35,42 +24,37 @@ border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-corner_radius_top_left = 100
-corner_radius_top_right = 100
-corner_radius_bottom_right = 100
-corner_radius_bottom_left = 100
 border_color = Color(0.357, 0.106, 0.714, 1)
 corner_radius_top_left = 19
 corner_radius_top_right = 19
 corner_radius_bottom_right = 19
 corner_radius_bottom_left = 19
 
-
-[sub_resource type="ButtonGroup" id="ButtonGroup_nav"]
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_normal"]
-bg_color = Color(0, 0, 0, 0)
 content_margin_left = 12.0
 content_margin_top = 12.0
 content_margin_right = 12.0
 content_margin_bottom = 12.0
+bg_color = Color(0, 0, 0, 0)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_pressed"]
-bg_color = Color(0.654902, 0.545098, 0.980392, 0.133333)
-border_width_left = 2
-border_color = Color(0.654902, 0.545098, 0.980392, 0.4)
 content_margin_left = 12.0
 content_margin_top = 12.0
 content_margin_right = 12.0
 content_margin_bottom = 12.0
+bg_color = Color(0.654902, 0.545098, 0.980392, 0.133333)
+border_width_left = 2
+border_color = Color(0.654902, 0.545098, 0.980392, 0.4)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_nav"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_badge_purple"]
 bg_color = Color(0.654902, 0.545098, 0.980392, 1)
@@ -86,22 +70,23 @@ corner_radius_top_right = 100
 corner_radius_bottom_right = 100
 corner_radius_bottom_left = 100
 
-[node name="Sidebar" type="Panel"]
-script = ExtResource("1_script")
+[node name="Sidebar" type="Panel" unique_id=1746411953]
 custom_minimum_size = Vector2(240, 0)
+anchors_preset = 9
 anchor_bottom = 1.0
 offset_right = 240.0
 grow_vertical = 2
 mouse_filter = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_sidebar")
+script = ExtResource("1_script")
 
-[node name="Sidebar#Logo" type="Sprite2D" parent="." unique_id=1632628922]
-position = Vector2(15, 88)
-scale = Vector2(0.250625, 0.24625003)
-texture = ExtResource("4_logo")
-
-[node name="VBox" type="VBoxContainer" parent="." unique_id=1626794462]
-layout_mode = 0
+[node name="VBox" type="VBoxContainer" parent="." unique_id=162364195]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 0
@@ -115,8 +100,15 @@ theme_override_constants/margin_bottom = 20
 
 [node name="HeaderHBox" type="HBoxContainer" parent="VBox/Header" unique_id=1945241264]
 layout_mode = 2
-theme_override_constants/separation = 12
-alignment = 1
+
+
+
+[node name="Logo" type="TextureRect" parent="VBox/Header/HeaderHBox"]
+custom_minimum_size = Vector2(36, 36)
+layout_mode = 2
+texture = ExtResource("4_logo")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="TitleVBox" type="VBoxContainer" parent="VBox/Header/HeaderHBox" unique_id=1571652296]
 layout_mode = 2
@@ -124,17 +116,15 @@ theme_override_constants/separation = 0
 alignment = 1
 
 [node name="T1" type="Label" parent="VBox/Header/HeaderHBox/TitleVBox" unique_id=429121660]
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_constants/letter_spacing = 1
 layout_mode = 2
-theme_override_font_sizes/font_size = 30
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
 text = "PRO HOOPS"
 
 [node name="T2" type="Label" parent="VBox/Header/HeaderHBox/TitleVBox" unique_id=447838523]
-theme_override_colors/font_color = Color(0.6549, 0.545, 0.9803, 1)
-theme_override_constants/letter_spacing = 2
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(0.6549, 0.545, 0.9803, 1)
+theme_override_font_sizes/font_size = 11
 text = "MANAGER"
 
 [node name="Div1" type="ColorRect" parent="VBox" unique_id=2124008264]
@@ -144,11 +134,6 @@ color = Color(0.122, 0.078, 0.196, 1)
 
 [node name="Manager" type="MarginContainer" parent="VBox" unique_id=289944256]
 layout_mode = 2
-
-[node name="ManagerBg" type="ColorRect" parent="VBox/Manager" unique_id=1140841643]
-layout_mode = 2
-mouse_filter = 2
-color = Color(0.0824, 0.0314, 0.149, 1)
 
 [node name="MgrMargin" type="MarginContainer" parent="VBox/Manager" unique_id=686949493]
 layout_mode = 2
@@ -175,12 +160,12 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_avatarcircle")
 
 [node name="Initials" type="Label" parent="VBox/Manager/MgrMargin/MgrHBox/AvatarContainer/AvatarCircle" unique_id=114916524]
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 13
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 13
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -190,16 +175,16 @@ theme_override_constants/separation = 1
 alignment = 1
 
 [node name="NameLbl" type="Label" parent="VBox/Manager/MgrMargin/MgrHBox/InfoVBox" unique_id=1608951335]
+unique_name_in_owner = true
+layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 15
-unique_name_in_owner = true
-layout_mode = 2
 
 [node name="TeamLbl" type="Label" parent="VBox/Manager/MgrMargin/MgrHBox/InfoVBox" unique_id=349315513]
-theme_override_colors/font_color = Color(0.6549, 0.545, 0.9803, 1)
-theme_override_font_sizes/font_size = 13
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_colors/font_color = Color(0.6549, 0.545, 0.9803, 1)
+theme_override_font_sizes/font_size = 13
 
 [node name="Div2" type="ColorRect" parent="VBox" unique_id=1670727307]
 custom_minimum_size = Vector2(0, 1)
@@ -221,23 +206,22 @@ size_flags_vertical = 3
 theme_override_constants/separation = 2
 
 [node name="NavDashboard" type="Button" parent="VBox/NavMargin/NavContainer" unique_id=2103787233]
-toggle_mode = true
-button_group = SubResource("ButtonGroup_nav")
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
 theme_override_colors/font_color = Color(0.8, 0.835, 0.882, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_normal_color = Color(0.6549, 0.545, 0.9803, 1)
 theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
-theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
-theme_override_styles/hover = SubResource("StyleBoxFlat_btn_normal")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
-theme_override_styles/focus = SubResource("StyleBoxFlat_btn_pressed")
-
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
 theme_override_constants/h_separation = 12
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_pressed")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_nav")
 text = "  Dashboard"
 icon = ExtResource("2_sifgt")
 alignment = 0
@@ -245,23 +229,22 @@ metadata/nav_path = "res://scenes/ui/dashboard/dashboard.tscn"
 metadata/nav_screen = "Dashboard"
 
 [node name="NavElenco" type="Button" parent="VBox/NavMargin/NavContainer" unique_id=684658714]
-toggle_mode = true
-button_group = SubResource("ButtonGroup_nav")
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
 theme_override_colors/font_color = Color(0.8, 0.835, 0.882, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_normal_color = Color(0.6549, 0.545, 0.9803, 1)
 theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
-theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
-theme_override_styles/hover = SubResource("StyleBoxFlat_btn_normal")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
-theme_override_styles/focus = SubResource("StyleBoxFlat_btn_pressed")
-
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
 theme_override_constants/h_separation = 12
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_pressed")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_nav")
 text = "  Elenco"
 icon = ExtResource("3_d2swu")
 alignment = 0
@@ -269,7 +252,7 @@ metadata/nav_path = "res://scenes/team.tscn"
 metadata/nav_screen = "Team"
 
 [node name="BadgeContainer" type="PanelContainer" parent="VBox/NavMargin/NavContainer/NavElenco" unique_id=494330741]
-theme_override_styles/panel = SubResource("StyleBoxFlat_badge_purple")
+visible = false
 custom_minimum_size = Vector2(16, 16)
 layout_mode = 0
 anchor_left = 1.0
@@ -279,7 +262,7 @@ offset_top = 16.0
 offset_right = -10.0
 offset_bottom = 32.0
 mouse_filter = 2
-visible = false
+theme_override_styles/panel = SubResource("StyleBoxFlat_badge_purple")
 
 [node name="BadgeMargin" type="MarginContainer" parent="VBox/NavMargin/NavContainer/NavElenco/BadgeContainer" unique_id=188992624]
 layout_mode = 2
@@ -289,30 +272,29 @@ theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 3
 
 [node name="BadgeLabel" type="Label" parent="VBox/NavMargin/NavContainer/NavElenco/BadgeContainer/BadgeMargin" unique_id=1495500347]
+layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 11
-layout_mode = 2
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="NavCalendário" type="Button" parent="VBox/NavMargin/NavContainer" unique_id=508665288]
-toggle_mode = true
-button_group = SubResource("ButtonGroup_nav")
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
 theme_override_colors/font_color = Color(0.8, 0.835, 0.882, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_normal_color = Color(0.6549, 0.545, 0.9803, 1)
 theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
-theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
-theme_override_styles/hover = SubResource("StyleBoxFlat_btn_normal")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
-theme_override_styles/focus = SubResource("StyleBoxFlat_btn_pressed")
-
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
 theme_override_constants/h_separation = 12
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_pressed")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_nav")
 text = "  Calendário"
 icon = ExtResource("4_vh2wu")
 alignment = 0
@@ -320,23 +302,22 @@ metadata/nav_path = "res://scenes/screens/calendar/calendar_screen.tscn"
 metadata/nav_screen = "CalendarScreen"
 
 [node name="NavTática" type="Button" parent="VBox/NavMargin/NavContainer" unique_id=1602428899]
-toggle_mode = true
-button_group = SubResource("ButtonGroup_nav")
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
 theme_override_colors/font_color = Color(0.8, 0.835, 0.882, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_normal_color = Color(0.6549, 0.545, 0.9803, 1)
 theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
-theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
-theme_override_styles/hover = SubResource("StyleBoxFlat_btn_normal")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
-theme_override_styles/focus = SubResource("StyleBoxFlat_btn_pressed")
-
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
 theme_override_constants/h_separation = 12
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_pressed")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_nav")
 text = "  Tática"
 icon = ExtResource("5_5ookd")
 alignment = 0
@@ -344,23 +325,22 @@ metadata/nav_path = "res://scenes/tactics.tscn"
 metadata/nav_screen = "Tactics"
 
 [node name="NavTreinos" type="Button" parent="VBox/NavMargin/NavContainer" unique_id=1835824144]
-toggle_mode = true
-button_group = SubResource("ButtonGroup_nav")
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
 theme_override_colors/font_color = Color(0.8, 0.835, 0.882, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_normal_color = Color(0.6549, 0.545, 0.9803, 1)
 theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
-theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
-theme_override_styles/hover = SubResource("StyleBoxFlat_btn_normal")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
-theme_override_styles/focus = SubResource("StyleBoxFlat_btn_pressed")
-
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
 theme_override_constants/h_separation = 12
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_pressed")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_nav")
 text = "  Treinos"
 icon = ExtResource("6_jr1xf")
 alignment = 0
@@ -368,23 +348,22 @@ metadata/nav_path = "res://scenes/training.tscn"
 metadata/nav_screen = "Training"
 
 [node name="NavCaixadeEntrada" type="Button" parent="VBox/NavMargin/NavContainer" unique_id=1471391390]
-toggle_mode = true
-button_group = SubResource("ButtonGroup_nav")
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
 theme_override_colors/font_color = Color(0.8, 0.835, 0.882, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_normal_color = Color(0.6549, 0.545, 0.9803, 1)
 theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
-theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
-theme_override_styles/hover = SubResource("StyleBoxFlat_btn_normal")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
-theme_override_styles/focus = SubResource("StyleBoxFlat_btn_pressed")
-
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
 theme_override_constants/h_separation = 12
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_pressed")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_nav")
 text = "  Caixa de Entrada"
 icon = ExtResource("7_ak6h5")
 alignment = 0
@@ -392,7 +371,7 @@ metadata/nav_path = "res://scenes/inbox.tscn"
 metadata/nav_screen = "Inbox"
 
 [node name="BadgeContainer" type="PanelContainer" parent="VBox/NavMargin/NavContainer/NavCaixadeEntrada" unique_id=528366832]
-theme_override_styles/panel = SubResource("StyleBoxFlat_badge_red")
+visible = false
 custom_minimum_size = Vector2(16, 16)
 layout_mode = 0
 anchor_left = 1.0
@@ -402,7 +381,7 @@ offset_top = 16.0
 offset_right = -10.0
 offset_bottom = 32.0
 mouse_filter = 2
-visible = false
+theme_override_styles/panel = SubResource("StyleBoxFlat_badge_red")
 
 [node name="BadgeMargin" type="MarginContainer" parent="VBox/NavMargin/NavContainer/NavCaixadeEntrada/BadgeContainer" unique_id=693039723]
 layout_mode = 2
@@ -412,30 +391,29 @@ theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 3
 
 [node name="BadgeLabel" type="Label" parent="VBox/NavMargin/NavContainer/NavCaixadeEntrada/BadgeContainer/BadgeMargin" unique_id=283436150]
+layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 11
-layout_mode = 2
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="NavTransferências" type="Button" parent="VBox/NavMargin/NavContainer" unique_id=2667422]
-toggle_mode = true
-button_group = SubResource("ButtonGroup_nav")
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
 theme_override_colors/font_color = Color(0.8, 0.835, 0.882, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_normal_color = Color(0.6549, 0.545, 0.9803, 1)
 theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
-theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
-theme_override_styles/hover = SubResource("StyleBoxFlat_btn_normal")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
-theme_override_styles/focus = SubResource("StyleBoxFlat_btn_pressed")
-
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
 theme_override_constants/h_separation = 12
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_pressed")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_nav")
 text = "  Transferências"
 icon = ExtResource("8_nmxr4")
 alignment = 0
@@ -443,23 +421,22 @@ metadata/nav_path = "res://scenes/ui/dashboard/dashboard.tscn"
 metadata/nav_screen = ""
 
 [node name="NavFinanças" type="Button" parent="VBox/NavMargin/NavContainer" unique_id=612226575]
-toggle_mode = true
-button_group = SubResource("ButtonGroup_nav")
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
 theme_override_colors/font_color = Color(0.8, 0.835, 0.882, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_normal_color = Color(0.6549, 0.545, 0.9803, 1)
 theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
-theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
-theme_override_styles/hover = SubResource("StyleBoxFlat_btn_normal")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
-theme_override_styles/focus = SubResource("StyleBoxFlat_btn_pressed")
-
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
 theme_override_constants/h_separation = 12
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_pressed")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_nav")
 text = "  Finanças"
 icon = ExtResource("9_yn8iv")
 alignment = 0
@@ -467,23 +444,22 @@ metadata/nav_path = "res://scenes/finance.tscn"
 metadata/nav_screen = "Finance"
 
 [node name="NavEstatísticas" type="Button" parent="VBox/NavMargin/NavContainer" unique_id=1588326041]
-toggle_mode = true
-button_group = SubResource("ButtonGroup_nav")
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
 theme_override_colors/font_color = Color(0.8, 0.835, 0.882, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_normal_color = Color(0.6549, 0.545, 0.9803, 1)
 theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
-theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
-theme_override_styles/hover = SubResource("StyleBoxFlat_btn_normal")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
-theme_override_styles/focus = SubResource("StyleBoxFlat_btn_pressed")
-
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
 theme_override_constants/h_separation = 12
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_pressed")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_nav")
 text = "  Estatísticas"
 icon = ExtResource("10_8pvdc")
 alignment = 0
@@ -491,23 +467,22 @@ metadata/nav_path = "res://scenes/ui/dashboard/dashboard.tscn"
 metadata/nav_screen = ""
 
 [node name="NavConquistas" type="Button" parent="VBox/NavMargin/NavContainer" unique_id=1885989110]
-toggle_mode = true
-button_group = SubResource("ButtonGroup_nav")
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
 theme_override_colors/font_color = Color(0.8, 0.835, 0.882, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_normal_color = Color(0.6549, 0.545, 0.9803, 1)
 theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
-theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
-theme_override_styles/hover = SubResource("StyleBoxFlat_btn_normal")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
-theme_override_styles/focus = SubResource("StyleBoxFlat_btn_pressed")
-
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
 theme_override_constants/h_separation = 12
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_pressed")
+toggle_mode = true
+button_group = SubResource("ButtonGroup_nav")
 text = "  Conquistas"
 icon = ExtResource("11_dn1id")
 alignment = 0
@@ -518,4 +493,3 @@ metadata/nav_screen = ""
 custom_minimum_size = Vector2(0, 1)
 layout_mode = 2
 color = Color(0.122, 0.078, 0.196, 1)
-

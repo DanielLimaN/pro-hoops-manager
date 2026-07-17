@@ -1,12 +1,61 @@
-[gd_scene load_steps=2 format=3 uid="uid://topbar_comp_001"]
+[gd_scene load_steps=5 format=3 uid="uid://ck6c5a3d0v5o3"]
 
 [ext_resource type="Script" path="res://scenes/components/topbar.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://buavn2kigkjrw" path="res://addons/at-icons/control/coins.svg" id="2_coins"]
+[ext_resource type="Texture2D" uid="uid://bq3348g7navry" path="res://addons/at-icons/control/smiley_face.svg" id="3_smile"]
+[ext_resource type="Texture2D" uid="uid://c0vegoeogwj32" path="res://addons/at-icons/control/lightning_bolt.svg" id="4_light"]
+[ext_resource type="Texture2D" uid="uid://dcy6k2772613q" path="res://addons/at-icons/control/bell.svg" id="5_bell"]
+[ext_resource type="Texture2D" uid="uid://crtwt3fydxtsu" path="res://addons/at-icons/control/play.svg" id="6_play"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_topbar_bg"]
+bg_color = Color(0.0431373, 0.0196078, 0.0784314, 1)
+border_width_bottom = 1
+border_color = Color(0.121569, 0.0784314, 0.196078, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pill"]
+bg_color = Color(0.0823529, 0.0313726, 0.14902, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.121569, 0.0784314, 0.196078, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_avancar"]
+bg_color = Color(0.654902, 0.545098, 0.980392, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_avancar_hover"]
+bg_color = Color(0.75, 0.65, 1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bell"]
+bg_color = Color(0.0823529, 0.0313726, 0.14902, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.121569, 0.0784314, 0.196078, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [node name="TopBar" type="PanelContainer"]
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 76.0
 grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_topbar_bg")
 script = ExtResource("1_script")
 
 [node name="Margin" type="MarginContainer" parent="."]
@@ -23,18 +72,168 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 2
+alignment = 1
 
 [node name="Sub" type="Label" parent="Margin/HBox/TbL"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_colors/font_color = Color(0.654902, 0.545098, 0.980392, 1)
+theme_override_font_sizes/font_size = 10
 text = "TEMPORADA 2026 • SEMANA 8 • 25 DE NOV"
 
 [node name="Title" type="Label" parent="Margin/HBox/TbL"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
 text = "Título da Tela"
 
 [node name="TbR" type="HBoxContainer" parent="Margin/HBox"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 12
+alignment = 1
+
+[node name="BudgetPill" type="PanelContainer" parent="Margin/HBox/TbR"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_pill")
+
+[node name="M" type="MarginContainer" parent="Margin/HBox/TbR/BudgetPill"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 8
+
+[node name="H" type="HBoxContainer" parent="Margin/HBox/TbR/BudgetPill/M"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Icon" type="TextureRect" parent="Margin/HBox/TbR/BudgetPill/M/H"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("2_coins")
+expand_mode = 1
+stretch_mode = 5
+modulate = Color(0.133333, 0.772549, 0.368627, 1)
+
+[node name="V" type="VBoxContainer" parent="Margin/HBox/TbR/BudgetPill/M/H"]
+layout_mode = 2
+theme_override_constants/separation = -2
+alignment = 1
+
+[node name="L" type="Label" parent="Margin/HBox/TbR/BudgetPill/M/H/V"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.580392, 0.639216, 0.721569, 1)
+theme_override_font_sizes/font_size = 8
+text = "ORÇAMENTO"
+
+[node name="ValBudget" type="Label" parent="Margin/HBox/TbR/BudgetPill/M/H/V"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 12
+text = "R$ 12.4M"
+
+
+[node name="MoralePill" type="PanelContainer" parent="Margin/HBox/TbR"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_pill")
+
+[node name="M" type="MarginContainer" parent="Margin/HBox/TbR/MoralePill"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 8
+
+[node name="H" type="HBoxContainer" parent="Margin/HBox/TbR/MoralePill/M"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Icon" type="TextureRect" parent="Margin/HBox/TbR/MoralePill/M/H"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("3_smile")
+expand_mode = 1
+stretch_mode = 5
+modulate = Color(0.984314, 0.74902, 0.141176, 1)
+
+[node name="V" type="VBoxContainer" parent="Margin/HBox/TbR/MoralePill/M/H"]
+layout_mode = 2
+theme_override_constants/separation = -2
+alignment = 1
+
+[node name="L" type="Label" parent="Margin/HBox/TbR/MoralePill/M/H/V"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.580392, 0.639216, 0.721569, 1)
+theme_override_font_sizes/font_size = 8
+text = "MORAL"
+
+[node name="ValMorale" type="Label" parent="Margin/HBox/TbR/MoralePill/M/H/V"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 12
+text = "87%"
+
+
+[node name="EnergyPill" type="PanelContainer" parent="Margin/HBox/TbR"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_pill")
+
+[node name="M" type="MarginContainer" parent="Margin/HBox/TbR/EnergyPill"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 8
+
+[node name="H" type="HBoxContainer" parent="Margin/HBox/TbR/EnergyPill/M"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Icon" type="TextureRect" parent="Margin/HBox/TbR/EnergyPill/M/H"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("4_light")
+expand_mode = 1
+stretch_mode = 5
+modulate = Color(0.231373, 0.509804, 0.964706, 1)
+
+[node name="V" type="VBoxContainer" parent="Margin/HBox/TbR/EnergyPill/M/H"]
+layout_mode = 2
+theme_override_constants/separation = -2
+alignment = 1
+
+[node name="L" type="Label" parent="Margin/HBox/TbR/EnergyPill/M/H/V"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.580392, 0.639216, 0.721569, 1)
+theme_override_font_sizes/font_size = 8
+text = "ENERGIA"
+
+[node name="ValEnergy" type="Label" parent="Margin/HBox/TbR/EnergyPill/M/H/V"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 12
+text = "92%"
+
+
+[node name="AvancarBtn" type="Button" parent="Margin/HBox/TbR"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(140, 48)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_avancar")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_avancar_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_avancar_hover")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_avancar")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "AVANÇAR  "
+icon = ExtResource("6_play")
+icon_alignment = 2

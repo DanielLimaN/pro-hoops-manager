@@ -1,46 +1,198 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3 uid="uid://bkvw06j517k6p"]
 
-[ext_resource type="Script" path="res://scenes/ui/dashboard/components/standings_table.gd" id="1_st"]
+[ext_resource type="Script" uid="uid://cyexvq1k3y6f5" path="res://scenes/ui/dashboard/components/standings_table.gd" id="1_st"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_standings"]
+bg_color = Color(0.0588235, 0.027451, 0.12549, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.176471, 0.105882, 0.305882, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 16.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_header_bg"]
+bg_color = Color(0.0823529, 0.0313726, 0.14902, 1)
+border_width_bottom = 1
+border_color = Color(0.176471, 0.105882, 0.305882, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_legend_dot"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
 
 [node name="StandingsTable" type="PanelContainer"]
+theme_override_styles/panel = SubResource("StyleBoxFlat_standings")
 script = ExtResource("1_st")
 
 [node name="VBox" type="VBoxContainer" parent="."]
 layout_mode = 2
+theme_override_constants/separation = 0
 
-[node name="Header" type="HBoxContainer" parent="VBox"]
+[node name="TopPad" type="MarginContainer" parent="VBox"]
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 16
 
-[node name="Pos" type="Label" parent="VBox/Header"]
+[node name="HBox" type="HBoxContainer" parent="VBox/TopPad"]
 layout_mode = 2
-custom_minimum_size = Vector2(30, 0)
-text = "#"
-theme_override_colors/font_color = Color(0.6, 0.6, 0.6, 1)
 
-[node name="Team" type="Label" parent="VBox/Header"]
+[node name="TitleBox" type="VBoxContainer" parent="VBox/TopPad/HBox"]
 layout_mode = 2
 size_flags_horizontal = 3
+
+[node name="Sub" type="Label" parent="VBox/TopPad/HBox/TitleBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.654902, 0.545098, 0.980392, 1)
+theme_override_font_sizes/font_size = 11
+theme_override_constants/letter_spacing = 2
+text = "CLASSIFICAÇÃO GERAL"
+
+[node name="ConfLabel" type="Label" parent="VBox/TopPad/HBox/TitleBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "Conferência Sul"
+
+[node name="LegendBox" type="HBoxContainer" parent="VBox/TopPad/HBox"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="L1" type="HBoxContainer" parent="VBox/TopPad/HBox/LegendBox"]
+layout_mode = 2
+
+[node name="Dot" type="PanelContainer" parent="VBox/TopPad/HBox/LegendBox/L1"]
+custom_minimum_size = Vector2(8, 8)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_legend_dot")
+self_modulate = Color(0.133333, 0.772549, 0.368627, 1)
+
+[node name="Lbl" type="Label" parent="VBox/TopPad/HBox/LegendBox/L1"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.580392, 0.639216, 0.721569, 1)
+theme_override_font_sizes/font_size = 10
+text = "PLAYOFFS"
+
+[node name="L2" type="HBoxContainer" parent="VBox/TopPad/HBox/LegendBox"]
+layout_mode = 2
+
+[node name="Dot" type="PanelContainer" parent="VBox/TopPad/HBox/LegendBox/L2"]
+custom_minimum_size = Vector2(8, 8)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_legend_dot")
+self_modulate = Color(0.984314, 0.74902, 0.141176, 1)
+
+[node name="Lbl" type="Label" parent="VBox/TopPad/HBox/LegendBox/L2"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.580392, 0.639216, 0.721569, 1)
+theme_override_font_sizes/font_size = 10
+text = "PLAY-IN"
+
+[node name="L3" type="HBoxContainer" parent="VBox/TopPad/HBox/LegendBox"]
+layout_mode = 2
+
+[node name="Dot" type="PanelContainer" parent="VBox/TopPad/HBox/LegendBox/L3"]
+custom_minimum_size = Vector2(8, 8)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_legend_dot")
+self_modulate = Color(0.937255, 0.266667, 0.266667, 1)
+
+[node name="Lbl" type="Label" parent="VBox/TopPad/HBox/LegendBox/L3"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.580392, 0.639216, 0.721569, 1)
+theme_override_font_sizes/font_size = 10
+text = "REBAIX."
+
+[node name="HeaderRow" type="PanelContainer" parent="VBox"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_header_bg")
+
+[node name="Margin" type="MarginContainer" parent="VBox/HeaderRow"]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 8
+
+[node name="HBox" type="HBoxContainer" parent="VBox/HeaderRow/Margin"]
+layout_mode = 2
+
+[node name="Pos" type="Label" parent="VBox/HeaderRow/Margin/HBox"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.580392, 0.639216, 0.721569, 1)
+theme_override_font_sizes/font_size = 11
+text = "#"
+
+[node name="Team" type="Label" parent="VBox/HeaderRow/Margin/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.580392, 0.639216, 0.721569, 1)
+theme_override_font_sizes/font_size = 11
 text = "TIME"
-theme_override_colors/font_color = Color(0.6, 0.6, 0.6, 1)
 
-[node name="W" type="Label" parent="VBox/Header"]
+[node name="W" type="Label" parent="VBox/HeaderRow/Margin/HBox"]
+custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
-custom_minimum_size = Vector2(30, 0)
+theme_override_colors/font_color = Color(0.580392, 0.639216, 0.721569, 1)
+theme_override_font_sizes/font_size = 11
 text = "V"
-theme_override_colors/font_color = Color(0.6, 0.6, 0.6, 1)
+horizontal_alignment = 1
 
-[node name="L" type="Label" parent="VBox/Header"]
+[node name="L" type="Label" parent="VBox/HeaderRow/Margin/HBox"]
+custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
-custom_minimum_size = Vector2(30, 0)
+theme_override_colors/font_color = Color(0.580392, 0.639216, 0.721569, 1)
+theme_override_font_sizes/font_size = 11
 text = "D"
-theme_override_colors/font_color = Color(0.6, 0.6, 0.6, 1)
+horizontal_alignment = 1
 
-[node name="PCT" type="Label" parent="VBox/Header"]
-layout_mode = 2
+[node name="PCT" type="Label" parent="VBox/HeaderRow/Margin/HBox"]
 custom_minimum_size = Vector2(50, 0)
-text = "PCT"
-theme_override_colors/font_color = Color(0.6, 0.6, 0.6, 1)
-
-[node name="Rows" type="VBoxContainer" parent="VBox"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.580392, 0.639216, 0.721569, 1)
+theme_override_font_sizes/font_size = 11
+text = "%"
+horizontal_alignment = 1
+
+[node name="Form" type="Label" parent="VBox/HeaderRow/Margin/HBox"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.580392, 0.639216, 0.721569, 1)
+theme_override_font_sizes/font_size = 11
+text = "FORMA"
+horizontal_alignment = 1
+
+[node name="Seq" type="Label" parent="VBox/HeaderRow/Margin/HBox"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.580392, 0.639216, 0.721569, 1)
+theme_override_font_sizes/font_size = 11
+text = "SEQ"
+horizontal_alignment = 1
+
+[node name="Scroll" type="ScrollContainer" parent="VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="Rows" type="VBoxContainer" parent="VBox/Scroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
