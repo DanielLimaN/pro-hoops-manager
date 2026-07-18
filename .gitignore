@@ -44,3 +44,10 @@ opencode.json
 
 # Design files
 *.pen
+
+# Generated / temp files
+images/
+/scripts/
+godot/build_player_card.gd*
+/player_row_code.gd
+/player_row_extracted.gd

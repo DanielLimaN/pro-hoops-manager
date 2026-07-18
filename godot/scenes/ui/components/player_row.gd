@@ -12,90 +12,178 @@ class_name PlayerRow
 		player_data = val
 		_update_data()
 
+var star_texture = preload("res://addons/at-icons/control/star.svg")
+
+signal pressed
+
+var _is_hovered: bool = false
+var _tween: Tween
+
 func _ready():
-	_update_styles()
+	mouse_filter = Control.MOUSE_FILTER_STOP
+	mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	
+	mouse_entered.connect(_on_mouse_entered)
+	mouse_exited.connect(_on_mouse_exited)
+	gui_input.connect(_on_gui_input)
+	
+	# Garantir que o estilo seja local para cada instância poder animar separadamente
+	var style = get_theme_stylebox("panel")
+	if style:
+		add_theme_stylebox_override("panel", style.duplicate())
+		
+	_update_styles(0.0)
+	
 	if player_data.size() > 0:
 		_update_data()
 	elif Engine.is_editor_hint():
 		player_data = {"pos": "PG", "in": "MS", "n": "Marcus Silva", "sub": "The Maestro", "i": 28, "ovr": 92, "en": 88, "ct": "2 anos", "sal": "R$ 2.4M", "st": "ATIVO"}
 		_update_data()
 
-func _update_styles():
-	var style = StyleBoxFlat.new()
-	style.bg_color = Color(0,0,0,0)
-	
-	if Engine.is_editor_hint():
-		style.border_color = Color("#2D1B4E")
-	else:
-		style.border_color = ThemeConfig.BORDER_SUBTLE
+func _on_mouse_entered():
+	_is_hovered = true
+	_update_styles(0.15)
+
+func _on_mouse_exited():
+	_is_hovered = false
+	_update_styles(0.15)
+
+func _on_gui_input(event: InputEvent):
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		pressed.emit()
+
+func _update_styles(duration: float = 0.0):
+	var root_style = get_theme_stylebox("panel") as StyleBoxFlat
+	if not root_style: return
 		
-	style.border_width_bottom = 1
+	var target_bg = Color.TRANSPARENT
+	var target_border = 0
+	var name_color = ThemeConfig.TEXT_SEC
 	
 	if is_selected:
-		if not Engine.is_editor_hint():
-			style.border_color = ThemeConfig.BRAND_PRIMARY
-		else:
-			style.border_color = Color("#A78BFA")
-		style.border_width_left = 1
-		style.border_width_top = 1
-		style.border_width_right = 1
-		$Gradient.show()
-	else:
-		$Gradient.hide()
+		target_bg = ThemeConfig.BRAND_SOFT
+		target_border = 3
+		name_color = ThemeConfig.TEXT
+	elif _is_hovered:
+		target_bg = Color(ThemeConfig.BRAND_SOFT.r, ThemeConfig.BRAND_SOFT.g, ThemeConfig.BRAND_SOFT.b, 0.06)
+		target_border = 3
+		name_color = ThemeConfig.TEXT
 		
-	add_theme_stylebox_override("panel", style)
+	root_style.border_color = ThemeConfig.BRAND_PRIMARY
+	
+	if Engine.is_editor_hint(): duration = 0.0
+	
+	if _tween and _tween.is_running():
+		_tween.kill()
+		
+	if duration <= 0.0:
+		root_style.bg_color = target_bg
+		root_style.border_width_left = target_border
+		if has_node("%NameLabel"):
+			%NameLabel.add_theme_color_override("font_color", name_color)
+	else:
+		_tween = create_tween().set_parallel(true).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+		_tween.tween_property(root_style, "bg_color", target_bg, duration)
+		_tween.tween_property(root_style, "border_width_left", target_border, duration)
+		if has_node("%NameLabel"):
+			# A cor da fonte precisa ser setada por tween step ou color_override, 
+			# Tween em font_color não é trivial se o override não existir antes, então apenas aplicamos direto
+			%NameLabel.add_theme_color_override("font_color", name_color)
 
 func _update_data():
 	if not is_inside_tree() or player_data.is_empty(): return
 	
-	%PosBadge.badge_type = "pos"
-	%PosBadge.value = player_data.get("pos", "PG")
+	var pos = player_data.get("pos", "PG")
+	var ovr = player_data.get("ovr", 80)
+	var en = player_data.get("energy", 100)
 	
-	%Initials.text = player_data.get("in", "XX")
-	%NameLbl.text = player_data.get("n", "Player Name")
-	%SubLbl.text = player_data.get("sub", "")
-	%AgeLbl.text = str(player_data.get("i", 0))
-	
-	%OvrBadge.badge_type = "ovr"
-	%OvrBadge.value = str(player_data.get("ovr", 0))
-	
-	var en = player_data.get("en", 100)
-	%EnergyFill.custom_minimum_size.x = 60 * (en / 100.0)
-	%EnergyLbl.text = str(en) + "%"
-	
-	if not Engine.is_editor_hint():
-		var pcol = ThemeConfig.BRAND_PRIMARY if "G" in player_data.get("pos", "PG") else (ThemeConfig.SUCCESS if "F" in player_data.get("pos", "PG") else ThemeConfig.WARNING)
-		if player_data.get("pos", "PG") == "C": pcol = ThemeConfig.DANGER
-		if is_selected:
-			%AvatarPanel.get_theme_stylebox("panel").bg_color = ThemeConfig.BRAND_PRIMARY
-		else:
-			%AvatarPanel.get_theme_stylebox("panel").bg_color = pcol
-			
-		%EnergyFill.color = ThemeConfig.SUCCESS if en > 60 else (ThemeConfig.WARNING if en > 40 else ThemeConfig.DANGER)
-		
-		# Stars
-		var ovr = player_data.get("ovr", 0)
-		var star_count = 1 if player_data.get("st", "") == "LESIONADO" else 3
-		if ovr >= 90: star_count = 5
-		elif ovr >= 85: star_count = 4
-		var i = 0
-		for star in %Stars.get_children():
-			star.modulate = ThemeConfig.WARNING if i < star_count else ThemeConfig.BORDER_SUBTLE
-			i += 1
-			
-		%ContractLbl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
-		%SalaryLbl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
-		%NameLbl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
-		%SubLbl.add_theme_color_override("font_color", ThemeConfig.TEXT_MUTED)
-		%AgeLbl.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
-	
-	%ContractLbl.text = player_data.get("ct", "")
-	if player_data.get("ct", "") == "0.5 ano" and not Engine.is_editor_hint():
-		%ContractLbl.add_theme_color_override("font_color", ThemeConfig.WARNING)
+	# PosBadge
+	%PosLabel.text = pos
+	var pos_style = %PosBadge.get_theme_stylebox("panel").duplicate() as StyleBoxFlat
+	if pos == "PG":
+		pos_style.bg_color = ThemeConfig.BRAND_SOFT
+		pos_style.border_color = ThemeConfig.BRAND_PRIMARY
+		%PosLabel.add_theme_color_override("font_color", ThemeConfig.BRAND_PRIMARY)
+	elif pos == "SG":
+		pos_style.bg_color = Color("#60A5FA22")
+		pos_style.border_color = ThemeConfig.INFO
+		%PosLabel.add_theme_color_override("font_color", ThemeConfig.INFO)
 	else:
-		%ContractLbl.remove_theme_color_override("font_color")
-		
-	%SalaryLbl.text = player_data.get("sal", "")
+		pos_style.bg_color = Color(ThemeConfig.BORDER_DEFAULT, 0.22)
+		pos_style.border_color = ThemeConfig.BORDER_DEFAULT
+		%PosLabel.add_theme_color_override("font_color", ThemeConfig.TEXT_SEC)
+	%PosBadge.add_theme_stylebox_override("panel", pos_style)
 	
-	%StatusBadge.badge_type = "status"
-	%StatusBadge.value = player_data.get("st", "ATIVO")
+	# Avatar
+	var full_name = player_data.get("name", "Player Name")
+	var init_str = "XX"
+	var name_parts = full_name.split(" ", false)
+	if name_parts.size() >= 2:
+		init_str = name_parts[0][0] + name_parts[1][0]
+	elif name_parts.size() == 1:
+		init_str = name_parts[0][0]
+	
+	%InitialsLabel.text = init_str
+	var avatar_style = %AvatarPanel.get_theme_stylebox("panel").duplicate() as StyleBoxFlat
+	if pos in ["PG", "SF", "PF"]:
+		avatar_style.bg_color = ThemeConfig.BRAND_DEEP
+	else:
+		avatar_style.bg_color = Color("#2563EB") # fallback blue darkened
+	%AvatarPanel.add_theme_stylebox_override("panel", avatar_style)
+	
+	# Name & Nick
+	%NameLabel.text = full_name
+	
+	var nick = player_data.get("nickname", "")
+	%NickLabel.text = nick.to_upper() if nick != "" else ""
+	
+	# Age
+	%AgeLabel.text = str(player_data.get("age", 0))
+	
+	# OVR
+	%OvrLabel.text = str(int(ovr))
+	var ovr_style = %OvrBadge.get_theme_stylebox("panel").duplicate() as StyleBoxFlat
+	var ovr_color = ThemeConfig.BRAND_PRIMARY if ovr >= 90 else ThemeConfig.SUCCESS
+	var ovr_bg_color = Color(ovr_color, 0.133)
+	
+	ovr_style.bg_color = ovr_bg_color
+	ovr_style.border_color = ovr_color
+	%OvrLabel.add_theme_color_override("font_color", ovr_color)
+	%OvrBadge.add_theme_stylebox_override("panel", ovr_style)
+	
+	# Form (Stars)
+	var form_val = 3
+	if ovr >= 90: form_val = 5
+	elif ovr >= 85: form_val = 4
+	
+	var i = 0
+	for star in %StarsHBox.get_children():
+		star.modulate = ThemeConfig.WARNING if i < form_val else ThemeConfig.BORDER_DEFAULT
+		i += 1
+	
+	# Energy
+	%EnergyBarFill.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	%EnergyBarFill.custom_minimum_size.x = 74 * (en / 100.0)
+	%EnergyLabel.text = str(en) + "%"
+	
+	# Contract
+	%ContractLabel.text = player_data.get("contract", "")
+	
+	# Salary
+	%SalaryLabel.text = player_data.get("salary", "")
+	
+	# Status
+	var st = player_data.get("status", "ATIVO")
+	%StatusLabel.text = st
+	
+	var status_style = %StatusBg.get_theme_stylebox("panel").duplicate() as StyleBoxFlat
+	var st_color = ThemeConfig.SUCCESS
+	if st == "CANSADO":
+		st_color = ThemeConfig.WARNING
+	elif st == "LESIONADO":
+		st_color = ThemeConfig.DANGER
+		
+	status_style.bg_color = Color(st_color.r, st_color.g, st_color.b, 0.133)
+	status_style.border_color = st_color
+	%StatusLabel.add_theme_color_override("font_color", st_color)
+	%StatusBg.add_theme_stylebox_override("panel", status_style)

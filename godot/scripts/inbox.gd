@@ -43,7 +43,7 @@ func _ready():
 
 func _build_top_bar(parent: Node):
 	var tb = topbar_scene.instantiate()
-	tb.screen_title = "CAIXA DE ENTRADA"
+	tb.set_title("CAIXA DE ENTRADA")
 	parent.add_child(tb)
 
 func _build_center_col(parent: Node):

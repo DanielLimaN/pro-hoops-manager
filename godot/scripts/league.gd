@@ -48,82 +48,10 @@ func _ready():
 	_build_right_sidebar(main_hbox)
 
 func _build_top_bar(parent: Node):
-	var topbar = HBoxContainer.new()
-	
-	var title_box = VBoxContainer.new()
-	title_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	title_box.add_theme_constant_override("separation", 4)
-	var sub = Label.new()
-	sub.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
-	sub.add_theme_color_override("font_color", ThemeConfig.BRAND_PRIMARY)
-	sub.add_theme_font_size_override("font_size", 11)
-	sub.add_theme_constant_override("letter_spacing", 2)
-	var tit = Label.new()
-	tit.text = "Liga & Calendário"
-	tit.add_theme_font_override("font", ThemeConfig.FONT_INTER_BLACK)
-	tit.add_theme_color_override("font_color", Color.WHITE)
-	tit.add_theme_font_size_override("font_size", 24)
-	title_box.add_child(sub)
-	title_box.add_child(tit)
-	topbar.add_child(title_box)
-	
-	var right_actions = HBoxContainer.new()
-	right_actions.add_theme_constant_override("separation", 12)
-	right_actions.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	
-	# ENGINE CONNECTED - Dados reais do time do usuário
-	var user_team = GameManager.get_user_team()
-	var total_salary := 0
-	var total_morale := 0.0
-	var total_stamina := 0.0
-	var player_count := 0
-	if not user_team.is_empty() and user_team.has("players"):
-		var players = user_team["players"]
-		for p in players:
-			total_salary += p.get("salary", 0)
-			total_morale += p.get("morale", 0.0)
-			total_stamina += p.get("attributes", {}).get("stamina", 0)
-			player_count += 1
-	
-	var budget_str = "R$ 0"
-	if player_count > 0:
-		budget_str = "R$ %.1fM" % (float(total_salary) / 1000000.0)
-	
-	var morale_str = str(int(total_morale / float(max(player_count, 1)))) + "%" if player_count > 0 else "0%"
-	var stamina_str = str(int(total_stamina / float(max(player_count, 1)))) + "%" if player_count > 0 else "0%"
-	
-	_create_pill(right_actions, "$", "ORÇAMENTO", budget_str, ThemeConfig.SUCCESS)
-	_create_pill(right_actions, "+", "MORAL", morale_str, ThemeConfig.WARNING)
-	_create_pill(right_actions, "E", "ENERGIA", stamina_str, ThemeConfig.INFO)
-	
-	# Bell Icon
-	var bell = PanelContainer.new()
-	bell.custom_minimum_size = Vector2(40, 40)
-	var bs = StyleBoxFlat.new()
-	bs.bg_color = Color(0,0,0,0)
-	bs.border_color = ThemeConfig.BORDER_DEFAULT
-	bs.border_width_left = 1; bs.border_width_top = 1; bs.border_width_right = 1; bs.border_width_bottom = 1
-	bs.corner_radius_top_left = 8; bs.corner_radius_top_right = 8; bs.corner_radius_bottom_left = 8; bs.corner_radius_bottom_right = 8
-	bell.add_theme_stylebox_override("panel", bs)
-	var bell_lbl = Label.new()
-	bell_lbl.text = "!"
-	bell_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	bell_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	bell.add_child(bell_lbl)
-	right_actions.add_child(bell)
-	
-	var adv = Button.new()
-	adv.text = "AVANÇAR"
-	var as_st = StyleBoxFlat.new()
-	as_st.bg_color = ThemeConfig.BRAND_PRIMARY
-	as_st.corner_radius_top_left = 8; as_st.corner_radius_top_right = 8; as_st.corner_radius_bottom_left = 8; as_st.corner_radius_bottom_right = 8
-	as_st.content_margin_left = 24; as_st.content_margin_right = 24
-	adv.add_theme_stylebox_override("normal", as_st)
-	adv.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
-	right_actions.add_child(adv)
-	
-	topbar.add_child(right_actions)
-	parent.add_child(topbar)
+	var topbar_scene = preload("res://scenes/components/topbar.tscn")
+	var tb = topbar_scene.instantiate()
+	tb.set_title("LIGA & CALENDÁRIO")
+	parent.add_child(tb)
 
 func _create_pill(parent: Node, icon_txt: String, lbl: String, val: String, color: Color):
 	var p = PanelContainer.new()

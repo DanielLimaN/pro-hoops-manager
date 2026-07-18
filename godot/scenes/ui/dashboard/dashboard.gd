@@ -38,11 +38,7 @@ func _ready() -> void:
 	
 	if topbar:
 		topbar.advance_requested.connect(_on_advance)
-		var lbl = topbar.get_node_or_null("%ScreenTitle")
-		if not lbl:
-			lbl = topbar.get_node_or_null("ScreenTitle")
-		if lbl:
-			lbl.text = "Dashboard"
+		topbar.set_title("Dashboard")
 
 	_refresh_data()
 
@@ -240,41 +236,8 @@ func _populate_recent():
 ## e tira a média de Moral e Energia do elenco para jogar aqueles números vitais 
 ## lá na barra superior do jogo.
 func _update_pills():
-	var user_team = GameManager.user_team_id
-	var t = _find_team(GameManager.league.teams, user_team)
-	if not t: return
+	topbar._fetch_initial_stats()
 
-	var total_salary = 0
-	var total_morale = 0.0
-	var total_stamina = 0.0
-	for p in t.players:
-		total_salary += p.get("salary", 0)
-		total_morale += p.get("morale", 100.0)
-		var attrs = p.get("attributes", {})
-		total_stamina += attrs.get("stamina", 100.0)
-
-	var budget_cap = 150000000 # 150M budget cap assumption
-	var remaining_budget = budget_cap - total_salary
-	var budget_m = float(remaining_budget) / 1000000.0
-	if topbar and topbar.val_budget:
-		topbar.val_budget.text = "R$ %.1fM" % budget_m
-	
-	var avg_morale = 100.0
-	var avg_stamina = 100.0
-	if t.players.size() > 0:
-		avg_morale = total_morale / t.players.size()
-		avg_stamina = total_stamina / t.players.size()
-	
-	if topbar and topbar.val_morale:
-		topbar.val_morale.text = "%d%%" % int(avg_morale)
-	if topbar and topbar.val_energy:
-		topbar.val_energy.text = "%d%%" % int(avg_stamina)
-
-## 📈 O CALCULADOR IMPLACÁVEL
-## Aqui é onde a matemática pesada acontece! 
-## Conta quantos pontos fizemos, quantos tomamos, qual nossa taxa de vitória, 
-## acha nossa posição na tabela e conta quantos jogadores estão no DM (Departamento Médico).
-## Depois de suar a camisa calculando, preenche aqueles 6 cartões do topo com os números reais.
 func _update_kpis():
 	var user_team = GameManager.user_team_id
 	var t = _find_team(GameManager.league.teams, user_team)
@@ -369,18 +332,6 @@ func _on_stats_updated(safe_data: Dictionary):
 	var kpis = kpi_row.get_children()
 	if kpis.size() >= 2:
 		kpis[1].update_value(str(wins) + "-" + str(losses))
-	
-	var budget = safe_data.get("budget", 0.0)
-	if topbar and topbar.val_budget:
-		topbar.val_budget.text = "R$ %.1fM" % (budget / 1000000.0)
-	
-	var morale = safe_data.get("morale", 100.0)
-	if topbar and topbar.val_morale:
-		topbar.val_morale.text = "%d%%" % int(morale)
-	
-	var energy = safe_data.get("energy", 100.0)
-	if topbar and topbar.val_energy:
-		topbar.val_energy.text = "%d%%" % int(energy)
 
 ## 🌙 BOA NOITE! (Day Completed)
 ## O sol se pôs no universo do basquete. Um dia inteiro de simulações acabou. 

@@ -1,12 +1,1655 @@
-[gd_scene format=3 uid="uid://ckm653iudhjho"]
+[gd_scene format=3]
+[ext_resource type="Script" uid="uid://teamgd12345" path="res://scripts/team.gd" id="1_team_gd"]
 
-[ext_resource type="Script" uid="uid://be5rnp2p3m40a" path="res://scripts/team.gd" id="1_team"]
+
+[ext_resource type="PackedScene" path="res://scenes/components/topbar.tscn" id="2_6pm8d"]
+[ext_resource type="Texture2D" path="res://addons/at-icons/control/gauge.svg" id="2_65q0i"]
+[ext_resource type="Texture2D" path="res://addons/at-icons/control/calendar.svg" id="3_jpyfq"]
+[ext_resource type="Texture2D" path="res://addons/at-icons/control/coins.svg" id="4_mwis8"]
+[ext_resource type="Texture2D" path="res://addons/at-icons/control/heart.svg" id="5_pqg12"]
+[ext_resource type="Texture2D" path="res://addons/at-icons/control/plus.svg" id="6_plus"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_topbar_bg"]
+bg_color = Color(0.0431373, 0.0196078, 0.0784314, 1)
+border_width_bottom = 1
+border_color = Color(0.121569, 0.0784314, 0.196078, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xamr6"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.05882353, 0.02745098, 0.1254902, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.1764706, 0.105882354, 0.30588236, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_65q0i"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.654902, 0.54509807, 0.98039216, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="SystemFont" id="SystemFont_jpyfq"]
+font_names = PackedStringArray("Inter")
+font_weight = 800
+
+[sub_resource type="LabelSettings" id="LabelSettings_mwis8"]
+font = SubResource("SystemFont_jpyfq")
+font_size = 11
+font_color = Color(0.043137256, 0.019607844, 0.078431375, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pqg12"]
+content_margin_left = 6.0
+content_margin_top = 1.0
+content_margin_right = 6.0
+content_margin_bottom = 1.0
+bg_color = Color(0.043137256, 0.019607844, 0.078431375, 0.2)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="SystemFont" id="SystemFont_8oj4s"]
+font_names = PackedStringArray("Inter")
+font_weight = 900
+
+[sub_resource type="LabelSettings" id="LabelSettings_bwsxw"]
+font = SubResource("SystemFont_8oj4s")
+font_size = 9
+font_color = Color(0.043137256, 0.019607844, 0.078431375, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_knfy8"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0, 0, 0, 0)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="SystemFont" id="SystemFont_hkhp1"]
+font_names = PackedStringArray("Inter")
+font_weight = 800
+
+[sub_resource type="LabelSettings" id="LabelSettings_4okmd"]
+font = SubResource("SystemFont_hkhp1")
+font_size = 11
+font_color = Color(0.5803922, 0.6392157, 0.72156864, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_26bjr"]
+content_margin_left = 6.0
+content_margin_top = 1.0
+content_margin_right = 6.0
+content_margin_bottom = 1.0
+bg_color = Color(0.12156863, 0.078431375, 0.19607843, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="SystemFont" id="SystemFont_kjnmq"]
+font_names = PackedStringArray("Inter")
+font_weight = 900
+
+[sub_resource type="LabelSettings" id="LabelSettings_fw1do"]
+font = SubResource("SystemFont_kjnmq")
+font_size = 9
+font_color = Color(0.654902, 0.54509807, 0.98039216, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bme8c"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0, 0, 0, 0)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="SystemFont" id="SystemFont_pl44h"]
+font_names = PackedStringArray("Inter")
+font_weight = 800
+
+[sub_resource type="LabelSettings" id="LabelSettings_u6qkt"]
+font = SubResource("SystemFont_pl44h")
+font_size = 11
+font_color = Color(0.5803922, 0.6392157, 0.72156864, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vcdj7"]
+content_margin_left = 6.0
+content_margin_top = 1.0
+content_margin_right = 6.0
+content_margin_bottom = 1.0
+bg_color = Color(0.12156863, 0.078431375, 0.19607843, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="SystemFont" id="SystemFont_3xhep"]
+font_names = PackedStringArray("Inter")
+font_weight = 900
+
+[sub_resource type="LabelSettings" id="LabelSettings_hxvxr"]
+font = SubResource("SystemFont_3xhep")
+font_size = 9
+font_color = Color(0.654902, 0.54509807, 0.98039216, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u6yhl"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0, 0, 0, 0)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="SystemFont" id="SystemFont_apn54"]
+font_names = PackedStringArray("Inter")
+font_weight = 800
+
+[sub_resource type="LabelSettings" id="LabelSettings_k5svb"]
+font = SubResource("SystemFont_apn54")
+font_size = 11
+font_color = Color(0.5803922, 0.6392157, 0.72156864, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bqaax"]
+content_margin_left = 6.0
+content_margin_top = 1.0
+content_margin_right = 6.0
+content_margin_bottom = 1.0
+bg_color = Color(0.12156863, 0.078431375, 0.19607843, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="SystemFont" id="SystemFont_xjwto"]
+font_names = PackedStringArray("Inter")
+font_weight = 900
+
+[sub_resource type="LabelSettings" id="LabelSettings_o7bmd"]
+font = SubResource("SystemFont_xjwto")
+font_size = 9
+font_color = Color(0.654902, 0.54509807, 0.98039216, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iyibk"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0, 0, 0, 0)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="SystemFont" id="SystemFont_nyp2x"]
+font_names = PackedStringArray("Inter")
+font_weight = 800
+
+[sub_resource type="LabelSettings" id="LabelSettings_g62dd"]
+font = SubResource("SystemFont_nyp2x")
+font_size = 11
+font_color = Color(0.5803922, 0.6392157, 0.72156864, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j1q5b"]
+content_margin_left = 6.0
+content_margin_top = 1.0
+content_margin_right = 6.0
+content_margin_bottom = 1.0
+bg_color = Color(0.12156863, 0.078431375, 0.19607843, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="SystemFont" id="SystemFont_ssotv"]
+font_names = PackedStringArray("Inter")
+font_weight = 900
+
+[sub_resource type="LabelSettings" id="LabelSettings_bxan6"]
+font = SubResource("SystemFont_ssotv")
+font_size = 9
+font_color = Color(0.654902, 0.54509807, 0.98039216, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hkhp1"]
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+bg_color = Color(0.0627451, 0.7254902, 0.5058824, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="SystemFont" id="SystemFont_bwsxw"]
+font_names = PackedStringArray("Inter", "Helvetica Neue", "Arial", "sans-serif")
+font_weight = 900
+subpixel_positioning = 0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8oj4s"]
+content_margin_left = 14.0
+content_margin_top = 14.0
+content_margin_right = 14.0
+content_margin_bottom = 14.0
+bg_color = Color(0.05882353, 0.02745098, 0.1254902, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.1764706, 0.105882354, 0.30588236, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bwsxw"]
+bg_color = Color(0.654902, 0.54509807, 0.98039216, 0.13333334)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="SystemFont" id="SystemFont_xamr6"]
+font_names = PackedStringArray("Inter")
+font_weight = 800
+subpixel_positioning = 0
+
+[sub_resource type="LabelSettings" id="LabelSettings_knfy8"]
+font = SubResource("SystemFont_xamr6")
+font_size = 9
+font_color = Color(0.41960785, 0.35686275, 0.58431375, 1)
+
+[sub_resource type="SystemFont" id="SystemFont_df7gi"]
+font_names = PackedStringArray("Inter")
+font_weight = 900
+subpixel_positioning = 0
+
+[sub_resource type="LabelSettings" id="LabelSettings_hkhp1"]
+font = SubResource("SystemFont_df7gi")
+font_size = 20
+
+[sub_resource type="SystemFont" id="SystemFont_4okmd"]
+font_names = PackedStringArray("Inter")
+font_weight = 700
+subpixel_positioning = 0
+
+[sub_resource type="LabelSettings" id="LabelSettings_8jbf3"]
+font = SubResource("SystemFont_4okmd")
+font_size = 10
+font_color = Color(0.41960785, 0.35686275, 0.58431375, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uv7oi"]
+content_margin_left = 14.0
+content_margin_top = 14.0
+content_margin_right = 14.0
+content_margin_bottom = 14.0
+bg_color = Color(0.05882353, 0.02745098, 0.1254902, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.1764706, 0.105882354, 0.30588236, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_acl8m"]
+bg_color = Color(0.3764706, 0.64705884, 0.98039216, 0.13333334)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="SystemFont" id="SystemFont_26bjr"]
+font_names = PackedStringArray("Inter")
+font_weight = 800
+subpixel_positioning = 0
+
+[sub_resource type="LabelSettings" id="LabelSettings_kjnmq"]
+font = SubResource("SystemFont_26bjr")
+font_size = 9
+font_color = Color(0.41960785, 0.35686275, 0.58431375, 1)
+
+[sub_resource type="SystemFont" id="SystemFont_fw1do"]
+font_names = PackedStringArray("Inter")
+font_weight = 900
+subpixel_positioning = 0
+
+[sub_resource type="LabelSettings" id="LabelSettings_bme8c"]
+font = SubResource("SystemFont_fw1do")
+font_size = 20
+
+[sub_resource type="SystemFont" id="SystemFont_3volm"]
+font_names = PackedStringArray("Inter")
+font_weight = 700
+subpixel_positioning = 0
+
+[sub_resource type="LabelSettings" id="LabelSettings_pl44h"]
+font = SubResource("SystemFont_3volm")
+font_size = 10
+font_color = Color(0.41960785, 0.35686275, 0.58431375, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u6qkt"]
+content_margin_left = 14.0
+content_margin_top = 14.0
+content_margin_right = 14.0
+content_margin_bottom = 14.0
+bg_color = Color(0.05882353, 0.02745098, 0.1254902, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.1764706, 0.105882354, 0.30588236, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gi8qw"]
+bg_color = Color(0.0627451, 0.7254902, 0.5058824, 0.13333334)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="SystemFont" id="SystemFont_vcdj7"]
+font_names = PackedStringArray("Inter")
+font_weight = 800
+subpixel_positioning = 0
+
+[sub_resource type="LabelSettings" id="LabelSettings_3xhep"]
+font = SubResource("SystemFont_vcdj7")
+font_size = 9
+font_color = Color(0.41960785, 0.35686275, 0.58431375, 1)
+
+[sub_resource type="SystemFont" id="SystemFont_hxvxr"]
+font_names = PackedStringArray("Inter")
+font_weight = 900
+subpixel_positioning = 0
+
+[sub_resource type="LabelSettings" id="LabelSettings_u6yhl"]
+font = SubResource("SystemFont_hxvxr")
+font_size = 20
+
+[sub_resource type="SystemFont" id="SystemFont_qrkcy"]
+font_names = PackedStringArray("Inter")
+font_weight = 700
+subpixel_positioning = 0
+
+[sub_resource type="LabelSettings" id="LabelSettings_apn54"]
+font = SubResource("SystemFont_qrkcy")
+font_size = 10
+font_color = Color(0.41960785, 0.35686275, 0.58431375, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k5svb"]
+content_margin_left = 14.0
+content_margin_top = 14.0
+content_margin_right = 14.0
+content_margin_bottom = 14.0
+bg_color = Color(0.05882353, 0.02745098, 0.1254902, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.1764706, 0.105882354, 0.30588236, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r8fix"]
+bg_color = Color(0.95686275, 0.44705883, 0.7137255, 0.13333334)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="SystemFont" id="SystemFont_bqaax"]
+font_names = PackedStringArray("Inter")
+font_weight = 800
+subpixel_positioning = 0
+
+[sub_resource type="LabelSettings" id="LabelSettings_xjwto"]
+font = SubResource("SystemFont_bqaax")
+font_size = 9
+font_color = Color(0.41960785, 0.35686275, 0.58431375, 1)
+
+[sub_resource type="SystemFont" id="SystemFont_o7bmd"]
+font_names = PackedStringArray("Inter")
+font_weight = 900
+subpixel_positioning = 0
+
+[sub_resource type="LabelSettings" id="LabelSettings_iyibk"]
+font = SubResource("SystemFont_o7bmd")
+font_size = 20
+
+[sub_resource type="SystemFont" id="SystemFont_1fk8k"]
+font_names = PackedStringArray("Inter")
+font_weight = 700
+subpixel_positioning = 0
+
+[sub_resource type="LabelSettings" id="LabelSettings_nyp2x"]
+font = SubResource("SystemFont_1fk8k")
+font_size = 10
+font_color = Color(0.41960785, 0.35686275, 0.58431375, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8jbf3"]
+bg_color = Color(0.05882353, 0.02745098, 0.1254902, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.1764706, 0.105882354, 0.30588236, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pyxev"]
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
+bg_color = Color(1, 1, 1, 0)
+border_width_bottom = 1
+border_color = Color(0.12156863, 0.078431375, 0.19607843, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wuegy"]
+bg_color = Color(0.05882353, 0.02745098, 0.1254902, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.654902, 0.54509807, 0.98039216, 0.2509804)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jpyfq"]
+bg_color = Color(0.654902, 0.54509807, 0.98039216, 0.101960786)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+
+[sub_resource type="SystemFont" id="SystemFont_mwis8"]
+font_names = PackedStringArray("Inter", "Helvetica Neue", "Arial", "sans-serif")
+font_weight = 800
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_df7gi"]
+bg_color = Color(0.4862745, 0.22745098, 0.92941177, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.35686275, 0.12941177, 0.7137255, 1)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+
+[sub_resource type="SystemFont" id="SystemFont_8jbf3"]
+font_names = PackedStringArray("Inter", "Helvetica Neue", "Arial", "sans-serif")
+font_weight = 900
+
+[sub_resource type="SystemFont" id="SystemFont_pyxev"]
+font_names = PackedStringArray("Inter", "Helvetica Neue", "Arial", "sans-serif")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kjnmq"]
+bg_color = Color(0.043137256, 0.019607844, 0.078431375, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fw1do"]
+bg_color = Color(0.043137256, 0.019607844, 0.078431375, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="SystemFont" id="SystemFont_bme8c"]
+font_names = PackedStringArray("Inter", "Helvetica Neue", "Arial", "sans-serif")
+font_weight = 700
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3volm"]
+bg_color = Color(0.043137256, 0.019607844, 0.078431375, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pl44h"]
+bg_color = Color(0.043137256, 0.019607844, 0.078431375, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="SystemFont" id="SystemFont_u6qkt"]
+font_names = PackedStringArray("Inter", "Helvetica Neue", "Arial", "sans-serif")
+font_weight = 600
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3xhep"]
+bg_color = Color(0.12156863, 0.078431375, 0.19607843, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hxvxr"]
+bg_color = Color(0.654902, 0.54509807, 0.98039216, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qrkcy"]
+bg_color = Color(0.12156863, 0.078431375, 0.19607843, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_apn54"]
+bg_color = Color(0.654902, 0.54509807, 0.98039216, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xjwto"]
+bg_color = Color(0.12156863, 0.078431375, 0.19607843, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o7bmd"]
+bg_color = Color(0.654902, 0.54509807, 0.98039216, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1fk8k"]
+bg_color = Color(0.12156863, 0.078431375, 0.19607843, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nyp2x"]
+bg_color = Color(0.654902, 0.54509807, 0.98039216, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g62dd"]
+bg_color = Color(0.12156863, 0.078431375, 0.19607843, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ssotv"]
+bg_color = Color(0.654902, 0.54509807, 0.98039216, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bxan6"]
+bg_color = Color(0.12156863, 0.078431375, 0.19607843, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aqwxb"]
+bg_color = Color(0.654902, 0.54509807, 0.98039216, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
 
 [node name="Team" type="Control" unique_id=1997243732]
+script = ExtResource("1_team_gd")
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_team")
+
+[node name="Background" type="ColorRect" parent="." unique_id=932450629]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.023529412, 0.011764706, 0.05490196, 1)
+
+[node name="MainMargin" type="MarginContainer" parent="." unique_id=101048736]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="MainVBox" type="VBoxContainer" parent="MainMargin" unique_id=1613255543]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="TopBar" type="PanelContainer" parent="MainMargin/MainVBox" unique_id=466226117 instance=ExtResource("2_6pm8d")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_topbar_bg")
+
+[node name="Margin2" type="MarginContainer" parent="MainMargin/MainVBox/TopBar" unique_id=263917298]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 16
+
+[node name="Margin3" type="MarginContainer" parent="MainMargin/MainVBox/TopBar" unique_id=1946946826]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 16
+
+[node name="ContentMargin" type="MarginContainer" parent="MainMargin/MainVBox" unique_id=1296793808]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="ContentVBox" type="VBoxContainer" parent="MainMargin/MainVBox/ContentMargin" unique_id=340047029]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 16
+
+[node name="Toolbar" type="HBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox" unique_id=1879294448]
+layout_mode = 2
+
+[node name="Tabs" type="PanelContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Toolbar" unique_id=1262154943]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_xamr6")
+
+[node name="TabsInner" type="HBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Toolbar/Tabs" unique_id=1702245740]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="Todos" type="PanelContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Toolbar/Tabs/TabsInner" unique_id=1107789685]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_65q0i")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Toolbar/Tabs/TabsInner/Todos" unique_id=877263808]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="MainLbl" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Toolbar/Tabs/TabsInner/Todos/HBoxContainer" unique_id=1960021919]
+layout_mode = 2
+text = "TODOS"
+label_settings = SubResource("LabelSettings_mwis8")
+
+[node name="BadgeContainer" type="PanelContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Toolbar/Tabs/TabsInner/Todos/HBoxContainer" unique_id=1552939152]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_pqg12")
+
+[node name="CountLbl" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Toolbar/Tabs/TabsInner/Todos/HBoxContainer/BadgeContainer" unique_id=731285505]
+layout_mode = 2
+text = "15"
+label_settings = SubResource("LabelSettings_bwsxw")
+
+[node name="ClickArea" type="Button" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Toolbar/Tabs/TabsInner/Todos" unique_id=611157594]
+layout_mode = 2
+flat = true
+
+[node name="Titulares" type="PanelContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Toolbar/Tabs/TabsInner" unique_id=1802019168]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_knfy8")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Toolbar/Tabs/TabsInner/Titulares" unique_id=675265337]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="MainLbl" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Toolbar/Tabs/TabsInner/Titulares/HBoxContainer" unique_id=1094894847]
+layout_mode = 2
+text = "TITULARES"
+label_settings = SubResource("LabelSettings_4okmd")
+
+[node name="BadgeContainer" type="PanelContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Toolbar/Tabs/TabsInner/Titulares/HBoxContainer" unique_id=1067596792]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_26bjr")
+
+[node name="CountLbl" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Toolbar/Tabs/TabsInner/Titulares/HBoxContainer/BadgeContainer" unique_id=2099388957]
+layout_mode = 2
+text = "5"
+label_settings = SubResource("LabelSettings_fw1do")
+
+[node name="ClickArea" type="Button" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Toolbar/Tabs/TabsInner/Titulares" unique_id=246457869]
+layout_mode = 2
+flat = true
+
+[node name="Rotacao" type="PanelContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Toolbar/Tabs/TabsInner" unique_id=1427160617]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bme8c")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Toolbar/Tabs/TabsInner/Rotacao" unique_id=283772427]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="MainLbl" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Toolbar/Tabs/TabsInner/Rotacao/HBoxContainer" unique_id=817255551]
+layout_mode = 2
+text = "ROTAÇÃO"
+label_settings = SubResource("LabelSettings_u6qkt")
+
+[node name="BadgeContainer" type="PanelContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Toolbar/Tabs/TabsInner/Rotacao/HBoxContainer" unique_id=841835033]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_vcdj7")
+
+[node name="CountLbl" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Toolbar/Tabs/TabsInner/Rotacao/HBoxContainer/BadgeContainer" unique_id=133435246]
+layout_mode = 2
+text = "8"
+label_settings = SubResource("LabelSettings_hxvxr")
+
+[node name="ClickArea" type="Button" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Toolbar/Tabs/TabsInner/Rotacao" unique_id=1349558903]
+layout_mode = 2
+flat = true
+
+[node name="Lesionados" type="PanelContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Toolbar/Tabs/TabsInner" unique_id=1543956313]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_u6yhl")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Toolbar/Tabs/TabsInner/Lesionados" unique_id=2029019737]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="MainLbl" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Toolbar/Tabs/TabsInner/Lesionados/HBoxContainer" unique_id=1062774403]
+layout_mode = 2
+text = "LESIONADOS"
+label_settings = SubResource("LabelSettings_k5svb")
+
+[node name="BadgeContainer" type="PanelContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Toolbar/Tabs/TabsInner/Lesionados/HBoxContainer" unique_id=1784427698]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bqaax")
+
+[node name="CountLbl" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Toolbar/Tabs/TabsInner/Lesionados/HBoxContainer/BadgeContainer" unique_id=1395980026]
+layout_mode = 2
+text = "2"
+label_settings = SubResource("LabelSettings_o7bmd")
+
+[node name="ClickArea" type="Button" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Toolbar/Tabs/TabsInner/Lesionados" unique_id=1873407316]
+layout_mode = 2
+flat = true
+
+[node name="Jovens" type="PanelContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Toolbar/Tabs/TabsInner" unique_id=1412663530]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_iyibk")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Toolbar/Tabs/TabsInner/Jovens" unique_id=1116498719]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="MainLbl" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Toolbar/Tabs/TabsInner/Jovens/HBoxContainer" unique_id=1564655285]
+layout_mode = 2
+text = "JOVENS"
+label_settings = SubResource("LabelSettings_g62dd")
+
+[node name="BadgeContainer" type="PanelContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Toolbar/Tabs/TabsInner/Jovens/HBoxContainer" unique_id=1639666599]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_j1q5b")
+
+[node name="CountLbl" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Toolbar/Tabs/TabsInner/Jovens/HBoxContainer/BadgeContainer" unique_id=1583768301]
+layout_mode = 2
+text = "3"
+label_settings = SubResource("LabelSettings_bxan6")
+
+[node name="ClickArea" type="Button" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Toolbar/Tabs/TabsInner/Jovens" unique_id=1808058687]
+layout_mode = 2
+flat = true
+
+[node name="AddButton" type="Button" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Toolbar" unique_id=1402287625]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_hkhp1")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_hkhp1")
+theme_override_styles/hover = SubResource("StyleBoxFlat_hkhp1")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_constants/h_separation = 8
+theme_override_fonts/font = SubResource("SystemFont_bwsxw")
+theme_override_font_sizes/font_size = 11
+text = "CONTRATAR"
+icon = ExtResource("6_plus")
+
+[node name="KPIs" type="HBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox" unique_id=1640119410]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 12
+
+[node name="OverallMedioCard" type="PanelContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/KPIs" unique_id=2024102409]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_8oj4s")
+
+[node name="HBox" type="HBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/KPIs/OverallMedioCard" unique_id=1093074758]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="IconBox" type="PanelContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/KPIs/OverallMedioCard/HBox" unique_id=171776886]
+custom_minimum_size = Vector2(38, 38)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_bwsxw")
+
+[node name="Icon" type="TextureRect" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/KPIs/OverallMedioCard/HBox/IconBox" unique_id=1312046144]
+modulate = Color(0.654902, 0.54509807, 0.98039216, 1)
+layout_mode = 2
+texture = ExtResource("2_65q0i")
+stretch_mode = 3
+
+[node name="TextVBox" type="VBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/KPIs/OverallMedioCard/HBox" unique_id=98472224]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/separation = 2
+
+[node name="TitleLbl" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/KPIs/OverallMedioCard/HBox/TextVBox" unique_id=2011572680]
+layout_mode = 2
+text = "OVERALL MÉDIO"
+label_settings = SubResource("LabelSettings_knfy8")
+
+[node name="ValueHBox" type="HBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/KPIs/OverallMedioCard/HBox/TextVBox" unique_id=1962622144]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="ValLbl" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/KPIs/OverallMedioCard/HBox/TextVBox/ValueHBox" unique_id=1409374719]
+layout_mode = 2
+size_flags_vertical = 8
+text = "82.4"
+label_settings = SubResource("LabelSettings_hkhp1")
+
+[node name="UnitLbl" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/KPIs/OverallMedioCard/HBox/TextVBox/ValueHBox" unique_id=736277044]
+layout_mode = 2
+size_flags_vertical = 8
+text = "/100"
+label_settings = SubResource("LabelSettings_8jbf3")
+
+[node name="IdadeMediaCard" type="PanelContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/KPIs" unique_id=2090920450]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_uv7oi")
+
+[node name="HBox" type="HBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/KPIs/IdadeMediaCard" unique_id=1178512342]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="IconBox" type="PanelContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/KPIs/IdadeMediaCard/HBox" unique_id=230680262]
+custom_minimum_size = Vector2(38, 38)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_acl8m")
+
+[node name="Icon" type="TextureRect" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/KPIs/IdadeMediaCard/HBox/IconBox" unique_id=663847946]
+modulate = Color(0.3764706, 0.64705884, 0.98039216, 1)
+layout_mode = 2
+texture = ExtResource("3_jpyfq")
+stretch_mode = 3
+
+[node name="TextVBox" type="VBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/KPIs/IdadeMediaCard/HBox" unique_id=338891146]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/separation = 2
+
+[node name="TitleLbl" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/KPIs/IdadeMediaCard/HBox/TextVBox" unique_id=108249675]
+layout_mode = 2
+text = "IDADE MÉDIA"
+label_settings = SubResource("LabelSettings_kjnmq")
+
+[node name="ValueHBox" type="HBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/KPIs/IdadeMediaCard/HBox/TextVBox" unique_id=388964588]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="ValLbl" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/KPIs/IdadeMediaCard/HBox/TextVBox/ValueHBox" unique_id=409918006]
+layout_mode = 2
+size_flags_vertical = 8
+text = "26.3"
+label_settings = SubResource("LabelSettings_bme8c")
+
+[node name="UnitLbl" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/KPIs/IdadeMediaCard/HBox/TextVBox/ValueHBox" unique_id=513129271]
+layout_mode = 2
+size_flags_vertical = 8
+text = "anos"
+label_settings = SubResource("LabelSettings_pl44h")
+
+[node name="SalarioTotalCard" type="PanelContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/KPIs" unique_id=1080172526]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_u6qkt")
+
+[node name="HBox" type="HBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/KPIs/SalarioTotalCard" unique_id=863185836]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="IconBox" type="PanelContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/KPIs/SalarioTotalCard/HBox" unique_id=1009882441]
+custom_minimum_size = Vector2(38, 38)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_gi8qw")
+
+[node name="Icon" type="TextureRect" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/KPIs/SalarioTotalCard/HBox/IconBox" unique_id=1482898409]
+modulate = Color(0.0627451, 0.7254902, 0.5058824, 1)
+layout_mode = 2
+texture = ExtResource("4_mwis8")
+stretch_mode = 3
+
+[node name="TextVBox" type="VBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/KPIs/SalarioTotalCard/HBox" unique_id=1725547649]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/separation = 2
+
+[node name="TitleLbl" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/KPIs/SalarioTotalCard/HBox/TextVBox" unique_id=608151391]
+layout_mode = 2
+text = "SALÁRIO TOTAL"
+label_settings = SubResource("LabelSettings_3xhep")
+
+[node name="ValueHBox" type="HBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/KPIs/SalarioTotalCard/HBox/TextVBox" unique_id=2033054122]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="ValLbl" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/KPIs/SalarioTotalCard/HBox/TextVBox/ValueHBox" unique_id=1597410167]
+layout_mode = 2
+size_flags_vertical = 8
+text = "R$ 8.2"
+label_settings = SubResource("LabelSettings_u6yhl")
+
+[node name="UnitLbl" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/KPIs/SalarioTotalCard/HBox/TextVBox/ValueHBox" unique_id=1510337504]
+layout_mode = 2
+size_flags_vertical = 8
+text = "M/mês"
+label_settings = SubResource("LabelSettings_apn54")
+
+[node name="QuimicaCard" type="PanelContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/KPIs" unique_id=867368231]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_k5svb")
+
+[node name="HBox" type="HBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/KPIs/QuimicaCard" unique_id=1508437468]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="IconBox" type="PanelContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/KPIs/QuimicaCard/HBox" unique_id=1897844395]
+custom_minimum_size = Vector2(38, 38)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_r8fix")
+
+[node name="Icon" type="TextureRect" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/KPIs/QuimicaCard/HBox/IconBox" unique_id=1897823571]
+modulate = Color(0.95686275, 0.44705883, 0.7137255, 1)
+layout_mode = 2
+texture = ExtResource("5_pqg12")
+stretch_mode = 3
+
+[node name="TextVBox" type="VBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/KPIs/QuimicaCard/HBox" unique_id=278488554]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/separation = 2
+
+[node name="TitleLbl" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/KPIs/QuimicaCard/HBox/TextVBox" unique_id=35168622]
+layout_mode = 2
+text = "QUÍMICA"
+label_settings = SubResource("LabelSettings_xjwto")
+
+[node name="ValueHBox" type="HBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/KPIs/QuimicaCard/HBox/TextVBox" unique_id=1371270108]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="ValLbl" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/KPIs/QuimicaCard/HBox/TextVBox/ValueHBox" unique_id=1114226908]
+layout_mode = 2
+size_flags_vertical = 8
+text = "94"
+label_settings = SubResource("LabelSettings_iyibk")
+
+[node name="UnitLbl" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/KPIs/QuimicaCard/HBox/TextVBox/ValueHBox" unique_id=93717823]
+layout_mode = 2
+size_flags_vertical = 8
+text = "/100"
+label_settings = SubResource("LabelSettings_nyp2x")
+
+[node name="Grid" type="HBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox" unique_id=473926543]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 16
+
+[node name="TableCard" type="PanelContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid" unique_id=1674207740]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 2.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_8jbf3")
+
+[node name="TableVBox" type="VBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/TableCard" unique_id=1643170082]
+layout_mode = 2
+
+[node name="ListHeaderContainer" type="PanelContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/TableCard/TableVBox" unique_id=275700959]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_pyxev")
+
+[node name="ListHeader" type="HBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/TableCard/TableVBox/ListHeaderContainer" unique_id=430605825]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Pos" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/TableCard/TableVBox/ListHeaderContainer/ListHeader" unique_id=1650979123]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_bwsxw")
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.41960785, 0.35686275, 0.58431375, 1)
+text = "POS"
+horizontal_alignment = 1
+
+[node name="Jogador" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/TableCard/TableVBox/ListHeaderContainer/ListHeader" unique_id=1113485303]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = SubResource("SystemFont_bwsxw")
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.41960785, 0.35686275, 0.58431375, 1)
+text = "JOGADOR"
+
+[node name="Idade" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/TableCard/TableVBox/ListHeaderContainer/ListHeader" unique_id=773351016]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_bwsxw")
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.41960785, 0.35686275, 0.58431375, 1)
+text = "IDADE"
+horizontal_alignment = 1
+
+[node name="Ovr" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/TableCard/TableVBox/ListHeaderContainer/ListHeader" unique_id=1544681327]
+custom_minimum_size = Vector2(44, 0)
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_bwsxw")
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.41960785, 0.35686275, 0.58431375, 1)
+text = "OVR"
+horizontal_alignment = 1
+
+[node name="Forma" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/TableCard/TableVBox/ListHeaderContainer/ListHeader" unique_id=1962223593]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_bwsxw")
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.41960785, 0.35686275, 0.58431375, 1)
+text = "FORMA"
+horizontal_alignment = 1
+
+[node name="Energia" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/TableCard/TableVBox/ListHeaderContainer/ListHeader" unique_id=1274209597]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_bwsxw")
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.41960785, 0.35686275, 0.58431375, 1)
+text = "ENERGIA"
+horizontal_alignment = 1
+
+[node name="Contrato" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/TableCard/TableVBox/ListHeaderContainer/ListHeader" unique_id=2016220347]
+custom_minimum_size = Vector2(88, 0)
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_bwsxw")
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.41960785, 0.35686275, 0.58431375, 1)
+text = "CONTRATO"
+horizontal_alignment = 1
+
+[node name="Salario" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/TableCard/TableVBox/ListHeaderContainer/ListHeader" unique_id=1199069169]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_bwsxw")
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.41960785, 0.35686275, 0.58431375, 1)
+text = "SALARIO"
+horizontal_alignment = 2
+
+[node name="Status" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/TableCard/TableVBox/ListHeaderContainer/ListHeader" unique_id=683965655]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_bwsxw")
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.41960785, 0.35686275, 0.58431375, 1)
+text = "STATUS"
+horizontal_alignment = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/TableCard/TableVBox" unique_id=1663095851]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="PlayerList" type="VBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/TableCard/TableVBox/ScrollContainer" unique_id=901834333]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DetailCard" type="PanelContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid" unique_id=557332903]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_wuegy")
+
+[node name="DetailContent" type="VBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard" unique_id=2006811836]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="HeaderCard" type="PanelContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent" unique_id=118376891]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_jpyfq")
+
+[node name="Margin" type="MarginContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/HeaderCard" unique_id=1868216295]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBox" type="VBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/HeaderCard/Margin" unique_id=395071319]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TopRow" type="HBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/HeaderCard/Margin/VBox" unique_id=2145075594]
+layout_mode = 2
+
+[node name="LblSelecionado" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/HeaderCard/Margin/VBox/TopRow" unique_id=208348074]
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_mwis8")
+theme_override_font_sizes/font_size = 9
+theme_override_colors/font_color = Color(0.654902, 0.54509807, 0.98039216, 1)
+text = "JOGADOR SELECIONADO"
+
+[node name="Filler" type="Control" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/HeaderCard/Margin/VBox/TopRow" unique_id=1765597199]
+layout_mode = 2
+size_flags_horizontal = 3
+
+
+[node name="AvatarRow" type="HBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/HeaderCard/Margin/VBox" unique_id=596478359]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="AvatarPanel" type="PanelContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/HeaderCard/Margin/VBox/AvatarRow" unique_id=693709829]
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_df7gi")
+
+[node name="Initials" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/HeaderCard/Margin/VBox/AvatarRow/AvatarPanel" unique_id=1356773984]
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_8jbf3")
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "MS"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="NameBox" type="VBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/HeaderCard/Margin/VBox/AvatarRow" unique_id=1267286651]
+layout_mode = 2
+theme_override_constants/separation = 3
+alignment = 1
+
+[node name="Number" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/HeaderCard/Margin/VBox/AvatarRow/NameBox" unique_id=970401640]
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_mwis8")
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.654902, 0.54509807, 0.98039216, 1)
+text = "#7"
+
+[node name="DetailName" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/HeaderCard/Margin/VBox/AvatarRow/NameBox" unique_id=902045544]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_8jbf3")
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Marcus Silva"
+
+[node name="Nickname" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/HeaderCard/Margin/VBox/AvatarRow/NameBox" unique_id=111738711]
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_pyxev")
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.5803922, 0.6392157, 0.72156864, 1)
+text = "\"The Maestro\""
+
+[node name="MetaRow" type="HBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/HeaderCard/Margin/VBox" unique_id=1056353034]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="PosPanel" type="PanelContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/HeaderCard/Margin/VBox/MetaRow" unique_id=1482755230]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_kjnmq")
+
+[node name="Margin" type="MarginContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/HeaderCard/Margin/VBox/MetaRow/PosPanel" unique_id=655837430]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="VBox" type="VBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/HeaderCard/Margin/VBox/MetaRow/PosPanel/Margin" unique_id=276381047]
+layout_mode = 2
+theme_override_constants/separation = 2
+alignment = 1
+
+[node name="Title" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/HeaderCard/Margin/VBox/MetaRow/PosPanel/Margin/VBox" unique_id=98547255]
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_mwis8")
+theme_override_font_sizes/font_size = 8
+theme_override_colors/font_color = Color(0.41960785, 0.35686275, 0.58431375, 1)
+text = "POS"
+horizontal_alignment = 1
+
+[node name="DetailPos" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/HeaderCard/Margin/VBox/MetaRow/PosPanel/Margin/VBox" unique_id=601887591]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_8jbf3")
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.654902, 0.54509807, 0.98039216, 1)
+text = "PG"
+horizontal_alignment = 1
+
+[node name="IdadePanel" type="PanelContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/HeaderCard/Margin/VBox/MetaRow" unique_id=39721458]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_fw1do")
+
+[node name="Margin" type="MarginContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/HeaderCard/Margin/VBox/MetaRow/IdadePanel" unique_id=1341319788]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="VBox" type="VBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/HeaderCard/Margin/VBox/MetaRow/IdadePanel/Margin" unique_id=1753248818]
+layout_mode = 2
+theme_override_constants/separation = 2
+alignment = 1
+
+[node name="Title" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/HeaderCard/Margin/VBox/MetaRow/IdadePanel/Margin/VBox" unique_id=518396551]
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_mwis8")
+theme_override_font_sizes/font_size = 8
+theme_override_colors/font_color = Color(0.41960785, 0.35686275, 0.58431375, 1)
+text = "IDADE"
+horizontal_alignment = 1
+
+[node name="Value" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/HeaderCard/Margin/VBox/MetaRow/IdadePanel/Margin/VBox" unique_id=785515430]
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_bme8c")
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "28"
+horizontal_alignment = 1
+
+[node name="AlturaPanel" type="PanelContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/HeaderCard/Margin/VBox/MetaRow" unique_id=520750813]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_3volm")
+
+[node name="Margin" type="MarginContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/HeaderCard/Margin/VBox/MetaRow/AlturaPanel" unique_id=1620756968]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="VBox" type="VBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/HeaderCard/Margin/VBox/MetaRow/AlturaPanel/Margin" unique_id=660069779]
+layout_mode = 2
+theme_override_constants/separation = 2
+alignment = 1
+
+[node name="Title" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/HeaderCard/Margin/VBox/MetaRow/AlturaPanel/Margin/VBox" unique_id=776448940]
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_mwis8")
+theme_override_font_sizes/font_size = 8
+theme_override_colors/font_color = Color(0.41960785, 0.35686275, 0.58431375, 1)
+text = "ALTURA"
+horizontal_alignment = 1
+
+[node name="Value" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/HeaderCard/Margin/VBox/MetaRow/AlturaPanel/Margin/VBox" unique_id=1781041274]
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_bme8c")
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "1.91m"
+horizontal_alignment = 1
+
+[node name="OvrPanel" type="PanelContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/HeaderCard/Margin/VBox/MetaRow" unique_id=267442636]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_pl44h")
+
+[node name="Margin" type="MarginContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/HeaderCard/Margin/VBox/MetaRow/OvrPanel" unique_id=1071603530]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="VBox" type="VBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/HeaderCard/Margin/VBox/MetaRow/OvrPanel/Margin" unique_id=2019714738]
+layout_mode = 2
+theme_override_constants/separation = 2
+alignment = 1
+
+[node name="Title" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/HeaderCard/Margin/VBox/MetaRow/OvrPanel/Margin/VBox" unique_id=1317128824]
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_mwis8")
+theme_override_font_sizes/font_size = 8
+theme_override_colors/font_color = Color(0.41960785, 0.35686275, 0.58431375, 1)
+text = "OVR"
+horizontal_alignment = 1
+
+[node name="DetailOvr" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/HeaderCard/Margin/VBox/MetaRow/OvrPanel/Margin/VBox" unique_id=1379743462]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_8jbf3")
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.654902, 0.54509807, 0.98039216, 1)
+text = "92"
+horizontal_alignment = 1
+
+[node name="AttrsMargin" type="MarginContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent" unique_id=1688587093]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="AttrsVBox" type="VBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin" unique_id=37495520]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Title" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox" unique_id=17658727]
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_mwis8")
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.654902, 0.54509807, 0.98039216, 1)
+text = "ATRIBUTOS"
+
+[node name="ArremessoRow" type="VBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox" unique_id=1129099542]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Header" type="HBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/ArremessoRow" unique_id=1925269817]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/ArremessoRow/Header" unique_id=627945544]
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_u6qkt")
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.5803922, 0.6392157, 0.72156864, 1)
+text = "Arremesso"
+
+[node name="Filler" type="Control" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/ArremessoRow/Header" unique_id=121059008]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Value" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/ArremessoRow/Header" unique_id=229752948]
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_bme8c")
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "94"
+
+[node name="BarParent" type="Control" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/ArremessoRow" unique_id=472852902]
+custom_minimum_size = Vector2(0, 6)
+layout_mode = 2
+
+[node name="Bg" type="Panel" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/ArremessoRow/BarParent" unique_id=1519438770]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_3xhep")
+
+[node name="Fill" type="Panel" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/ArremessoRow/BarParent" unique_id=218498916]
+layout_mode = 0
+anchor_right = 0.94
+anchor_bottom = 1.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_hxvxr")
+
+[node name="DribleManejoRow" type="VBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox" unique_id=979690145]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Header" type="HBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/DribleManejoRow" unique_id=1205504626]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/DribleManejoRow/Header" unique_id=76450359]
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_u6qkt")
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.5803922, 0.6392157, 0.72156864, 1)
+text = "Drible / Manejo"
+
+[node name="Filler" type="Control" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/DribleManejoRow/Header" unique_id=910303850]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Value" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/DribleManejoRow/Header" unique_id=681065349]
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_bme8c")
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "88"
+
+[node name="BarParent" type="Control" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/DribleManejoRow" unique_id=1466648795]
+custom_minimum_size = Vector2(0, 6)
+layout_mode = 2
+
+[node name="Bg" type="Panel" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/DribleManejoRow/BarParent" unique_id=374874244]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_qrkcy")
+
+[node name="Fill" type="Panel" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/DribleManejoRow/BarParent" unique_id=3903596]
+layout_mode = 0
+anchor_right = 0.88
+anchor_bottom = 1.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_apn54")
+
+[node name="PasseVisãoRow" type="VBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox" unique_id=1434925321]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Header" type="HBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/PasseVisãoRow" unique_id=24552158]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/PasseVisãoRow/Header" unique_id=1364731401]
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_u6qkt")
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.5803922, 0.6392157, 0.72156864, 1)
+text = "Passe / Visão"
+
+[node name="Filler" type="Control" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/PasseVisãoRow/Header" unique_id=1466713016]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Value" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/PasseVisãoRow/Header" unique_id=595750945]
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_bme8c")
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "90"
+
+[node name="BarParent" type="Control" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/PasseVisãoRow" unique_id=1193052921]
+custom_minimum_size = Vector2(0, 6)
+layout_mode = 2
+
+[node name="Bg" type="Panel" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/PasseVisãoRow/BarParent" unique_id=177746783]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_xjwto")
+
+[node name="Fill" type="Panel" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/PasseVisãoRow/BarParent" unique_id=427205717]
+layout_mode = 0
+anchor_right = 0.9
+anchor_bottom = 1.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_o7bmd")
+
+[node name="DefesaRow" type="VBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox" unique_id=322493769]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Header" type="HBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/DefesaRow" unique_id=401984361]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/DefesaRow/Header" unique_id=1066661904]
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_u6qkt")
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.5803922, 0.6392157, 0.72156864, 1)
+text = "Defesa"
+
+[node name="Filler" type="Control" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/DefesaRow/Header" unique_id=107881880]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Value" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/DefesaRow/Header" unique_id=17131556]
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_bme8c")
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "72"
+
+[node name="BarParent" type="Control" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/DefesaRow" unique_id=718364835]
+custom_minimum_size = Vector2(0, 6)
+layout_mode = 2
+
+[node name="Bg" type="Panel" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/DefesaRow/BarParent" unique_id=827275722]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_1fk8k")
+
+[node name="Fill" type="Panel" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/DefesaRow/BarParent" unique_id=829523163]
+layout_mode = 0
+anchor_right = 0.72
+anchor_bottom = 1.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_nyp2x")
+
+[node name="AtletismoRow" type="VBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox" unique_id=1251069776]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Header" type="HBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/AtletismoRow" unique_id=908947325]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/AtletismoRow/Header" unique_id=532026467]
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_u6qkt")
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.5803922, 0.6392157, 0.72156864, 1)
+text = "Atletismo"
+
+[node name="Filler" type="Control" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/AtletismoRow/Header" unique_id=1533336145]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Value" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/AtletismoRow/Header" unique_id=807204917]
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_bme8c")
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "85"
+
+[node name="BarParent" type="Control" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/AtletismoRow" unique_id=1929696784]
+custom_minimum_size = Vector2(0, 6)
+layout_mode = 2
+
+[node name="Bg" type="Panel" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/AtletismoRow/BarParent" unique_id=1519600112]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_g62dd")
+
+[node name="Fill" type="Panel" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/AtletismoRow/BarParent" unique_id=127104297]
+layout_mode = 0
+anchor_right = 0.85
+anchor_bottom = 1.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_ssotv")
+
+[node name="QIdeQuadraRow" type="VBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox" unique_id=1031321513]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Header" type="HBoxContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/QIdeQuadraRow" unique_id=255968073]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/QIdeQuadraRow/Header" unique_id=522386534]
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_u6qkt")
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.5803922, 0.6392157, 0.72156864, 1)
+text = "QI de Quadra"
+
+[node name="Filler" type="Control" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/QIdeQuadraRow/Header" unique_id=807865257]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Value" type="Label" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/QIdeQuadraRow/Header" unique_id=1552723159]
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_bme8c")
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "95"
+
+[node name="BarParent" type="Control" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/QIdeQuadraRow" unique_id=970569355]
+custom_minimum_size = Vector2(0, 6)
+layout_mode = 2
+
+[node name="Bg" type="Panel" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/QIdeQuadraRow/BarParent" unique_id=1650524556]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_bxan6")
+
+[node name="Fill" type="Panel" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid/DetailCard/DetailContent/AttrsMargin/AttrsVBox/QIdeQuadraRow/BarParent" unique_id=335617287]
+layout_mode = 0
+anchor_right = 0.95
+anchor_bottom = 1.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_aqwxb")

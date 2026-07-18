@@ -60,7 +60,7 @@ func _ready():
 func _build_top_bar(parent: Node):
 	var topbar_scene = preload("res://scenes/components/topbar.tscn")
 	var tb = topbar_scene.instantiate()
-	tb.screen_title = "FINANÇAS"
+	tb.set_title("FINANÇAS")
 	parent.add_child(tb)
 
 func _create_kpi_badge(title: String, val: String, color: Color, icon: String) -> PanelContainer:

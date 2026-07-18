@@ -1,180 +1,313 @@
-[gd_scene load_steps=7 format=3 uid="uid://player_row_001"]
+[gd_scene format=3 uid="uid://cu75e8mgxy5x6"]
 
-[ext_resource type="Script" path="res://scenes/ui/components/player_row.gd" id="1_script"]
-[ext_resource type="PackedScene" uid="uid://attribute_badge_001" path="res://scenes/ui/components/attribute_badge.tscn" id="2_badge"]
-[ext_resource type="Texture2D" uid="uid://star_icon_001" path="res://addons/at-icons/control/star.svg" id="3_star"]
+[ext_resource type="Script" uid="uid://cusg01pdrym4d" path="res://scenes/ui/components/player_row.gd" id="1_jvdtm"]
+[ext_resource type="Texture2D" uid="uid://bgrchpswhiuhm" path="res://addons/at-icons/control/star.svg" id="2_qkuy1"]
 
-[sub_resource type="Gradient" id="Gradient_001"]
-colors = PackedColorArray(0.654902, 0.545098, 0.980392, 0.2, 0, 0, 0, 0)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3ad1q"]
+content_margin_left = 12.0
+content_margin_top = 10.0
+content_margin_right = 12.0
+content_margin_bottom = 10.0
+bg_color = Color(1, 1, 1, 0)
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_001"]
-gradient = SubResource("Gradient_001")
-fill_to = Vector2(1, 0.5)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tflfb"]
+bg_color = Color(0.654902, 0.54509807, 0.98039216, 0.13333334)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.654902, 0.54509807, 0.98039216, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_Avatar"]
-bg_color = Color(0.654902, 0.545098, 0.980392, 1)
-corner_radius_top_left = 18
-corner_radius_top_right = 18
-corner_radius_bottom_right = 18
-corner_radius_bottom_left = 18
+[sub_resource type="SystemFont" id="SystemFont_12vdh"]
+font_names = PackedStringArray("Inter", "Helvetica Neue", "Arial", "sans-serif")
+font_weight = 900
 
-[node name="PlayerRow" type="PanelContainer"]
-script = ExtResource("1_script")
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_enab7"]
+bg_color = Color(0.4862745, 0.22745098, 0.92941177, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.12156863, 0.078431375, 0.19607843, 1)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
 
-[node name="Gradient" type="TextureRect" parent="."]
-visible = false
-layout_mode = 2
-texture = SubResource("GradientTexture2D_001")
-expand_mode = 1
+[sub_resource type="SystemFont" id="SystemFont_n0q5o"]
+font_names = PackedStringArray("Inter", "Helvetica Neue", "Arial", "sans-serif")
+font_weight = 800
 
-[node name="Margin" type="MarginContainer" parent="."]
-layout_mode = 2
-theme_override_constants/margin_left = 24
-theme_override_constants/margin_top = 16
-theme_override_constants/margin_right = 24
-theme_override_constants/margin_bottom = 16
+[sub_resource type="SystemFont" id="SystemFont_nwmqc"]
+font_names = PackedStringArray("Inter", "Helvetica Neue", "Arial", "sans-serif")
+font_weight = 700
 
-[node name="HBox" type="HBoxContainer" parent="Margin"]
-layout_mode = 2
-theme_override_constants/separation = 16
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yayqv"]
+bg_color = Color(0.654902, 0.54509807, 0.98039216, 0.13333334)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.654902, 0.54509807, 0.98039216, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
 
-[node name="PosBadge" parent="Margin/HBox" instance=ExtResource("2_badge")]
-unique_name_in_owner = true
-layout_mode = 2
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sirse"]
+bg_color = Color(0.12156863, 0.078431375, 0.19607843, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
 
-[node name="NameBox" type="HBoxContainer" parent="Margin/HBox"]
-custom_minimum_size = Vector2(200, 0)
-layout_mode = 2
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_df0rb"]
+bg_color = Color(0.0627451, 0.7254902, 0.5058824, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v6822"]
+bg_color = Color(0.0627451, 0.7254902, 0.5058824, 0.13333334)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.0627451, 0.7254902, 0.5058824, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[node name="PlayerRow" type="PanelContainer" unique_id=1754870615]
 size_flags_horizontal = 3
-theme_override_constants/separation = 12
+theme_override_styles/panel = SubResource("StyleBoxFlat_3ad1q")
+script = ExtResource("1_jvdtm")
 
-[node name="AvatarPanel" type="PanelContainer" parent="Margin/HBox/NameBox"]
+[node name="MainHBox" type="HBoxContainer" parent="." unique_id=1472299557]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="PosBadge" type="PanelContainer" parent="MainHBox" unique_id=1504670061]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(36, 36)
+custom_minimum_size = Vector2(30, 24)
 layout_mode = 2
 size_flags_vertical = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_Avatar")
+theme_override_styles/panel = SubResource("StyleBoxFlat_tflfb")
 
-[node name="Initials" type="Label" parent="Margin/HBox/NameBox/AvatarPanel"]
+[node name="PosLabel" type="Label" parent="MainHBox/PosBadge" unique_id=970362472]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.654902, 0.54509807, 0.98039216, 1)
+theme_override_fonts/font = SubResource("SystemFont_12vdh")
+theme_override_font_sizes/font_size = 10
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PlayerInfo" type="HBoxContainer" parent="MainHBox" unique_id=1823199536]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="AvatarPanel" type="PanelContainer" parent="MainHBox/PlayerInfo" unique_id=193650990]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_enab7")
+
+[node name="InitialsLabel" type="Label" parent="MainHBox/PlayerInfo/AvatarPanel" unique_id=288573968]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 12
+theme_override_fonts/font = SubResource("SystemFont_12vdh")
+theme_override_font_sizes/font_size = 10
 text = "MS"
 horizontal_alignment = 1
-
-[node name="VBox" type="VBoxContainer" parent="Margin/HBox/NameBox"]
-layout_mode = 2
-alignment = 1
-
-[node name="NameLbl" type="Label" parent="Margin/HBox/NameBox/VBox"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Marcus Silva"
-
-[node name="SubLbl" type="Label" parent="Margin/HBox/NameBox/VBox"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_font_sizes/font_size = 10
-text = "The Maestro"
-
-[node name="AgeLbl" type="Label" parent="Margin/HBox"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(60, 0)
-layout_mode = 2
-text = "28"
 vertical_alignment = 1
 
-[node name="OvrBadge" parent="Margin/HBox" instance=ExtResource("2_badge")]
+[node name="NameVBox" type="VBoxContainer" parent="MainHBox/PlayerInfo" unique_id=1786950038]
+layout_mode = 2
+theme_override_constants/separation = 0
+alignment = 1
+
+[node name="NameLabel" type="Label" parent="MainHBox/PlayerInfo/NameVBox" unique_id=939555513]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = SubResource("SystemFont_n0q5o")
+theme_override_font_sizes/font_size = 12
+text = "Marcus Silva"
 
-[node name="Spacer" type="Control" parent="Margin/HBox"]
-custom_minimum_size = Vector2(12, 0)
+[node name="NickLabel" type="Label" parent="MainHBox/PlayerInfo/NameVBox" unique_id=1858371111]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.41960785, 0.35686275, 0.58431375, 1)
+theme_override_fonts/font = SubResource("SystemFont_nwmqc")
+theme_override_font_sizes/font_size = 9
+text = "\"The Maestro\""
+
+[node name="AgeLabel" type="Label" parent="MainHBox" unique_id=1942083890]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.5803922, 0.6392157, 0.72156864, 1)
+theme_override_fonts/font = SubResource("SystemFont_nwmqc")
+theme_override_font_sizes/font_size = 12
+text = "28"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="OvrCenter" type="CenterContainer" parent="MainHBox" unique_id=1264208204]
+custom_minimum_size = Vector2(44, 0)
 layout_mode = 2
 
-[node name="Stars" type="HBoxContainer" parent="Margin/HBox"]
+[node name="OvrBadge" type="PanelContainer" parent="MainHBox/OvrCenter" unique_id=1921224224]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(100, 0)
+custom_minimum_size = Vector2(34, 22)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_yayqv")
+
+[node name="OvrLabel" type="Label" parent="MainHBox/OvrCenter/OvrBadge" unique_id=1313466796]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.654902, 0.54509807, 0.98039216, 1)
+theme_override_fonts/font = SubResource("SystemFont_12vdh")
+theme_override_font_sizes/font_size = 11
+text = "92"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="FormCenter" type="CenterContainer" parent="MainHBox" unique_id=508952065]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+
+[node name="StarsHBox" type="HBoxContainer" parent="MainHBox/FormCenter" unique_id=1607244136]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="Star1" type="TextureRect" parent="MainHBox/FormCenter/StarsHBox" unique_id=1117775564]
+modulate = Color(0.9843137, 0.7490196, 0.14117648, 1)
+custom_minimum_size = Vector2(9, 9)
+layout_mode = 2
+texture = ExtResource("2_qkuy1")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Star2" type="TextureRect" parent="MainHBox/FormCenter/StarsHBox" unique_id=1848547989]
+modulate = Color(0.9843137, 0.7490196, 0.14117648, 1)
+custom_minimum_size = Vector2(9, 9)
+layout_mode = 2
+texture = ExtResource("2_qkuy1")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Star3" type="TextureRect" parent="MainHBox/FormCenter/StarsHBox" unique_id=327987104]
+modulate = Color(0.9843137, 0.7490196, 0.14117648, 1)
+custom_minimum_size = Vector2(9, 9)
+layout_mode = 2
+texture = ExtResource("2_qkuy1")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Star4" type="TextureRect" parent="MainHBox/FormCenter/StarsHBox" unique_id=889134444]
+modulate = Color(0.9843137, 0.7490196, 0.14117648, 1)
+custom_minimum_size = Vector2(9, 9)
+layout_mode = 2
+texture = ExtResource("2_qkuy1")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Star5" type="TextureRect" parent="MainHBox/FormCenter/StarsHBox" unique_id=116568506]
+modulate = Color(0.1764706, 0.105882354, 0.30588236, 1)
+custom_minimum_size = Vector2(9, 9)
+layout_mode = 2
+texture = ExtResource("2_qkuy1")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="EnergyMargin" type="MarginContainer" parent="MainHBox" unique_id=508365815]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_right = 8
+
+[node name="EnergyVBox" type="VBoxContainer" parent="MainHBox/EnergyMargin" unique_id=816580936]
 layout_mode = 2
 theme_override_constants/separation = 2
 alignment = 1
 
-[node name="Star1" type="TextureRect" parent="Margin/HBox/Stars"]
-custom_minimum_size = Vector2(10, 10)
-layout_mode = 2
-size_flags_vertical = 4
-texture = ExtResource("3_star")
-expand_mode = 1
-
-[node name="Star2" type="TextureRect" parent="Margin/HBox/Stars"]
-custom_minimum_size = Vector2(10, 10)
-layout_mode = 2
-size_flags_vertical = 4
-texture = ExtResource("3_star")
-expand_mode = 1
-
-[node name="Star3" type="TextureRect" parent="Margin/HBox/Stars"]
-custom_minimum_size = Vector2(10, 10)
-layout_mode = 2
-size_flags_vertical = 4
-texture = ExtResource("3_star")
-expand_mode = 1
-
-[node name="Star4" type="TextureRect" parent="Margin/HBox/Stars"]
-custom_minimum_size = Vector2(10, 10)
-layout_mode = 2
-size_flags_vertical = 4
-texture = ExtResource("3_star")
-expand_mode = 1
-
-[node name="Star5" type="TextureRect" parent="Margin/HBox/Stars"]
-custom_minimum_size = Vector2(10, 10)
-layout_mode = 2
-size_flags_vertical = 4
-texture = ExtResource("3_star")
-expand_mode = 1
-
-[node name="EnergyBox" type="VBoxContainer" parent="Margin/HBox"]
-custom_minimum_size = Vector2(120, 0)
-layout_mode = 2
-theme_override_constants/separation = 4
-alignment = 1
-
-[node name="EnergyBar" type="ColorRect" parent="Margin/HBox/EnergyBox"]
-custom_minimum_size = Vector2(60, 4)
-layout_mode = 2
-size_flags_horizontal = 4
-color = Color(0.101961, 0.0431373, 0.180392, 1)
-
-[node name="EnergyFill" type="ColorRect" parent="Margin/HBox/EnergyBox/EnergyBar"]
+[node name="EnergyBarBg" type="PanelContainer" parent="MainHBox/EnergyMargin/EnergyVBox" unique_id=662511388]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(60, 4)
-layout_mode = 0
-color = Color(0.0627451, 0.72549, 0.505882, 1)
+custom_minimum_size = Vector2(0, 5)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_sirse")
 
-[node name="EnergyLbl" type="Label" parent="Margin/HBox/EnergyBox"]
+[node name="EnergyBarFill" type="PanelContainer" parent="MainHBox/EnergyMargin/EnergyVBox/EnergyBarBg" unique_id=1009241372]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(65, 5)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_df0rb")
+
+[node name="EnergyLabel" type="Label" parent="MainHBox/EnergyMargin/EnergyVBox" unique_id=69982450]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.0627451, 0.72549, 0.505882, 1)
-theme_override_font_sizes/font_size = 10
-text = "100%"
-horizontal_alignment = 1
+theme_override_colors/font_color = Color(0.0627451, 0.7254902, 0.5058824, 1)
+theme_override_fonts/font = SubResource("SystemFont_nwmqc")
+theme_override_font_sizes/font_size = 8
+text = "88%"
 
-[node name="ContractLbl" type="Label" parent="Margin/HBox"]
+[node name="ContractLabel" type="Label" parent="MainHBox" unique_id=1116433895]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(80, 0)
+custom_minimum_size = Vector2(88, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(0.5803922, 0.6392157, 0.72156864, 1)
+theme_override_fonts/font = SubResource("SystemFont_nwmqc")
+theme_override_font_sizes/font_size = 11
 text = "2 anos"
+horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="SalaryLbl" type="Label" parent="Margin/HBox"]
+[node name="SalaryLabel" type="Label" parent="MainHBox" unique_id=984504603]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = SubResource("SystemFont_n0q5o")
+theme_override_font_sizes/font_size = 11
 text = "R$ 2.4M"
+horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="StatusBadge" parent="Margin/HBox" instance=ExtResource("2_badge")]
+[node name="StatusContainer" type="HBoxContainer" parent="MainHBox" unique_id=726698301]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+alignment = 2
+
+[node name="StatusBg" type="PanelContainer" parent="MainHBox/StatusContainer" unique_id=848548774]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_v6822")
+
+[node name="StatusMargin" type="MarginContainer" parent="MainHBox/StatusContainer/StatusBg" unique_id=1638745012]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 3
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 3
+
+[node name="StatusLabel" type="Label" parent="MainHBox/StatusContainer/StatusBg/StatusMargin" unique_id=1980050914]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.0627451, 0.7254902, 0.5058824, 1)
+theme_override_fonts/font = SubResource("SystemFont_12vdh")
+theme_override_font_sizes/font_size = 9
+text = "ATIVO"
+horizontal_alignment = 1
+vertical_alignment = 1
