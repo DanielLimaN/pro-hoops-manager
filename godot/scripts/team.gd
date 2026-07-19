@@ -244,12 +244,46 @@ func _refresh_detail():
 	if detail_ovr: 
 		detail_ovr.text = str(p.get("ovr", 0))
 	
-	# --- Iniciais (avatar) ---
+	# --- Iniciais (avatar) e Portrait ---
+	var avatar_panel = detail_content.find_child("AvatarPanel", true, false)
 	var initials_lbl = detail_content.find_child("Initials", true, false)
-	if initials_lbl:
-		var name_parts = p.get("name", "X").split(" ", false)
-		if name_parts.size() >= 2:
-			initials_lbl.text = name_parts[0][0] + name_parts[1][0]
+	
+	if avatar_panel:
+		# Pegar ou instanciar o PortraitRenderer dinamicamente
+		var portrait_node = avatar_panel.get_node_or_null("Portrait")
+		if not portrait_node:
+			var pr_scene = load("res://scenes/ui/components/PortraitRenderer.tscn")
+			if pr_scene:
+				portrait_node = pr_scene.instantiate()
+				portrait_node.name = "Portrait"
+				# Configura pro retrato expandir dentro do AvatarPanel
+				portrait_node.set_anchors_preset(Control.PRESET_FULL_RECT)
+				avatar_panel.add_child(portrait_node)
+		
+		# Pegar o estilo original para alterar a cor
+		var style = avatar_panel.get_theme_stylebox("panel").duplicate() as StyleBoxFlat
+		if style:
+			if p.has("portrait_config"):
+				if initials_lbl: initials_lbl.hide()
+				if portrait_node:
+					portrait_node.show()
+					portrait_node.render_portrait(p.portrait_config)
+				# Fundo neutro e invisível pro pixel art brilhar
+				style.bg_color = Color(0, 0, 0, 0.2)
+			else:
+				if initials_lbl:
+					initials_lbl.show()
+					var name_parts = p.get("name", "X").split(" ", false)
+					if name_parts.size() >= 2:
+						initials_lbl.text = name_parts[0][0] + name_parts[1][0]
+					else:
+						initials_lbl.text = name_parts[0][0] if name_parts.size() > 0 else "XX"
+				if portrait_node: portrait_node.hide()
+				
+				# Cor roxa antiga (fallback)
+				style.bg_color = ThemeConfig.BRAND_DEEP
+				
+			avatar_panel.add_theme_stylebox_override("panel", style)
 		else:
 			initials_lbl.text = name_parts[0][0] if name_parts.size() == 1 else "XX"
 	
