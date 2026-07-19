@@ -180,6 +180,23 @@ pub fn generate_player(id: PlayerId, position: Position, overall: f32, used_name
     if speed > 85.0 && dunk > 80.0 { badges.push(Badge::SlashingFinisher); }
     if offensive_rebound > 85.0 || defensive_rebound > 85.0 { badges.push(Badge::ReboundChaser); }
 
+    let skin_tones = [SkinTone::Light, SkinTone::Tan, SkinTone::Medium, SkinTone::Dark, SkinTone::Olive];
+    let hair_styles = [HairStyle::Short, HairStyle::Afro, HairStyle::Buzzcut, HairStyle::None];
+    let hair_colors = [HairColor::Black, HairColor::Blonde, HairColor::Brown, HairColor::Gray, HairColor::Red];
+    let facial_hair_styles = [FacialHairStyle::Full, FacialHairStyle::None];
+
+    let skin_tone = skin_tones[rng.gen_range(0..skin_tones.len())].clone();
+    let hair_style = hair_styles[rng.gen_range(0..hair_styles.len())].clone();
+    let hair_color = hair_colors[rng.gen_range(0..hair_colors.len())].clone();
+    let facial_hair_style = facial_hair_styles[rng.gen_range(0..facial_hair_styles.len())].clone();
+
+    let portrait_config = PortraitConfig {
+        skin_tone,
+        hair_style,
+        hair_color,
+        facial_hair_style,
+    };
+
     Player {
         id,
         first_name,
@@ -198,6 +215,7 @@ pub fn generate_player(id: PlayerId, position: Position, overall: f32, used_name
         tendencies,
         spatial_anchor,
         dna,
+        portrait_config,
         radius: player_radius,
         angle: 0.0,
         badges,

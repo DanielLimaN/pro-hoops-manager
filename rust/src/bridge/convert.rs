@@ -101,6 +101,38 @@ pub fn player_to_dict(p: &Player) -> VarDictionary {
     d.set("salary", p.salary as i64);
     d.set("contract_year", p.contract_year as i64);
     d.set("overall", p.attributes.overall() as f64);
+    
+    let mut portrait = VarDictionary::new();
+    let skin_str = match p.portrait_config.skin_tone {
+        crate::engine::types::SkinTone::Light => "light",
+        crate::engine::types::SkinTone::Tan => "tan",
+        crate::engine::types::SkinTone::Medium => "medium",
+        crate::engine::types::SkinTone::Dark => "dark",
+        crate::engine::types::SkinTone::Olive => "olive",
+    };
+    let hair_str = match p.portrait_config.hair_style {
+        crate::engine::types::HairStyle::Short => "short",
+        crate::engine::types::HairStyle::Afro => "afro",
+        crate::engine::types::HairStyle::Buzzcut => "buzzcut",
+        crate::engine::types::HairStyle::None => "none",
+    };
+    let color_str = match p.portrait_config.hair_color {
+        crate::engine::types::HairColor::Black => "black",
+        crate::engine::types::HairColor::Blonde => "blonde",
+        crate::engine::types::HairColor::Brown => "brown",
+        crate::engine::types::HairColor::Gray => "gray",
+        crate::engine::types::HairColor::Red => "red",
+    };
+    let beard_str = match p.portrait_config.facial_hair_style {
+        crate::engine::types::FacialHairStyle::Full => "full",
+        crate::engine::types::FacialHairStyle::None => "none",
+    };
+    portrait.set("skin_tone", &GString::from(skin_str));
+    portrait.set("hair_style", &GString::from(hair_str));
+    portrait.set("hair_color", &GString::from(color_str));
+    portrait.set("facial_hair_style", &GString::from(beard_str));
+    d.set("portrait_config", &portrait);
+    
     d
 }
 

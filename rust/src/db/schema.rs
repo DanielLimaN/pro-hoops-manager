@@ -30,6 +30,7 @@ pub fn create_tables(conn: &Connection) -> Result<()> {
             salary INTEGER DEFAULT 1000000,
             stats_season_json TEXT,
             stats_career_json TEXT,
+            portrait_json TEXT,
             FOREIGN KEY (team_id) REFERENCES teams(id)
         );
         CREATE TABLE IF NOT EXISTS league (

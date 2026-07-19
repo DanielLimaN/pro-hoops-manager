@@ -51,3 +51,6 @@ images/
 godot/build_player_card.gd*
 /player_row_code.gd
 /player_row_extracted.gd
+
+# External tools
+/gimp-mcp/

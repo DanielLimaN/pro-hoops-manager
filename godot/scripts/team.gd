@@ -344,9 +344,10 @@ func _load_roster():
 				contract = str(p.get("contract_year", 1)) + " anos",
 				salary = sal_str,
 				status = status,
-				number = 0,
+				number = p.get("id", 0) % 99,
 				height = height_str,
 				attrs = attrs,
+				portrait_config = p.get("portrait_config", {})
 			})
 		
 		# Reorder cache to match engine rotation_order if set

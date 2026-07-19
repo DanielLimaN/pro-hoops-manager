@@ -4,6 +4,17 @@
     "godot-mcp": {
       "type": "remote",
       "url": "http://localhost:9080/mcp"
+    },
+    "gimp": {
+      "type": "local",
+      "command": [
+        "uv",
+        "run",
+        "--directory",
+        "/Users/daniellimadonascimento/development/games/basket-manager-godot/gimp-mcp",
+        "gimp_mcp_server.py"
+      ],
+      "enabled": true
     }
   }
 }

@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cusg01pdrym4d" path="res://scenes/ui/components/player_row.gd" id="1_jvdtm"]
 [ext_resource type="Texture2D" uid="uid://bgrchpswhiuhm" path="res://addons/at-icons/control/star.svg" id="2_qkuy1"]
+[ext_resource type="PackedScene" uid="uid://ci5o5xrqg3n8f" path="res://scenes/ui/components/PortraitRenderer.tscn" id="3_portr"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3ad1q"]
 content_margin_left = 12.0
@@ -116,10 +117,17 @@ theme_override_constants/separation = 8
 
 [node name="AvatarPanel" type="PanelContainer" parent="MainHBox/PlayerInfo" unique_id=193650990]
 unique_name_in_owner = true
+clip_contents = true
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 size_flags_vertical = 4
 theme_override_styles/panel = SubResource("StyleBoxFlat_enab7")
+
+[node name="Portrait" parent="MainHBox/PlayerInfo/AvatarPanel" instance=ExtResource("3_portr")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 
 [node name="InitialsLabel" type="Label" parent="MainHBox/PlayerInfo/AvatarPanel" unique_id=288573968]
 unique_name_in_owner = true

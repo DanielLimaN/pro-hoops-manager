@@ -123,12 +123,25 @@ func _update_data():
 	elif name_parts.size() == 1:
 		init_str = name_parts[0][0]
 	
-	%InitialsLabel.text = init_str
-	var avatar_style = %AvatarPanel.get_theme_stylebox("panel").duplicate() as StyleBoxFlat
-	if pos in ["PG", "SF", "PF"]:
-		avatar_style.bg_color = ThemeConfig.BRAND_DEEP
+	if player_data.has("portrait_config"):
+		%InitialsLabel.hide()
+		%Portrait.show()
+		%Portrait.render_portrait(player_data.portrait_config)
 	else:
-		avatar_style.bg_color = Color("#2563EB") # fallback blue darkened
+		%InitialsLabel.show()
+		%InitialsLabel.text = init_str
+		if has_node("%Portrait"):
+			%Portrait.hide()
+	
+	var avatar_style = %AvatarPanel.get_theme_stylebox("panel").duplicate() as StyleBoxFlat
+	if player_data.has("portrait_config"):
+		# Fundo neutro/escuro sutil para destacar o pixel art
+		avatar_style.bg_color = Color(0, 0, 0, 0.2)
+	else:
+		if pos in ["PG", "SF", "PF"]:
+			avatar_style.bg_color = ThemeConfig.BRAND_DEEP
+		else:
+			avatar_style.bg_color = Color("#2563EB") # fallback blue darkened
 	%AvatarPanel.add_theme_stylebox_override("panel", avatar_style)
 	
 	# Name & Nick

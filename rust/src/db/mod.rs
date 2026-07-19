@@ -78,6 +78,7 @@ pub fn save_game_state(conn: &Connection, state: &crate::state::GameState) -> Re
                 let attrs_json = serde_json::to_string(&p.attributes).unwrap_or_default();
                 let stats_s_json = serde_json::to_string(&p.stats_season).unwrap_or_default();
                 let stats_c_json = serde_json::to_string(&p.stats_career).unwrap_or_default();
+                let portrait_json = serde_json::to_string(&p.portrait_config).unwrap_or_default();
                 let pos_str = match p.position {
                     crate::engine::types::Position::PG => "PG",
                     crate::engine::types::Position::SG => "SG",
@@ -85,9 +86,9 @@ pub fn save_game_state(conn: &Connection, state: &crate::state::GameState) -> Re
                     crate::engine::types::Position::PF => "PF",
                     crate::engine::types::Position::C => "C",
                 };
-                conn.execute("INSERT OR REPLACE INTO players (id, team_id, first_name, last_name, position, age, attributes_json, morale, injury_days, contract_year, salary, stats_season_json, stats_career_json)
-                              VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13)",
-                    params![p.id as i64, t.id as i64, p.first_name, p.last_name, pos_str, p.age as i64, attrs_json, p.morale as f64, p.injury_days as i64, p.contract_year as i64, p.salary as i64, stats_s_json, stats_c_json])?;
+                conn.execute("INSERT OR REPLACE INTO players (id, team_id, first_name, last_name, position, age, attributes_json, morale, injury_days, contract_year, salary, stats_season_json, stats_career_json, portrait_json)
+                              VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14)",
+                    params![p.id as i64, t.id as i64, p.first_name, p.last_name, pos_str, p.age as i64, attrs_json, p.morale as f64, p.injury_days as i64, p.contract_year as i64, p.salary as i64, stats_s_json, stats_c_json, portrait_json])?;
             }
         }
 

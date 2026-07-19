@@ -7,6 +7,46 @@ pub type TeamId = u32;
 pub type GameId = u32;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
+pub enum SkinTone {
+    Light,
+    Tan,
+    Medium,
+    Dark,
+    Olive,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
+pub enum HairStyle {
+    Short,
+    Afro,
+    Buzzcut,
+    None,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
+pub enum HairColor {
+    Black,
+    Blonde,
+    Brown,
+    Gray,
+    Red,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
+pub enum FacialHairStyle {
+    Full,
+    None,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PortraitConfig {
+    pub skin_tone: SkinTone,
+    pub hair_style: HairStyle,
+    pub hair_color: HairColor,
+    pub facial_hair_style: FacialHairStyle,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
 pub enum Position {
     PG,
     SG,
@@ -200,6 +240,7 @@ pub struct Player {
     pub tendencies: BehaviorTendencies,
     pub spatial_anchor: SpatialAnchor,
     pub dna: PlayerDNA,
+    pub portrait_config: PortraitConfig,
     pub radius: f32,
     #[serde(default)]
     pub badges: Vec<Badge>,
