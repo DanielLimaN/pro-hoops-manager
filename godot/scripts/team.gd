@@ -284,10 +284,8 @@ func _refresh_detail():
 				style.bg_color = ThemeConfig.BRAND_DEEP
 				
 			avatar_panel.add_theme_stylebox_override("panel", style)
-		else:
-			initials_lbl.text = name_parts[0][0] if name_parts.size() == 1 else "XX"
-	
-	# --- Apelido ---
+		
+		# --- Apelido ---
 	var nick_lbl = detail_content.find_child("Nickname", true, false)
 	if nick_lbl:
 		var nick = p.get("nickname", "")
