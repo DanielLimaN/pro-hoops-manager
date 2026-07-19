@@ -216,7 +216,46 @@ func _populate_continue_card():
 	$"CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardHeaderWrap/CardHeaderVBox/CardHeaderHBox/CardHeaderTime".text = save_time
 
 	# Body
-	$"CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardBodyWrap/CardBodyHBox/CardBadge/CardBadgeLabel".text = badge_initials
+	var card_badge_panel = $"CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardBodyWrap/CardBodyHBox/CardBadge"
+	var card_badge_lbl = $"CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardBodyWrap/CardBodyHBox/CardBadge/CardBadgeLabel"
+	
+	card_badge_lbl.text = badge_initials
+	var shield_path = "res://assets/teams/%s.png" % abbr.to_lower()
+	if ResourceLoader.exists(shield_path):
+		card_badge_lbl.hide()
+		var tex_rect = card_badge_panel.get_node_or_null("TeamShield")
+		if not tex_rect:
+			tex_rect = TextureRect.new()
+			tex_rect.name = "TeamShield"
+			tex_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			tex_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			tex_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+			
+			# Margens negativas para o escudo "vazar" e ficar consideravelmente maior
+			var expand_margin = 15.0
+			tex_rect.offset_left = -expand_margin
+			tex_rect.offset_top = -expand_margin
+			tex_rect.offset_right = expand_margin
+			tex_rect.offset_bottom = expand_margin
+			
+			card_badge_panel.add_child(tex_rect)
+		
+		tex_rect.texture = load(shield_path)
+		tex_rect.show()
+		var sty = card_badge_panel.get_theme_stylebox("panel").duplicate() as StyleBoxFlat
+		if sty:
+			sty.bg_color = Color(0,0,0,0)
+			sty.border_width_left = 0
+			sty.border_width_right = 0
+			sty.border_width_top = 0
+			sty.border_width_bottom = 0
+			sty.shadow_size = 0
+			card_badge_panel.add_theme_stylebox_override("panel", sty)
+	else:
+		card_badge_lbl.show()
+		var tex_rect = card_badge_panel.get_node_or_null("TeamShield")
+		if tex_rect: tex_rect.hide()
+
 	$"CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardBodyWrap/CardBodyHBox/CardInfoVBox/CardInfoTag".text = abbr + " \u00b7 CONFER\u00caNCIA SUL"
 	$"CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardBodyWrap/CardBodyHBox/CardInfoVBox/CardInfoName".text = coach_name_str
 	$"CenterArea/MainHBox/RightPanel/ContinueCard/CardPanel/CardVBox/CardBodyWrap/CardBodyHBox/CardInfoVBox/CardInfoSeasonHBox/CardInfoSeason".text = season_str
