@@ -11,7 +11,6 @@ var _active_filter: String = "TODOS"
 var _substitutions_in: Array = []
 var _substitutions_out: Array = []
 var _edit_mode: bool = false
-var _detail_panel: PanelContainer
 var _filter_btns: Dictionary = {}
 var _quick_actions_popover = null
 
@@ -226,132 +225,16 @@ func _refresh_player_rows():
 		_player_rows.append(row)
 
 func _refresh_detail():
-	var detail_content = get_node_or_null("%DetailContent")
-	if not detail_content: 
+	var panel = get_node_or_null("%PlayerProfilePanel") as PlayerProfilePanel
+	if not panel:
 		return
 	
 	if _selected_player_idx < 0 or _selected_player_idx >= _player_data_cache.size():
-		detail_content.visible = false
+		panel.visible = false
 		return
 	
-	detail_content.visible = true
-	var p: Dictionary = _player_data_cache[_selected_player_idx]
-	
-	# --- Nome, Posição, OVR (via unique names) ---
-	var detail_name = get_node_or_null("%DetailName")
-	if detail_name: 
-		detail_name.text = p.get("name", "Jogador")
-	
-	var detail_pos = get_node_or_null("%DetailPos")
-	if detail_pos: 
-		detail_pos.text = p.get("pos", "-")
-	
-	var detail_ovr = get_node_or_null("%DetailOvr")
-	if detail_ovr: 
-		detail_ovr.text = str(p.get("ovr", 0))
-	
-	# --- Iniciais (avatar) e Portrait ---
-	var avatar_panel = detail_content.find_child("AvatarPanel", true, false)
-	var initials_lbl = detail_content.find_child("Initials", true, false)
-	
-	if avatar_panel:
-		# Pegar ou instanciar o PortraitRenderer dinamicamente
-		var portrait_node = avatar_panel.get_node_or_null("Portrait")
-		if not portrait_node:
-			var pr_scene = load("res://scenes/ui/components/PortraitRenderer.tscn")
-			if pr_scene:
-				portrait_node = pr_scene.instantiate()
-				portrait_node.name = "Portrait"
-				# Configura pro retrato expandir dentro do AvatarPanel
-				portrait_node.set_anchors_preset(Control.PRESET_FULL_RECT)
-				avatar_panel.add_child(portrait_node)
-		
-		# Pegar o estilo original para alterar a cor
-		var style = avatar_panel.get_theme_stylebox("panel").duplicate() as StyleBoxFlat
-		if style:
-			if p.has("portrait_config"):
-				if initials_lbl: initials_lbl.hide()
-				if portrait_node:
-					portrait_node.show()
-					portrait_node.render_portrait(p.portrait_config)
-				# Fundo neutro e invisível pro pixel art brilhar
-				style.bg_color = Color(0, 0, 0, 0.2)
-			else:
-				if initials_lbl:
-					initials_lbl.show()
-					var name_parts = p.get("name", "X").split(" ", false)
-					if name_parts.size() >= 2:
-						initials_lbl.text = name_parts[0][0] + name_parts[1][0]
-					else:
-						initials_lbl.text = name_parts[0][0] if name_parts.size() > 0 else "XX"
-				if portrait_node: portrait_node.hide()
-				
-				# Cor roxa antiga (fallback)
-				style.bg_color = ThemeConfig.BRAND_DEEP
-				
-			avatar_panel.add_theme_stylebox_override("panel", style)
-		
-		# --- Apelido ---
-	var nick_lbl = detail_content.find_child("Nickname", true, false)
-	if nick_lbl:
-		var nick = p.get("nickname", "")
-		nick_lbl.text = '"' + nick + '"' if nick != "" else ""
-	
-	# --- Número da camisa ---
-	var num_lbl = detail_content.find_child("Number", true, false)
-	if num_lbl:
-		num_lbl.text = "#" + str(p.get("number", "-"))
-	
-	# --- MetaRow (idade, altura) ---
-	var meta_row = detail_content.find_child("MetaRow", true, false)
-	if meta_row:
-		for panel in meta_row.get_children():
-			var vbox = panel.find_child("VBox", true, false)
-			if vbox and vbox.get_child_count() >= 2:
-				var title_lbl: Label = vbox.get_child(0)
-				var val_lbl: Label = vbox.get_child(1)
-				var title_text = title_lbl.text
-				if title_text == "IDADE":
-					val_lbl.text = str(p.get("age", 0))
-				elif title_text == "ALTURA":
-					val_lbl.text = p.get("height", "-")
-	
-	# --- Atributos ---
-	var attr_map: Dictionary = {
-		"ArremessoRow": "three_pt",
-		"DribleManejoRow": "ball_handle",
-		"PasseVisãoRow": "passing",
-		"DefesaRow": "perimeter_def",
-		"AtletismoRow": "speed",
-		"QIdeQuadraRow": "basketball_iq"
-	}
-	var attrs: Dictionary = p.get("attrs", {})
-	var attrs_vbox = detail_content.find_child("AttrsVBox", true, false)
-	
-	if attrs_vbox:
-		var has_attrs = not attrs.is_empty()
-		# AttrsMargin é o parent do AttrsVBox — controla visibilidade de toda a seção
-		var attrs_margin = attrs_vbox.get_parent()
-		if attrs_margin:
-			attrs_margin.visible = has_attrs
-		
-		if has_attrs:
-			for child in attrs_vbox.get_children():
-				# Pula o nó "Title" (label "ATRIBUTOS")
-				var key = attr_map.get(child.name, "")
-				if key == "":
-					continue
-				
-				var val_raw = attrs.get(key, 50)
-				var val_rounded = round(val_raw)
-				
-				var val_lbl = child.find_child("Value", true, false)
-				if val_lbl:
-					val_lbl.text = str(val_rounded)
-				
-				var fill = child.find_child("Fill", true, false)
-				if fill:
-					fill.anchor_right = clamp(val_rounded / 100.0, 0.0, 1.0)
+	panel.visible = true
+	panel.display_player(_player_data_cache[_selected_player_idx])
 
 func _load_roster():
 	_player_data_cache.clear()

@@ -1,0 +1,1270 @@
+[gd_scene load_steps=18 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/components/player_profile_panel.gd" id="1"]
+
+[sub_resource type="SystemFont" id=1]
+font_names = PackedStringArray("Inter")
+font_weight = 400
+
+[sub_resource type="SystemFont" id=2]
+font_names = PackedStringArray("Inter")
+font_weight = 700
+
+[sub_resource type="StyleBoxFlat" id=3]
+bg_color = Color("#0F0720")
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color("#A78BFA66")
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+shadow_size = 8
+shadow_color = Color(0, 0, 0, 0.3)
+shadow_offset = Vector2(0, 4)
+
+[sub_resource type="StyleBoxFlat" id=4]
+bg_color = Color(0, 0, 0, 0)
+
+[sub_resource type="StyleBoxFlat" id=5]
+bg_color = Color("#7C3AED")
+corner_radius_top_left = 36
+corner_radius_top_right = 36
+corner_radius_bottom_right = 36
+corner_radius_bottom_left = 36
+
+[sub_resource type="StyleBoxFlat" id=6]
+bg_color = Color("#1E1B4B")
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color("#2D2B55")
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id=7]
+bg_color = Color(0, 0, 0, 0)
+
+[sub_resource type="StyleBoxFlat" id=8]
+bg_color = Color("#A78BFA22")
+border_width_top = 2
+border_color = Color("#A78BFA")
+
+[sub_resource type="StyleBoxFlat" id=9]
+bg_color = Color(0, 0, 0, 0)
+
+[sub_resource type="StyleBoxFlat" id=10]
+bg_color = Color("#A78BFA11")
+
+[sub_resource type="StyleBoxFlat" id=11]
+bg_color = Color("#1E1B4B")
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id=12]
+bg_color = Color("#A78BFA")
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id=13]
+bg_color = Color("#10B981")
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id=14]
+bg_color = Color("#FBBF24")
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id=15]
+bg_color = Color("#3B82F6")
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id=16]
+bg_color = Color("#EF4444")
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="ButtonGroup" id=17]
+
+[node name="PlayerProfilePanel" type="PanelContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("3")
+script = ExtResource("1")
+
+[node name="MainVBox" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="HeaderCard" type="PanelContainer" parent="MainVBox"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("4")
+
+[node name="HeaderMargin" type="MarginContainer" parent="MainVBox/HeaderCard"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 8
+
+[node name="HeaderVBox" type="VBoxContainer" parent="MainVBox/HeaderCard/HeaderMargin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TopRow" type="HBoxContainer" parent="MainVBox/HeaderCard/HeaderMargin/HeaderVBox"]
+layout_mode = 2
+
+[node name="LblTitle" type="Label" parent="MainVBox/HeaderCard/HeaderMargin/HeaderVBox/TopRow"]
+layout_mode = 2
+text = "PERFIL DO JOGADOR"
+theme_override_fonts/font = SubResource("2")
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color("#A78BFA")
+
+[node name="Filler" type="Control" parent="MainVBox/HeaderCard/HeaderMargin/HeaderVBox/TopRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AvatarRow" type="HBoxContainer" parent="MainVBox/HeaderCard/HeaderMargin/HeaderVBox"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="AvatarPanel" type="PanelContainer" parent="MainVBox/HeaderCard/HeaderMargin/HeaderVBox/AvatarRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+theme_override_styles/panel = SubResource("5")
+
+[node name="AvatarInitials" type="Label" parent="MainVBox/HeaderCard/HeaderMargin/HeaderVBox/AvatarRow/AvatarPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "MS"
+horizontal_alignment = 1
+vertical_alignment = 1
+theme_override_fonts/font = SubResource("2")
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(1, 1, 1)
+
+[node name="NameBox" type="VBoxContainer" parent="MainVBox/HeaderCard/HeaderMargin/HeaderVBox/AvatarRow"]
+layout_mode = 2
+theme_override_constants/separation = 3
+alignment = 1
+
+[node name="JerseyNumber" type="Label" parent="MainVBox/HeaderCard/HeaderMargin/HeaderVBox/AvatarRow/NameBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "#7"
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color("#A78BFA")
+
+[node name="PlayerName" type="Label" parent="MainVBox/HeaderCard/HeaderMargin/HeaderVBox/AvatarRow/NameBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Marcus Silva"
+theme_override_fonts/font = SubResource("2")
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(1, 1, 1)
+
+[node name="PlayerNickname" type="Label" parent="MainVBox/HeaderCard/HeaderMargin/HeaderVBox/AvatarRow/NameBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "\"The Maestro\""
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color("#94A3B8")
+
+[node name="MetaRow" type="HBoxContainer" parent="MainVBox/HeaderCard/HeaderMargin/HeaderVBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="PosPanel" type="PanelContainer" parent="MainVBox/HeaderCard/HeaderMargin/HeaderVBox/MetaRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("6")
+
+[node name="PosMargin" type="MarginContainer" parent="MainVBox/HeaderCard/HeaderMargin/HeaderVBox/MetaRow/PosPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="PosVBox" type="VBoxContainer" parent="MainVBox/HeaderCard/HeaderMargin/HeaderVBox/MetaRow/PosPanel/PosMargin"]
+layout_mode = 2
+theme_override_constants/separation = 2
+alignment = 1
+
+[node name="PosLabel" type="Label" parent="MainVBox/HeaderCard/HeaderMargin/HeaderVBox/MetaRow/PosPanel/PosMargin/PosVBox"]
+layout_mode = 2
+text = "POS"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 8
+theme_override_colors/font_color = Color("#6B5B95")
+
+[node name="PlayerPos" type="Label" parent="MainVBox/HeaderCard/HeaderMargin/HeaderVBox/MetaRow/PosPanel/PosMargin/PosVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "PG"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color("#A78BFA")
+
+[node name="IdadePanel" type="PanelContainer" parent="MainVBox/HeaderCard/HeaderMargin/HeaderVBox/MetaRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("6")
+
+[node name="IdadeMargin" type="MarginContainer" parent="MainVBox/HeaderCard/HeaderMargin/HeaderVBox/MetaRow/IdadePanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="IdadeVBox" type="VBoxContainer" parent="MainVBox/HeaderCard/HeaderMargin/HeaderVBox/MetaRow/IdadePanel/IdadeMargin"]
+layout_mode = 2
+theme_override_constants/separation = 2
+alignment = 1
+
+[node name="IdadeLabel" type="Label" parent="MainVBox/HeaderCard/HeaderMargin/HeaderVBox/MetaRow/IdadePanel/IdadeMargin/IdadeVBox"]
+layout_mode = 2
+text = "IDADE"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 8
+theme_override_colors/font_color = Color("#6B5B95")
+
+[node name="PlayerAge" type="Label" parent="MainVBox/HeaderCard/HeaderMargin/HeaderVBox/MetaRow/IdadePanel/IdadeMargin/IdadeVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "28"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(1, 1, 1)
+
+[node name="AlturaPanel" type="PanelContainer" parent="MainVBox/HeaderCard/HeaderMargin/HeaderVBox/MetaRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("6")
+
+[node name="AlturaMargin" type="MarginContainer" parent="MainVBox/HeaderCard/HeaderMargin/HeaderVBox/MetaRow/AlturaPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="AlturaVBox" type="VBoxContainer" parent="MainVBox/HeaderCard/HeaderMargin/HeaderVBox/MetaRow/AlturaPanel/AlturaMargin"]
+layout_mode = 2
+theme_override_constants/separation = 2
+alignment = 1
+
+[node name="AlturaLabel" type="Label" parent="MainVBox/HeaderCard/HeaderMargin/HeaderVBox/MetaRow/AlturaPanel/AlturaMargin/AlturaVBox"]
+layout_mode = 2
+text = "ALTURA"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 8
+theme_override_colors/font_color = Color("#6B5B95")
+
+[node name="PlayerHeight" type="Label" parent="MainVBox/HeaderCard/HeaderMargin/HeaderVBox/MetaRow/AlturaPanel/AlturaMargin/AlturaVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "1.91m"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(1, 1, 1)
+
+[node name="OvrPanel" type="PanelContainer" parent="MainVBox/HeaderCard/HeaderMargin/HeaderVBox/MetaRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("6")
+
+[node name="OvrMargin" type="MarginContainer" parent="MainVBox/HeaderCard/HeaderMargin/HeaderVBox/MetaRow/OvrPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="OvrVBox" type="VBoxContainer" parent="MainVBox/HeaderCard/HeaderMargin/HeaderVBox/MetaRow/OvrPanel/OvrMargin"]
+layout_mode = 2
+theme_override_constants/separation = 2
+alignment = 1
+
+[node name="OvrLabel" type="Label" parent="MainVBox/HeaderCard/HeaderMargin/HeaderVBox/MetaRow/OvrPanel/OvrMargin/OvrVBox"]
+layout_mode = 2
+text = "OVR"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 8
+theme_override_colors/font_color = Color("#6B5B95")
+
+[node name="PlayerOvr" type="Label" parent="MainVBox/HeaderCard/HeaderMargin/HeaderVBox/MetaRow/OvrPanel/OvrMargin/OvrVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "92"
+horizontal_alignment = 1
+theme_override_fonts/font = SubResource("2")
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color("#A78BFA")
+
+[node name="TabBar" type="HBoxContainer" parent="MainVBox"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="BtnAtrib" type="Button" parent="MainVBox/TabBar"]
+unique_name_in_owner = true
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("17")
+flat = true
+text = "ATRIB"
+custom_minimum_size = Vector2(0, 32)
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 10
+theme_override_styles/normal = SubResource("7")
+theme_override_styles/pressed = SubResource("8")
+theme_override_styles/disabled = SubResource("9")
+theme_override_styles/hover = SubResource("10")
+theme_override_colors/font_color = Color("#94A3B8")
+theme_override_colors/font_pressed_color = Color("#A78BFA")
+theme_override_colors/font_hover_color = Color("#E0E7FF")
+
+[node name="BtnContrato" type="Button" parent="MainVBox/TabBar"]
+unique_name_in_owner = true
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("17")
+flat = true
+text = "CONTRATO"
+custom_minimum_size = Vector2(0, 32)
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 10
+theme_override_styles/normal = SubResource("7")
+theme_override_styles/pressed = SubResource("8")
+theme_override_styles/disabled = SubResource("9")
+theme_override_styles/hover = SubResource("10")
+theme_override_colors/font_color = Color("#94A3B8")
+theme_override_colors/font_pressed_color = Color("#A78BFA")
+theme_override_colors/font_hover_color = Color("#E0E7FF")
+
+[node name="BtnHistorico" type="Button" parent="MainVBox/TabBar"]
+unique_name_in_owner = true
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("17")
+flat = true
+text = "HISTÓRICO"
+custom_minimum_size = Vector2(0, 32)
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 10
+theme_override_styles/normal = SubResource("7")
+theme_override_styles/pressed = SubResource("8")
+theme_override_styles/disabled = SubResource("9")
+theme_override_styles/hover = SubResource("10")
+theme_override_colors/font_color = Color("#94A3B8")
+theme_override_colors/font_pressed_color = Color("#A78BFA")
+theme_override_colors/font_hover_color = Color("#E0E7FF")
+
+[node name="BtnStats" type="Button" parent="MainVBox/TabBar"]
+unique_name_in_owner = true
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("17")
+flat = true
+text = "STATS"
+custom_minimum_size = Vector2(0, 32)
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 10
+theme_override_styles/normal = SubResource("7")
+theme_override_styles/pressed = SubResource("8")
+theme_override_styles/disabled = SubResource("9")
+theme_override_styles/hover = SubResource("10")
+theme_override_colors/font_color = Color("#94A3B8")
+theme_override_colors/font_pressed_color = Color("#A78BFA")
+theme_override_colors/font_hover_color = Color("#E0E7FF")
+
+[node name="BtnLesoes" type="Button" parent="MainVBox/TabBar"]
+unique_name_in_owner = true
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("17")
+flat = true
+text = "LESÕES"
+custom_minimum_size = Vector2(0, 32)
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 10
+theme_override_styles/normal = SubResource("7")
+theme_override_styles/pressed = SubResource("8")
+theme_override_styles/disabled = SubResource("9")
+theme_override_styles/hover = SubResource("10")
+theme_override_colors/font_color = Color("#94A3B8")
+theme_override_colors/font_pressed_color = Color("#A78BFA")
+theme_override_colors/font_hover_color = Color("#E0E7FF")
+
+[node name="BtnRelacoes" type="Button" parent="MainVBox/TabBar"]
+unique_name_in_owner = true
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("17")
+flat = true
+text = "RELAÇÕES"
+custom_minimum_size = Vector2(0, 32)
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 10
+theme_override_styles/normal = SubResource("7")
+theme_override_styles/pressed = SubResource("8")
+theme_override_styles/disabled = SubResource("9")
+theme_override_styles/hover = SubResource("10")
+theme_override_colors/font_color = Color("#94A3B8")
+theme_override_colors/font_pressed_color = Color("#A78BFA")
+theme_override_colors/font_hover_color = Color("#E0E7FF")
+
+[node name="TabContent" type="MarginContainer" parent="MainVBox"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="TabAtrib" type="ScrollContainer" parent="MainVBox/TabContent"]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_scroll_mode = 2
+visible = true
+
+[node name="AtribVBox" type="VBoxContainer" parent="MainVBox/TabContent/TabAtrib"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TitleMedicoes" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox"]
+layout_mode = 2
+text = "MEDIÇÕES"
+theme_override_fonts/font = SubResource("2")
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color("#A78BFA")
+
+[node name="HeightRow" type="HBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox"]
+layout_mode = 2
+
+[node name="HeightLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/HeightRow"]
+layout_mode = 2
+text = "Altura"
+theme_override_colors/font_color = Color("#94A3B8")
+
+[node name="HeightFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/HeightRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MeasureHeight" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/HeightRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "1.91m"
+theme_override_colors/font_color = Color(1, 1, 1)
+
+[node name="WeightRow" type="HBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox"]
+layout_mode = 2
+
+[node name="WeightLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/WeightRow"]
+layout_mode = 2
+text = "Peso"
+theme_override_colors/font_color = Color("#94A3B8")
+
+[node name="WeightFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/WeightRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MeasureWeight" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/WeightRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "88 kg"
+theme_override_colors/font_color = Color(1, 1, 1)
+
+[node name="WingspanRow" type="HBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox"]
+layout_mode = 2
+
+[node name="WingspanLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/WingspanRow"]
+layout_mode = 2
+text = "Envergadura"
+theme_override_colors/font_color = Color("#94A3B8")
+
+[node name="WingspanFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/WingspanRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MeasureWingspan" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/WingspanRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "198 cm"
+theme_override_colors/font_color = Color(1, 1, 1)
+
+[node name="TitleFisico" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox"]
+layout_mode = 2
+text = "FÍSICO"
+theme_override_fonts/font = SubResource("2")
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color("#A78BFA")
+
+[node name="FisicoContainer" type="VBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="speed" type="VBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox/FisicoContainer"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="SpeedRow" type="HBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox/FisicoContainer/speed"]
+layout_mode = 2
+
+[node name="SpeedLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/FisicoContainer/speed/SpeedRow"]
+layout_mode = 2
+text = "Velocidade"
+theme_override_colors/font_color = Color("#94A3B8")
+
+[node name="SpeedFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/FisicoContainer/speed/SpeedRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Value" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/FisicoContainer/speed/SpeedRow"]
+layout_mode = 2
+text = "82"
+theme_override_colors/font_color = Color(1, 1, 1)
+
+[node name="Bar" type="ProgressBar" parent="MainVBox/TabContent/TabAtrib/AtribVBox/FisicoContainer/speed"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 6)
+max_value = 100.0
+value = 82.0
+show_percentage = false
+theme_override_styles/background = SubResource("11")
+theme_override_styles/fill = SubResource("12")
+
+[node name="strength" type="VBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox/FisicoContainer"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="StrengthRow" type="HBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox/FisicoContainer/strength"]
+layout_mode = 2
+
+[node name="StrengthLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/FisicoContainer/strength/StrengthRow"]
+layout_mode = 2
+text = "Força"
+theme_override_colors/font_color = Color("#94A3B8")
+
+[node name="StrengthFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/FisicoContainer/strength/StrengthRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Value" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/FisicoContainer/strength/StrengthRow"]
+layout_mode = 2
+text = "68"
+theme_override_colors/font_color = Color(1, 1, 1)
+
+[node name="Bar" type="ProgressBar" parent="MainVBox/TabContent/TabAtrib/AtribVBox/FisicoContainer/strength"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 6)
+max_value = 100.0
+value = 68.0
+show_percentage = false
+theme_override_styles/background = SubResource("11")
+theme_override_styles/fill = SubResource("12")
+
+[node name="stamina" type="VBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox/FisicoContainer"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="StaminaRow" type="HBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox/FisicoContainer/stamina"]
+layout_mode = 2
+
+[node name="StaminaLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/FisicoContainer/stamina/StaminaRow"]
+layout_mode = 2
+text = "Stamina"
+theme_override_colors/font_color = Color("#94A3B8")
+
+[node name="StaminaFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/FisicoContainer/stamina/StaminaRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Value" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/FisicoContainer/stamina/StaminaRow"]
+layout_mode = 2
+text = "90"
+theme_override_colors/font_color = Color(1, 1, 1)
+
+[node name="Bar" type="ProgressBar" parent="MainVBox/TabContent/TabAtrib/AtribVBox/FisicoContainer/stamina"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 6)
+max_value = 100.0
+value = 90.0
+show_percentage = false
+theme_override_styles/background = SubResource("11")
+theme_override_styles/fill = SubResource("13")
+
+[node name="jumping" type="VBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox/FisicoContainer"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="JumpingRow" type="HBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox/FisicoContainer/jumping"]
+layout_mode = 2
+
+[node name="JumpingLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/FisicoContainer/jumping/JumpingRow"]
+layout_mode = 2
+text = "Salto"
+theme_override_colors/font_color = Color("#94A3B8")
+
+[node name="JumpingFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/FisicoContainer/jumping/JumpingRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Value" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/FisicoContainer/jumping/JumpingRow"]
+layout_mode = 2
+text = "78"
+theme_override_colors/font_color = Color(1, 1, 1)
+
+[node name="Bar" type="ProgressBar" parent="MainVBox/TabContent/TabAtrib/AtribVBox/FisicoContainer/jumping"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 6)
+max_value = 100.0
+value = 78.0
+show_percentage = false
+theme_override_styles/background = SubResource("11")
+theme_override_styles/fill = SubResource("12")
+
+[node name="TitleArremesso" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox"]
+layout_mode = 2
+text = "ARREMESSO"
+theme_override_fonts/font = SubResource("2")
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color("#A78BFA")
+
+[node name="ArremessoContainer" type="VBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="three_pt" type="VBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="ThreePtRow" type="HBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/three_pt"]
+layout_mode = 2
+
+[node name="ThreePtLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/three_pt/ThreePtRow"]
+layout_mode = 2
+text = "3 Pontos"
+theme_override_colors/font_color = Color("#94A3B8")
+
+[node name="ThreePtFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/three_pt/ThreePtRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Value" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/three_pt/ThreePtRow"]
+layout_mode = 2
+text = "94"
+theme_override_colors/font_color = Color(1, 1, 1)
+
+[node name="Bar" type="ProgressBar" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/three_pt"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 6)
+max_value = 100.0
+value = 94.0
+show_percentage = false
+theme_override_styles/background = SubResource("11")
+theme_override_styles/fill = SubResource("14")
+
+[node name="mid_range" type="VBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="MidRangeRow" type="HBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/mid_range"]
+layout_mode = 2
+
+[node name="MidRangeLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/mid_range/MidRangeRow"]
+layout_mode = 2
+text = "Médio Alcance"
+theme_override_colors/font_color = Color("#94A3B8")
+
+[node name="MidRangeFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/mid_range/MidRangeRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Value" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/mid_range/MidRangeRow"]
+layout_mode = 2
+text = "92"
+theme_override_colors/font_color = Color(1, 1, 1)
+
+[node name="Bar" type="ProgressBar" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/mid_range"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 6)
+max_value = 100.0
+value = 92.0
+show_percentage = false
+theme_override_styles/background = SubResource("11")
+theme_override_styles/fill = SubResource("14")
+
+[node name="close_shot" type="VBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="CloseShotRow" type="HBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/close_shot"]
+layout_mode = 2
+
+[node name="CloseShotLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/close_shot/CloseShotRow"]
+layout_mode = 2
+text = "Arrem. Próximo"
+theme_override_colors/font_color = Color("#94A3B8")
+
+[node name="CloseShotFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/close_shot/CloseShotRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Value" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/close_shot/CloseShotRow"]
+layout_mode = 2
+text = "88"
+theme_override_colors/font_color = Color(1, 1, 1)
+
+[node name="Bar" type="ProgressBar" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/close_shot"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 6)
+max_value = 100.0
+value = 88.0
+show_percentage = false
+theme_override_styles/background = SubResource("11")
+theme_override_styles/fill = SubResource("14")
+
+[node name="dunk" type="VBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="DunkRow" type="HBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/dunk"]
+layout_mode = 2
+
+[node name="DunkLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/dunk/DunkRow"]
+layout_mode = 2
+text = "Enterrada"
+theme_override_colors/font_color = Color("#94A3B8")
+
+[node name="DunkFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/dunk/DunkRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Value" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/dunk/DunkRow"]
+layout_mode = 2
+text = "60"
+theme_override_colors/font_color = Color(1, 1, 1)
+
+[node name="Bar" type="ProgressBar" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/dunk"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 6)
+max_value = 100.0
+value = 60.0
+show_percentage = false
+theme_override_styles/background = SubResource("11")
+theme_override_styles/fill = SubResource("14")
+
+[node name="layup" type="VBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="LayupRow" type="HBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/layup"]
+layout_mode = 2
+
+[node name="LayupLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/layup/LayupRow"]
+layout_mode = 2
+text = "Bandeja"
+theme_override_colors/font_color = Color("#94A3B8")
+
+[node name="LayupFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/layup/LayupRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Value" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/layup/LayupRow"]
+layout_mode = 2
+text = "90"
+theme_override_colors/font_color = Color(1, 1, 1)
+
+[node name="Bar" type="ProgressBar" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/layup"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 6)
+max_value = 100.0
+value = 90.0
+show_percentage = false
+theme_override_styles/background = SubResource("11")
+theme_override_styles/fill = SubResource("14")
+
+[node name="free_throw" type="VBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="FreeThrowRow" type="HBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/free_throw"]
+layout_mode = 2
+
+[node name="FreeThrowLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/free_throw/FreeThrowRow"]
+layout_mode = 2
+text = "Lance Livre"
+theme_override_colors/font_color = Color("#94A3B8")
+
+[node name="FreeThrowFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/free_throw/FreeThrowRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Value" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/free_throw/FreeThrowRow"]
+layout_mode = 2
+text = "96"
+theme_override_colors/font_color = Color(1, 1, 1)
+
+[node name="Bar" type="ProgressBar" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/free_throw"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 6)
+max_value = 100.0
+value = 96.0
+show_percentage = false
+theme_override_styles/background = SubResource("11")
+theme_override_styles/fill = SubResource("14")
+
+[node name="TitleBola" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox"]
+layout_mode = 2
+text = "BOLA"
+theme_override_fonts/font = SubResource("2")
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color("#A78BFA")
+
+[node name="BolaContainer" type="VBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="ball_handle" type="VBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox/BolaContainer"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="BallHandleRow" type="HBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox/BolaContainer/ball_handle"]
+layout_mode = 2
+
+[node name="BallHandleLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/BolaContainer/ball_handle/BallHandleRow"]
+layout_mode = 2
+text = "Drible"
+theme_override_colors/font_color = Color("#94A3B8")
+
+[node name="BallHandleFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/BolaContainer/ball_handle/BallHandleRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Value" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/BolaContainer/ball_handle/BallHandleRow"]
+layout_mode = 2
+text = "96"
+theme_override_colors/font_color = Color(1, 1, 1)
+
+[node name="Bar" type="ProgressBar" parent="MainVBox/TabContent/TabAtrib/AtribVBox/BolaContainer/ball_handle"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 6)
+max_value = 100.0
+value = 96.0
+show_percentage = false
+theme_override_styles/background = SubResource("11")
+theme_override_styles/fill = SubResource("15")
+
+[node name="passing" type="VBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox/BolaContainer"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="PassingRow" type="HBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox/BolaContainer/passing"]
+layout_mode = 2
+
+[node name="PassingLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/BolaContainer/passing/PassingRow"]
+layout_mode = 2
+text = "Passe"
+theme_override_colors/font_color = Color("#94A3B8")
+
+[node name="PassingFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/BolaContainer/passing/PassingRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Value" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/BolaContainer/passing/PassingRow"]
+layout_mode = 2
+text = "94"
+theme_override_colors/font_color = Color(1, 1, 1)
+
+[node name="Bar" type="ProgressBar" parent="MainVBox/TabContent/TabAtrib/AtribVBox/BolaContainer/passing"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 6)
+max_value = 100.0
+value = 94.0
+show_percentage = false
+theme_override_styles/background = SubResource("11")
+theme_override_styles/fill = SubResource("15")
+
+[node name="TitleDefesa" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox"]
+layout_mode = 2
+text = "DEFESA"
+theme_override_fonts/font = SubResource("2")
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color("#A78BFA")
+
+[node name="DefesaContainer" type="VBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="offensive_rebound" type="VBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="OffensiveReboundRow" type="HBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/offensive_rebound"]
+layout_mode = 2
+
+[node name="OffensiveReboundLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/offensive_rebound/OffensiveReboundRow"]
+layout_mode = 2
+text = "Reb. Ofensivo"
+theme_override_colors/font_color = Color("#94A3B8")
+
+[node name="OffensiveReboundFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/offensive_rebound/OffensiveReboundRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Value" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/offensive_rebound/OffensiveReboundRow"]
+layout_mode = 2
+text = "35"
+theme_override_colors/font_color = Color(1, 1, 1)
+
+[node name="Bar" type="ProgressBar" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/offensive_rebound"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 6)
+max_value = 100.0
+value = 35.0
+show_percentage = false
+theme_override_styles/background = SubResource("11")
+theme_override_styles/fill = SubResource("16")
+
+[node name="perimeter_def" type="VBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="PerimeterDefRow" type="HBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/perimeter_def"]
+layout_mode = 2
+
+[node name="PerimeterDefLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/perimeter_def/PerimeterDefRow"]
+layout_mode = 2
+text = "Def. Perímetro"
+theme_override_colors/font_color = Color("#94A3B8")
+
+[node name="PerimeterDefFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/perimeter_def/PerimeterDefRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Value" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/perimeter_def/PerimeterDefRow"]
+layout_mode = 2
+text = "78"
+theme_override_colors/font_color = Color(1, 1, 1)
+
+[node name="Bar" type="ProgressBar" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/perimeter_def"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 6)
+max_value = 100.0
+value = 78.0
+show_percentage = false
+theme_override_styles/background = SubResource("11")
+theme_override_styles/fill = SubResource("16")
+
+[node name="interior_def" type="VBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="InteriorDefRow" type="HBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/interior_def"]
+layout_mode = 2
+
+[node name="InteriorDefLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/interior_def/InteriorDefRow"]
+layout_mode = 2
+text = "Def. Interior"
+theme_override_colors/font_color = Color("#94A3B8")
+
+[node name="InteriorDefFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/interior_def/InteriorDefRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Value" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/interior_def/InteriorDefRow"]
+layout_mode = 2
+text = "40"
+theme_override_colors/font_color = Color(1, 1, 1)
+
+[node name="Bar" type="ProgressBar" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/interior_def"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 6)
+max_value = 100.0
+value = 40.0
+show_percentage = false
+theme_override_styles/background = SubResource("11")
+theme_override_styles/fill = SubResource("16")
+
+[node name="steal" type="VBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="StealRow" type="HBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/steal"]
+layout_mode = 2
+
+[node name="StealLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/steal/StealRow"]
+layout_mode = 2
+text = "Roubo"
+theme_override_colors/font_color = Color("#94A3B8")
+
+[node name="StealFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/steal/StealRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Value" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/steal/StealRow"]
+layout_mode = 2
+text = "72"
+theme_override_colors/font_color = Color(1, 1, 1)
+
+[node name="Bar" type="ProgressBar" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/steal"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 6)
+max_value = 100.0
+value = 72.0
+show_percentage = false
+theme_override_styles/background = SubResource("11")
+theme_override_styles/fill = SubResource("16")
+
+[node name="block" type="VBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="BlockRow" type="HBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/block"]
+layout_mode = 2
+
+[node name="BlockLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/block/BlockRow"]
+layout_mode = 2
+text = "Toco"
+theme_override_colors/font_color = Color("#94A3B8")
+
+[node name="BlockFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/block/BlockRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Value" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/block/BlockRow"]
+layout_mode = 2
+text = "30"
+theme_override_colors/font_color = Color(1, 1, 1)
+
+[node name="Bar" type="ProgressBar" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/block"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 6)
+max_value = 100.0
+value = 30.0
+show_percentage = false
+theme_override_styles/background = SubResource("11")
+theme_override_styles/fill = SubResource("16")
+
+[node name="defensive_rebound" type="VBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="DefensiveReboundRow" type="HBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/defensive_rebound"]
+layout_mode = 2
+
+[node name="DefensiveReboundLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/defensive_rebound/DefensiveReboundRow"]
+layout_mode = 2
+text = "Reb. Defensivo"
+theme_override_colors/font_color = Color("#94A3B8")
+
+[node name="DefensiveReboundFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/defensive_rebound/DefensiveReboundRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Value" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/defensive_rebound/DefensiveReboundRow"]
+layout_mode = 2
+text = "55"
+theme_override_colors/font_color = Color(1, 1, 1)
+
+[node name="Bar" type="ProgressBar" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/defensive_rebound"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 6)
+max_value = 100.0
+value = 55.0
+show_percentage = false
+theme_override_styles/background = SubResource("11")
+theme_override_styles/fill = SubResource("16")
+
+[node name="TabContrato" type="ScrollContainer" parent="MainVBox/TabContent"]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_scroll_mode = 2
+visible = false
+
+[node name="ContratoVBox" type="VBoxContainer" parent="MainVBox/TabContent/TabContrato"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="SalaryRow" type="HBoxContainer" parent="MainVBox/TabContent/TabContrato/ContratoVBox"]
+layout_mode = 2
+
+[node name="SalaryLabel" type="Label" parent="MainVBox/TabContent/TabContrato/ContratoVBox/SalaryRow"]
+layout_mode = 2
+text = "Salário"
+theme_override_colors/font_color = Color("#94A3B8")
+
+[node name="SalaryFiller" type="Control" parent="MainVBox/TabContent/TabContrato/ContratoVBox/SalaryRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ContractSalary" type="Label" parent="MainVBox/TabContent/TabContrato/ContratoVBox/SalaryRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "R$ 2.4M"
+theme_override_fonts/font = SubResource("2")
+theme_override_colors/font_color = Color(1, 1, 1)
+
+[node name="YearsRow" type="HBoxContainer" parent="MainVBox/TabContent/TabContrato/ContratoVBox"]
+layout_mode = 2
+
+[node name="YearsLabel" type="Label" parent="MainVBox/TabContent/TabContrato/ContratoVBox/YearsRow"]
+layout_mode = 2
+text = "Anos Restantes"
+theme_override_colors/font_color = Color("#94A3B8")
+
+[node name="YearsFiller" type="Control" parent="MainVBox/TabContent/TabContrato/ContratoVBox/YearsRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ContractYears" type="Label" parent="MainVBox/TabContent/TabContrato/ContratoVBox/YearsRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "2 anos"
+theme_override_fonts/font = SubResource("2")
+theme_override_colors/font_color = Color(1, 1, 1)
+
+[node name="StatusRow" type="HBoxContainer" parent="MainVBox/TabContent/TabContrato/ContratoVBox"]
+layout_mode = 2
+
+[node name="StatusLabel" type="Label" parent="MainVBox/TabContent/TabContrato/ContratoVBox/StatusRow"]
+layout_mode = 2
+text = "Situação"
+theme_override_colors/font_color = Color("#94A3B8")
+
+[node name="StatusFiller" type="Control" parent="MainVBox/TabContent/TabContrato/ContratoVBox/StatusRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ContractStatus" type="Label" parent="MainVBox/TabContent/TabContrato/ContratoVBox/StatusRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "ATIVO"
+theme_override_fonts/font = SubResource("2")
+theme_override_colors/font_color = Color("#10B981")
+
+[node name="ContractTypeRow" type="HBoxContainer" parent="MainVBox/TabContent/TabContrato/ContratoVBox"]
+layout_mode = 2
+
+[node name="ContractTypeLabel" type="Label" parent="MainVBox/TabContent/TabContrato/ContratoVBox/ContractTypeRow"]
+layout_mode = 2
+text = "Tipo de Contrato"
+theme_override_colors/font_color = Color("#94A3B8")
+
+[node name="ContractTypeFiller" type="Control" parent="MainVBox/TabContent/TabContrato/ContratoVBox/ContractTypeRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ContractTypeValue" type="Label" parent="MainVBox/TabContent/TabContrato/ContratoVBox/ContractTypeRow"]
+layout_mode = 2
+text = "Garantido"
+theme_override_colors/font_color = Color(1, 1, 1)
+
+[node name="OptionRow" type="HBoxContainer" parent="MainVBox/TabContent/TabContrato/ContratoVBox"]
+layout_mode = 2
+
+[node name="OptionLabel" type="Label" parent="MainVBox/TabContent/TabContrato/ContratoVBox/OptionRow"]
+layout_mode = 2
+text = "Opção do Jogador"
+theme_override_colors/font_color = Color("#94A3B8")
+
+[node name="OptionFiller" type="Control" parent="MainVBox/TabContent/TabContrato/ContratoVBox/OptionRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="OptionValue" type="Label" parent="MainVBox/TabContent/TabContrato/ContratoVBox/OptionRow"]
+layout_mode = 2
+text = "Sim (2027)"
+theme_override_colors/font_color = Color(1, 1, 1)
+
+[node name="TabHistorico" type="ScrollContainer" parent="MainVBox/TabContent"]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_scroll_mode = 2
+visible = false
+
+[node name="HistoricoCentering" type="CenterContainer" parent="MainVBox/TabContent/TabHistorico"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HistoricoPlaceholder" type="Label" parent="MainVBox/TabContent/TabHistorico/HistoricoCentering"]
+layout_mode = 2
+text = "Histórico do jogador em breve..."
+theme_override_colors/font_color = Color("#94A3B8")
+
+[node name="TabStats" type="ScrollContainer" parent="MainVBox/TabContent"]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_scroll_mode = 2
+visible = false
+
+[node name="StatsCentering" type="CenterContainer" parent="MainVBox/TabContent/TabStats"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="StatsPlaceholder" type="Label" parent="MainVBox/TabContent/TabStats/StatsCentering"]
+layout_mode = 2
+text = "Estatísticas da temporada em breve..."
+theme_override_colors/font_color = Color("#94A3B8")
+
+[node name="TabLesoes" type="ScrollContainer" parent="MainVBox/TabContent"]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_scroll_mode = 2
+visible = false
+
+[node name="LesoesCentering" type="CenterContainer" parent="MainVBox/TabContent/TabLesoes"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="LesoesPlaceholder" type="Label" parent="MainVBox/TabContent/TabLesoes/LesoesCentering"]
+layout_mode = 2
+text = "Histórico de lesões em breve..."
+theme_override_colors/font_color = Color("#94A3B8")
+
+[node name="TabRelacoes" type="ScrollContainer" parent="MainVBox/TabContent"]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_scroll_mode = 2
+visible = false
+
+[node name="RelacoesCentering" type="CenterContainer" parent="MainVBox/TabContent/TabRelacoes"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="RelacoesPlaceholder" type="Label" parent="MainVBox/TabContent/TabRelacoes/RelacoesCentering"]
+layout_mode = 2
+text = "Relações e química em breve..."
+theme_override_colors/font_color = Color("#94A3B8")
