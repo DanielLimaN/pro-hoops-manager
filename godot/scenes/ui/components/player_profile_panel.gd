@@ -77,6 +77,9 @@ func _ready() -> void:
 		return
 	_connect_tabs()
 	_show_tab(0)
+	
+	show()
+	print("PlayerProfilePanel ready — global_pos=", global_position, " size=", size, " visible=", is_visible_in_tree(), " owner=", owner)
 
 
 # ═══════════════════════════════════════
