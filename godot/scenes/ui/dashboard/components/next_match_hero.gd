@@ -52,16 +52,19 @@ func _apply_team_shield(abbr_node: Label, abbr_str: String) -> void:
 			tex_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 			tex_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 			
-			# Usamos âncoras personalizadas para o escudo sangrar o painel em 20px pra cada lado
+			# Forçar filtro linear para Alta Resolução (não ficar pixelado como os jogadores)
+			tex_rect.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+			
+			# Usamos âncoras personalizadas para o escudo sangrar o painel (Aumentando para 35px pra ficar imponente)
 			tex_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
 			tex_rect.anchor_left = 0
 			tex_rect.anchor_top = 0
 			tex_rect.anchor_right = 1
 			tex_rect.anchor_bottom = 1
-			tex_rect.offset_left = -20
-			tex_rect.offset_top = -20
-			tex_rect.offset_right = 20
-			tex_rect.offset_bottom = 20
+			tex_rect.offset_left = -35
+			tex_rect.offset_top = -35
+			tex_rect.offset_right = 35
+			tex_rect.offset_bottom = 35
 			
 			# Injeta no panel por cima de tudo
 			circle_panel.add_child(tex_rect)

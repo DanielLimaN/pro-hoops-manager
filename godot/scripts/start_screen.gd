@@ -231,8 +231,11 @@ func _populate_continue_card():
 			tex_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 			tex_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
 			
-			# Margens negativas para o escudo "vazar" e ficar consideravelmente maior
-			var expand_margin = 15.0
+			# Forçar filtro linear para Alta Resolução
+			tex_rect.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+			
+			# Margens negativas para o escudo "vazar" e ficar consideravelmente maior (Aumentado para 25)
+			var expand_margin = 25.0
 			tex_rect.offset_left = -expand_margin
 			tex_rect.offset_top = -expand_margin
 			tex_rect.offset_right = expand_margin
