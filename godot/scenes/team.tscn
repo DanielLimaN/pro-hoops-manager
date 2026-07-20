@@ -8,7 +8,7 @@
 [ext_resource type="Texture2D" path="res://addons/at-icons/control/coins.svg" id="4_mwis8"]
 [ext_resource type="Texture2D" path="res://addons/at-icons/control/heart.svg" id="5_pqg12"]
 [ext_resource type="Texture2D" path="res://addons/at-icons/control/plus.svg" id="6_plus"]
-[ext_resource type="PackedScene" uid="uid://playerprofilenew" path="res://scenes/ui/components/player_profile_panel.tscn" id="7_ppp"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/player_profile_panel.tscn" id="7_ppp"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_topbar_bg"]
 bg_color = Color(0.0431373, 0.0196078, 0.0784314, 1)
