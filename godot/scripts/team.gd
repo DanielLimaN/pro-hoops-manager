@@ -225,7 +225,10 @@ func _refresh_player_rows():
 		_player_rows.append(row)
 
 func _refresh_detail():
-	var panel = get_node_or_null("%PlayerProfilePanel") as PlayerProfilePanel
+	var panel: PlayerProfilePanel = get_node_or_null("%PlayerProfilePanel") as PlayerProfilePanel
+	if not panel:
+		# Fallback: search subtree by class type
+		panel = find_child("PlayerProfilePanel", true, false) as PlayerProfilePanel
 	if not panel:
 		return
 	

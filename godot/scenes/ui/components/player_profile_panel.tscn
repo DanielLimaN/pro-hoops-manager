@@ -110,6 +110,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+custom_minimum_size = Vector2(300, 0)
 theme_override_styles/panel = SubResource("3")
 script = ExtResource("1")
 
@@ -440,6 +441,7 @@ theme_override_colors/font_hover_color = Color(0.8784, 0.9059, 1.0000)
 
 [node name="TabContent" type="MarginContainer" parent="MainVBox"]
 layout_mode = 2
+size_flags_vertical = 3
 theme_override_constants/margin_left = 16
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 16

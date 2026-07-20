@@ -1168,7 +1168,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="DetailCard" type="PanelContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid" instance=ExtResource("7_ppp")]
+[node name="PlayerProfilePanel" type="PanelContainer" parent="MainMargin/MainVBox/ContentMargin/ContentVBox/Grid" instance=ExtResource("7_ppp")]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3

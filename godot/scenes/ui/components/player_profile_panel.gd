@@ -72,6 +72,9 @@ const DEFESA_KEYS := ["offensive_rebound", "perimeter_def", "interior_def", "ste
 #  Lifecycle
 # ═══════════════════════════════════════
 func _ready() -> void:
+	# Safety: avoid running UI logic in editor preview context
+	if Engine.is_editor_hint():
+		return
 	_connect_tabs()
 	_show_tab(0)
 
@@ -83,6 +86,33 @@ func _ready() -> void:
 # ═══════════════════════════════════════
 func display_player(data: Dictionary) -> void:
 	if not is_node_ready():
+		return
+
+	# ── Safety: show placeholder fallback if data is empty ──
+	if data.is_empty():
+		name_label.text = "Nenhum jogador"
+		position_label.text = "-"
+		ovr_label.text = "0"
+		number_label.text = "#-"
+		age_label.text = "0"
+		height_meta_label.text = "-"
+		nickname_label.text = ""
+		initials_label.text = "?"
+		initials_label.show()
+
+		measure_height.text = "-"
+		measure_weight.text = "-"
+		measure_wingspan.text = "-"
+
+		# Reset all attr bars to 0
+		var empty_attrs := {}
+		_update_attr_bars(empty_attrs)
+
+		salary_label.text = "-"
+		years_left_label.text = "-"
+		status_label.text = "-"
+
+		_show_tab(0)
 		return
 
 	# ── Header ──
