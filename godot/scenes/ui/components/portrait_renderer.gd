@@ -27,8 +27,8 @@ func render_portrait(config: Dictionary) -> void:
 	
 	# Shirt
 	shirt_rect.texture = _load_texture("res://assets/portraits/shirt/jersey_orange.png")
-	
-	# Eyes
+	  
+	# Eyes   
 	eyes_rect.texture = _load_texture("res://assets/portraits/eyes/base.png")
 	
 	# Eyebrows

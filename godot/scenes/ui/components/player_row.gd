@@ -15,6 +15,7 @@ class_name PlayerRow
 var star_texture = preload("res://addons/at-icons/control/star.svg")
 
 signal pressed
+signal rotation_updated
 
 var _is_hovered: bool = false
 var _tween: Tween
@@ -26,6 +27,10 @@ func _ready():
 	mouse_entered.connect(_on_mouse_entered)
 	mouse_exited.connect(_on_mouse_exited)
 	gui_input.connect(_on_gui_input)
+	
+	# 🔥 CRÍTICO: Todos os filhos devem IGNORAR mouse, senão Labels/TextureRects
+	# interceptam o clique antes do PanelContainer receber o gui_input.
+	_recursive_set_mouse_ignore(self)
 	
 	# Garantir que o estilo seja local para cada instância poder animar separadamente
 	var style = get_theme_stylebox("panel")
@@ -40,6 +45,12 @@ func _ready():
 		player_data = {"pos": "PG", "in": "MS", "n": "Marcus Silva", "sub": "The Maestro", "i": 28, "ovr": 92, "en": 88, "ct": "2 anos", "sal": "R$ 2.4M", "st": "ATIVO"}
 		_update_data()
 
+func _recursive_set_mouse_ignore(node: Node):
+	for child in node.get_children():
+		if child is Control and child != self:
+			child.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_recursive_set_mouse_ignore(child)
+
 func _on_mouse_entered():
 	_is_hovered = true
 	_update_styles(0.15)
@@ -49,8 +60,105 @@ func _on_mouse_exited():
 	_update_styles(0.15)
 
 func _on_gui_input(event: InputEvent):
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		pressed.emit()
+	if event is InputEventMouseButton and event.pressed:
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			pressed.emit()
+		elif event.button_index == MOUSE_BUTTON_RIGHT:
+			_show_context_menu()
+
+func _show_context_menu():
+	# FECHAR MENUS ABERTOS ANTES DE CRIAR UM NOVO (Resolve os menus duplicados)
+	for child in get_tree().current_scene.get_children():
+		if child.name == "ContextMenu":
+			child.queue_free()
+			
+	var context_menu_scene = load("res://scenes/ui/components/context_menu.tscn")
+	if not context_menu_scene: return
+	var menu = context_menu_scene.instantiate()
+	menu.name = "ContextMenu"
+	
+	var pos = player_data.get("pos", "PG")
+	var same_pos = []
+	var bench = []
+	
+	var team = GameManager.get_user_team()
+	if team and team.has("players"):
+		var players = team.players
+		var clicked_id = player_data.get("player_id", 0)
+		
+		var rotation = team.get("rotation_order", [])
+		var has_rotation = rotation.size() > 0
+		
+		if has_rotation:
+			# Rotation definida: candidatos são quem NÃO está no quinteto titular
+			var is_starter = false
+			var idx = rotation.find(clicked_id)
+			if idx >= 0 and idx < 5:
+				is_starter = true
+			
+			for i in range(rotation.size()):
+				var pid = rotation[i]
+				if is_starter and i < 5: continue
+				if not is_starter and i >= 5: continue
+				
+				var candidate = _find_player_by_id(players, pid)
+				if candidate:
+					var bp_dict = _format_player_data(candidate)
+					bench.append(bp_dict)
+					if bp_dict.get("pos") == pos:
+						same_pos.append(bp_dict)
+		else:
+			# Sem rotation definida: todos os outros jogadores são candidatos
+			for p in players:
+				var pid = p.get("id", -1)
+				if pid == clicked_id: continue
+				var bp_dict = _format_player_data(p)
+				bench.append(bp_dict)
+				if bp_dict.get("pos") == pos:
+					same_pos.append(bp_dict)
+					
+	menu.set_menu_data(player_data, pos, same_pos, bench)
+	menu.player_swap_requested.connect(_on_player_swap_requested)
+	
+	var parent = get_tree().current_scene
+	if parent:
+		parent.add_child(menu)
+		# Agora informamos a posição do mouse para o Menu se autoposicionar dentro do Canvas
+		if menu.has_method("spawn_at"):
+			menu.spawn_at(get_global_mouse_position())
+
+func _find_player_by_id(players: Array, pid: int) -> Dictionary:
+	for p in players:
+		if p.get("id", -1) == pid:
+			return p
+	return {}
+
+func _format_player_data(p: Dictionary) -> Dictionary:
+	return {
+		"player_id": p.get("id", 0),
+		"pos": p.get("position", "PG"),
+		"name": p.get("first_name", "") + " " + p.get("last_name", "Jogador"),
+		"age": p.get("age", 20),
+		"ovr": round(p.get("overall", 50))
+	}
+	
+func _on_player_swap_requested(source: Dictionary, target: Dictionary):
+	var team = GameManager.get_user_team()
+	if team and team.has("rotation_order"):
+		var rotation = team.get("rotation_order", [])
+		var s_id = source.get("player_id")
+		var t_id = target.get("player_id")
+		
+		var s_idx = rotation.find(s_id)
+		var t_idx = rotation.find(t_id)
+		
+		if s_idx >= 0 and t_idx >= 0:
+			var temp = rotation[s_idx]
+			rotation[s_idx] = rotation[t_idx]
+			rotation[t_idx] = temp
+			
+			GameManager.set_rotation_order(GameManager.user_team_id, rotation)
+			rotation_updated.emit()
 
 func _update_styles(duration: float = 0.0):
 	var root_style = get_theme_stylebox("panel") as StyleBoxFlat

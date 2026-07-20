@@ -216,6 +216,12 @@ func _refresh_player_rows():
 			_refresh_detail()
 		)
 		
+		# Atualiza a lista quando houver troca pelo context menu
+		row.rotation_updated.connect(func():
+			_load_roster()
+			_refresh_all()
+		)
+		
 		list.add_child(row)
 		_player_rows.append(row)
 

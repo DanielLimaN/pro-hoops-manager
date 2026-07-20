@@ -1,0 +1,118 @@
+[gd_scene load_steps=6 format=3 uid="uid://sub_menu_123"]
+
+[ext_resource type="Script" path="res://scenes/ui/components/substitution_submenu.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/substitution_candidate_row.tscn" id="2_cand_row"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_main"]
+bg_color = Color(0.0588, 0.0275, 0.1255, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.2314, 0.5098, 0.9647, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+shadow_color = Color(0, 0, 0, 0.8)
+shadow_size = 40
+shadow_offset = Vector2(8, 16)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_header"]
+bg_color = Color(0.145, 0.388, 0.917, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+content_margin_left = 14.0
+content_margin_top = 10.0
+content_margin_right = 14.0
+content_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ctx"]
+bg_color = Color(0.082, 0.031, 0.149, 1)
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+
+[node name="SubstitutionSubmenu" type="PanelContainer"]
+custom_minimum_size = Vector2(320, 0)
+theme_override_styles/panel = SubResource("StyleBoxFlat_main")
+script = ExtResource("1_script")
+candidate_row_scene = ExtResource("2_cand_row")
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Header" type="PanelContainer" parent="VBox"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_header")
+
+[node name="HBox" type="HBoxContainer" parent="VBox/Header"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Icon" type="TextureRect" parent="VBox/Header/HBox"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+size_flags_vertical = 4
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TitleBox" type="VBoxContainer" parent="VBox/Header/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 1
+
+[node name="Title" type="Label" parent="VBox/Header/HBox/TitleBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.043, 0.019, 0.078, 1)
+theme_override_font_sizes/font_size = 11
+text = "TROCAR POSIÇÃO"
+
+[node name="Subtitle" type="Label" parent="VBox/Header/HBox/TitleBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.043, 0.019, 0.078, 0.53)
+theme_override_font_sizes/font_size = 9
+text = "0 jogadores compatíveis"
+
+[node name="ContextBar" type="PanelContainer" parent="VBox"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ctx")
+
+[node name="HBox" type="HBoxContainer" parent="VBox/ContextBar"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="CtxIcon" type="TextureRect" parent="VBox/ContextBar/HBox"]
+custom_minimum_size = Vector2(12, 12)
+layout_mode = 2
+size_flags_vertical = 4
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LabelOut" type="Label" parent="VBox/ContextBar/HBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.58, 0.639, 0.721, 1)
+theme_override_font_sizes/font_size = 10
+text = "Substituindo:"
+
+[node name="PlayerOut" type="Label" parent="VBox/ContextBar/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.984, 0.749, 0.141, 1)
+theme_override_font_sizes/font_size = 10
+text = "Jogador Atual"
+
+[node name="ListMargin" type="MarginContainer" parent="VBox"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="CandidateList" type="VBoxContainer" parent="VBox/ListMargin"]
+layout_mode = 2
+theme_override_constants/separation = 2

@@ -30,3 +30,7 @@ Você é especialista em GDScript para Godot 4.x (projeto usa Godot 4.7). Siga e
 - Match events da engine chegam como `Array` de `Dictionary` em `GameManager.match_events`
 - Posições de jogadores: `Vector2` com x (lateral) e z (profundidade), y é altitude
 - Bola: `ball.x, ball.y, ball.z` — y é altura
+
+## DIRETRIZ ESTRITA: INSTANCIAÇÃO DE UI VS CÓDIGO
+**NUNCA** instancie hierarquias longas de UI nativamente no GDScript (ex: múltiplos `add_child(HBoxContainer.new())`).
+Sempre crie ou modifique um arquivo `.tscn` (PackedScene) e faça com que o seu GDScript apenas carregue a cena (`load().instantiate()`). A interface deve permanecer separada da lógica para permitir a edição livre pelo Inspetor do Godot.

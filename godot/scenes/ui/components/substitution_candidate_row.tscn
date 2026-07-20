@@ -1,0 +1,138 @@
+[gd_scene load_steps=9 format=3 uid="uid://cand_row_123"]
+
+[ext_resource type="Script" path="res://scenes/ui/components/substitution_candidate_row.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://addons/at-icons/control/checkmark.svg" id="2_check"]
+[ext_resource type="Texture2D" path="res://addons/at-icons/control/arrow_right.svg" id="3_chevron"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/PortraitRenderer.tscn" id="4_portrait"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_normal"]
+bg_color = Color(0, 0, 0, 0)
+content_margin_left = 10.0
+content_margin_top = 8.0
+content_margin_right = 10.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hover"]
+bg_color = Color(0.231, 0.51, 0.965, 0.133)
+border_color = Color(0.231, 0.51, 0.965, 1.0)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+content_margin_left = 10.0
+content_margin_top = 8.0
+content_margin_right = 10.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_current"]
+bg_color = Color(0.231, 0.51, 0.965, 0.133)
+border_color = Color(0.231, 0.51, 0.965, 1.0)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+content_margin_left = 10.0
+content_margin_top = 8.0
+content_margin_right = 10.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_avatar_normal"]
+bg_color = Color(0.357, 0.129, 0.714, 1.0)
+border_color = Color(0.122, 0.078, 0.196, 1.0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+corner_radius_top_left = 17
+corner_radius_top_right = 17
+corner_radius_bottom_right = 17
+corner_radius_bottom_left = 17
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_avatar_current"]
+bg_color = Color(0.486, 0.227, 0.929, 1.0)
+border_color = Color(0.231, 0.51, 0.965, 1.0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+corner_radius_top_left = 17
+corner_radius_top_right = 17
+corner_radius_bottom_right = 17
+corner_radius_bottom_left = 17
+
+[node name="CandidateRow" type="PanelContainer"]
+custom_minimum_size = Vector2(220, 48)
+theme_override_styles/panel = SubResource("StyleBoxFlat_normal")
+script = ExtResource("1_script")
+style_normal = SubResource("StyleBoxFlat_normal")
+style_hover = SubResource("StyleBoxFlat_hover")
+style_current = SubResource("StyleBoxFlat_current")
+style_avatar_normal = SubResource("StyleBoxFlat_avatar_normal")
+style_avatar_current = SubResource("StyleBoxFlat_avatar_current")
+icon_check = ExtResource("2_check")
+icon_chevron = ExtResource("3_chevron")
+portrait_renderer_scene = ExtResource("4_portrait")
+
+[node name="HBox" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Avatar" type="PanelContainer" parent="HBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(34, 34)
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="InitialsLbl" type="Label" parent="HBox/Avatar"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 14
+horizontal_alignment = 1
+vertical_alignment = 1
+text = "XX"
+
+[node name="VBox" type="VBoxContainer" parent="HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/separation = 2
+
+[node name="Top" type="HBoxContainer" parent="HBox/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="NameLbl" type="Label" parent="HBox/VBox/Top"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 13
+text = "Nome do Reserva"
+
+[node name="PositionLbl" type="Label" parent="HBox/VBox/Top"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.6, 0.7, 1.0)
+theme_override_font_sizes/font_size = 11
+text = "PG"
+
+[node name="Bot" type="HBoxContainer" parent="HBox/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="OvrLbl" type="Label" parent="HBox/VBox/Bot"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.984, 0.749, 0.141, 1)
+theme_override_font_sizes/font_size = 10
+text = "OVR 80"
+
+[node name="ActionIcon" type="TextureRect" parent="HBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(12, 12)
+layout_mode = 2
+size_flags_vertical = 4
+expand_mode = 1
+stretch_mode = 5

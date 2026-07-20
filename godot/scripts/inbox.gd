@@ -307,7 +307,7 @@ func _build_right_col(parent: Node):
 	subject_label.text = r.get("subject", "")
 	subject_label.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
 	subject_label.add_theme_font_size_override("font_size", 28)
-	subject_label.add_theme_color_override("font_color", ThemeConfig.TEXT_PRIMARY)
+	subject_label.add_theme_color_override("font_color", ThemeConfig.TEXT)
 	subject_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	inner_vb.add_child(subject_label)
 
@@ -339,7 +339,7 @@ func _build_right_col(parent: Node):
 	sender_name_label.text = r.get("sender_name", "")
 	sender_name_label.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
 	sender_name_label.add_theme_font_size_override("font_size", 14)
-	sender_name_label.add_theme_color_override("font_color", ThemeConfig.TEXT_PRIMARY)
+	sender_name_label.add_theme_color_override("font_color", ThemeConfig.TEXT)
 	sender_vb.add_child(sender_name_label)
 
 	var sender_meta = Label.new()
@@ -408,7 +408,7 @@ func _build_right_col(parent: Node):
 		sv.text = stat_values[i]
 		sv.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
 		sv.add_theme_font_size_override("font_size", 20)
-		sv.add_theme_color_override("font_color", ThemeConfig.TEXT_PRIMARY)
+		sv.add_theme_color_override("font_color", ThemeConfig.TEXT)
 		svb.add_child(sv)
 		stats_grid.add_child(svb)
 
@@ -421,7 +421,7 @@ func _build_right_col(parent: Node):
 		actions_header.text = "AÇÕES DISPONÍVEIS"
 		actions_header.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
 		actions_header.add_theme_font_size_override("font_size", 14)
-		actions_header.add_theme_color_override("font_color", ThemeConfig.TEXT_PRIMARY)
+		actions_header.add_theme_color_override("font_color", ThemeConfig.TEXT)
 		inner_vb.add_child(actions_header)
 
 		var action_grid = GridContainer.new()
@@ -471,7 +471,7 @@ func _build_right_col(parent: Node):
 			ac_label.text = a["label"]
 			ac_label.add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)
 			ac_label.add_theme_font_size_override("font_size", 11)
-			ac_label.add_theme_color_override("font_color", ThemeConfig.TEXT_PRIMARY)
+			ac_label.add_theme_color_override("font_color", ThemeConfig.TEXT)
 			ac_vb.add_child(ac_label)
 
 			ac_margin.add_child(ac_vb)

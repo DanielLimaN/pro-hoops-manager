@@ -29,3 +29,16 @@ Você é especialista em sistema de UI do Godot 4.x (projeto usa Godot 4.7, Forw
 - Fontes: `add_theme_font_override("font", ThemeConfig.FONT_INTER_BOLD)` + `add_theme_font_size_override("font_size", N)`
 - Ícones: `at-icons` addon em `res://addons/at-icons/control/`, use `TextureRect` com `stretch_mode`
 - Padding consistente: `MarginContainer` com constantes `margin_left/right/top/bottom`
+
+## DIRETRIZ ESTRITA DE ARQUITETURA DE INTERFACE (A REGRA DE OURO)
+**NUNCA** construa árvores visuais complexas "chumbadas" via código GDScript (ex: `Label.new()`, `VBoxContainer.new()`, `PanelContainer.new()`). 
+Isso é considerado uma antiprática severa no Godot, pois impede o desenvolvedor de usar o Inspetor Visual para ajustar margens, fontes e cores.
+
+**A Melhor Prática (Obrigatória):**
+Transforme qualquer componente de UI em **Cenas Limpas e Independentes (`.tscn`)**.
+Se precisar de um Submenu, um Popover, uma Linha de Tabela ou um Card:
+1. Construa o arquivo `.tscn` correspondente contendo a árvore de nós (`[node name="X" type="Control"]`).
+2. Crie um script `.gd` anexado apenas para gerenciar a injeção dos dados (`setup(dados)`).
+3. No script pai, use `load("res://caminho_da_cena.tscn").instantiate()` e dê `add_child()`.
+
+O usuário DEVE conseguir dar um duplo-clique no componente e visualizá-lo/editá-lo no Editor do Godot!
