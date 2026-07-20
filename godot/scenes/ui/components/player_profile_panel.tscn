@@ -11,12 +11,12 @@ font_names = PackedStringArray("Inter")
 font_weight = 700
 
 [sub_resource type="StyleBoxFlat" id=3]
-bg_color = Color("#0F0720")
+bg_color = Color(0.0588, 0.0275, 0.1255)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color("#A78BFA66")
+border_color = Color(0.6549, 0.5451, 0.9804, 0.4000)
 corner_radius_top_left = 12
 corner_radius_top_right = 12
 corner_radius_bottom_right = 12
@@ -29,19 +29,19 @@ shadow_offset = Vector2(0, 4)
 bg_color = Color(0, 0, 0, 0)
 
 [sub_resource type="StyleBoxFlat" id=5]
-bg_color = Color("#7C3AED")
+bg_color = Color(0.4863, 0.2275, 0.9294)
 corner_radius_top_left = 36
 corner_radius_top_right = 36
 corner_radius_bottom_right = 36
 corner_radius_bottom_left = 36
 
 [sub_resource type="StyleBoxFlat" id=6]
-bg_color = Color("#1E1B4B")
+bg_color = Color(0.1176, 0.1059, 0.2941)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color("#2D2B55")
+border_color = Color(0.1765, 0.1686, 0.3333)
 corner_radius_top_left = 4
 corner_radius_top_right = 4
 corner_radius_bottom_right = 4
@@ -51,53 +51,53 @@ corner_radius_bottom_left = 4
 bg_color = Color(0, 0, 0, 0)
 
 [sub_resource type="StyleBoxFlat" id=8]
-bg_color = Color("#A78BFA22")
+bg_color = Color(0.6549, 0.5451, 0.9804, 0.1333)
 border_width_top = 2
-border_color = Color("#A78BFA")
+border_color = Color(0.6549, 0.5451, 0.9804)
 
 [sub_resource type="StyleBoxFlat" id=9]
 bg_color = Color(0, 0, 0, 0)
 
 [sub_resource type="StyleBoxFlat" id=10]
-bg_color = Color("#A78BFA11")
+bg_color = Color(0.6549, 0.5451, 0.9804, 0.0667)
 
 [sub_resource type="StyleBoxFlat" id=11]
-bg_color = Color("#1E1B4B")
+bg_color = Color(0.1176, 0.1059, 0.2941)
 corner_radius_top_left = 3
 corner_radius_top_right = 3
 corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 
 [sub_resource type="StyleBoxFlat" id=12]
-bg_color = Color("#A78BFA")
+bg_color = Color(0.6549, 0.5451, 0.9804)
 corner_radius_top_left = 3
 corner_radius_top_right = 3
 corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 
 [sub_resource type="StyleBoxFlat" id=13]
-bg_color = Color("#10B981")
+bg_color = Color(0.0627, 0.7255, 0.5059)
 corner_radius_top_left = 3
 corner_radius_top_right = 3
 corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 
 [sub_resource type="StyleBoxFlat" id=14]
-bg_color = Color("#FBBF24")
+bg_color = Color(0.9843, 0.7490, 0.1412)
 corner_radius_top_left = 3
 corner_radius_top_right = 3
 corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 
 [sub_resource type="StyleBoxFlat" id=15]
-bg_color = Color("#3B82F6")
+bg_color = Color(0.2314, 0.5098, 0.9647)
 corner_radius_top_left = 3
 corner_radius_top_right = 3
 corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 
 [sub_resource type="StyleBoxFlat" id=16]
-bg_color = Color("#EF4444")
+bg_color = Color(0.9373, 0.2667, 0.2667)
 corner_radius_top_left = 3
 corner_radius_top_right = 3
 corner_radius_bottom_right = 3
@@ -140,7 +140,7 @@ layout_mode = 2
 text = "PERFIL DO JOGADOR"
 theme_override_fonts/font = SubResource("2")
 theme_override_font_sizes/font_size = 13
-theme_override_colors/font_color = Color("#A78BFA")
+theme_override_colors/font_color = Color(0.6549, 0.5451, 0.9804)
 
 [node name="Filler" type="Control" parent="MainVBox/HeaderCard/HeaderMargin/HeaderVBox/TopRow"]
 layout_mode = 2
@@ -176,7 +176,7 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "#7"
 theme_override_font_sizes/font_size = 13
-theme_override_colors/font_color = Color("#A78BFA")
+theme_override_colors/font_color = Color(0.6549, 0.5451, 0.9804)
 
 [node name="PlayerName" type="Label" parent="MainVBox/HeaderCard/HeaderMargin/HeaderVBox/AvatarRow/NameBox"]
 unique_name_in_owner = true
@@ -191,7 +191,7 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "\"The Maestro\""
 theme_override_font_sizes/font_size = 13
-theme_override_colors/font_color = Color("#94A3B8")
+theme_override_colors/font_color = Color(0.5804, 0.6392, 0.7216)
 
 [node name="MetaRow" type="HBoxContainer" parent="MainVBox/HeaderCard/HeaderMargin/HeaderVBox"]
 layout_mode = 2
@@ -219,7 +219,7 @@ layout_mode = 2
 text = "POS"
 horizontal_alignment = 1
 theme_override_font_sizes/font_size = 8
-theme_override_colors/font_color = Color("#6B5B95")
+theme_override_colors/font_color = Color(0.4196, 0.3569, 0.5843)
 
 [node name="PlayerPos" type="Label" parent="MainVBox/HeaderCard/HeaderMargin/HeaderVBox/MetaRow/PosPanel/PosMargin/PosVBox"]
 unique_name_in_owner = true
@@ -227,7 +227,7 @@ layout_mode = 2
 text = "PG"
 horizontal_alignment = 1
 theme_override_font_sizes/font_size = 13
-theme_override_colors/font_color = Color("#A78BFA")
+theme_override_colors/font_color = Color(0.6549, 0.5451, 0.9804)
 
 [node name="IdadePanel" type="PanelContainer" parent="MainVBox/HeaderCard/HeaderMargin/HeaderVBox/MetaRow"]
 layout_mode = 2
@@ -251,7 +251,7 @@ layout_mode = 2
 text = "IDADE"
 horizontal_alignment = 1
 theme_override_font_sizes/font_size = 8
-theme_override_colors/font_color = Color("#6B5B95")
+theme_override_colors/font_color = Color(0.4196, 0.3569, 0.5843)
 
 [node name="PlayerAge" type="Label" parent="MainVBox/HeaderCard/HeaderMargin/HeaderVBox/MetaRow/IdadePanel/IdadeMargin/IdadeVBox"]
 unique_name_in_owner = true
@@ -283,7 +283,7 @@ layout_mode = 2
 text = "ALTURA"
 horizontal_alignment = 1
 theme_override_font_sizes/font_size = 8
-theme_override_colors/font_color = Color("#6B5B95")
+theme_override_colors/font_color = Color(0.4196, 0.3569, 0.5843)
 
 [node name="PlayerHeight" type="Label" parent="MainVBox/HeaderCard/HeaderMargin/HeaderVBox/MetaRow/AlturaPanel/AlturaMargin/AlturaVBox"]
 unique_name_in_owner = true
@@ -315,7 +315,7 @@ layout_mode = 2
 text = "OVR"
 horizontal_alignment = 1
 theme_override_font_sizes/font_size = 8
-theme_override_colors/font_color = Color("#6B5B95")
+theme_override_colors/font_color = Color(0.4196, 0.3569, 0.5843)
 
 [node name="PlayerOvr" type="Label" parent="MainVBox/HeaderCard/HeaderMargin/HeaderVBox/MetaRow/OvrPanel/OvrMargin/OvrVBox"]
 unique_name_in_owner = true
@@ -324,7 +324,7 @@ text = "92"
 horizontal_alignment = 1
 theme_override_fonts/font = SubResource("2")
 theme_override_font_sizes/font_size = 13
-theme_override_colors/font_color = Color("#A78BFA")
+theme_override_colors/font_color = Color(0.6549, 0.5451, 0.9804)
 
 [node name="TabBar" type="HBoxContainer" parent="MainVBox"]
 layout_mode = 2
@@ -344,9 +344,9 @@ theme_override_styles/normal = SubResource("7")
 theme_override_styles/pressed = SubResource("8")
 theme_override_styles/disabled = SubResource("9")
 theme_override_styles/hover = SubResource("10")
-theme_override_colors/font_color = Color("#94A3B8")
-theme_override_colors/font_pressed_color = Color("#A78BFA")
-theme_override_colors/font_hover_color = Color("#E0E7FF")
+theme_override_colors/font_color = Color(0.5804, 0.6392, 0.7216)
+theme_override_colors/font_pressed_color = Color(0.6549, 0.5451, 0.9804)
+theme_override_colors/font_hover_color = Color(0.8784, 0.9059, 1.0000)
 
 [node name="BtnContrato" type="Button" parent="MainVBox/TabBar"]
 unique_name_in_owner = true
@@ -362,9 +362,9 @@ theme_override_styles/normal = SubResource("7")
 theme_override_styles/pressed = SubResource("8")
 theme_override_styles/disabled = SubResource("9")
 theme_override_styles/hover = SubResource("10")
-theme_override_colors/font_color = Color("#94A3B8")
-theme_override_colors/font_pressed_color = Color("#A78BFA")
-theme_override_colors/font_hover_color = Color("#E0E7FF")
+theme_override_colors/font_color = Color(0.5804, 0.6392, 0.7216)
+theme_override_colors/font_pressed_color = Color(0.6549, 0.5451, 0.9804)
+theme_override_colors/font_hover_color = Color(0.8784, 0.9059, 1.0000)
 
 [node name="BtnHistorico" type="Button" parent="MainVBox/TabBar"]
 unique_name_in_owner = true
@@ -380,9 +380,9 @@ theme_override_styles/normal = SubResource("7")
 theme_override_styles/pressed = SubResource("8")
 theme_override_styles/disabled = SubResource("9")
 theme_override_styles/hover = SubResource("10")
-theme_override_colors/font_color = Color("#94A3B8")
-theme_override_colors/font_pressed_color = Color("#A78BFA")
-theme_override_colors/font_hover_color = Color("#E0E7FF")
+theme_override_colors/font_color = Color(0.5804, 0.6392, 0.7216)
+theme_override_colors/font_pressed_color = Color(0.6549, 0.5451, 0.9804)
+theme_override_colors/font_hover_color = Color(0.8784, 0.9059, 1.0000)
 
 [node name="BtnStats" type="Button" parent="MainVBox/TabBar"]
 unique_name_in_owner = true
@@ -398,9 +398,9 @@ theme_override_styles/normal = SubResource("7")
 theme_override_styles/pressed = SubResource("8")
 theme_override_styles/disabled = SubResource("9")
 theme_override_styles/hover = SubResource("10")
-theme_override_colors/font_color = Color("#94A3B8")
-theme_override_colors/font_pressed_color = Color("#A78BFA")
-theme_override_colors/font_hover_color = Color("#E0E7FF")
+theme_override_colors/font_color = Color(0.5804, 0.6392, 0.7216)
+theme_override_colors/font_pressed_color = Color(0.6549, 0.5451, 0.9804)
+theme_override_colors/font_hover_color = Color(0.8784, 0.9059, 1.0000)
 
 [node name="BtnLesoes" type="Button" parent="MainVBox/TabBar"]
 unique_name_in_owner = true
@@ -416,9 +416,9 @@ theme_override_styles/normal = SubResource("7")
 theme_override_styles/pressed = SubResource("8")
 theme_override_styles/disabled = SubResource("9")
 theme_override_styles/hover = SubResource("10")
-theme_override_colors/font_color = Color("#94A3B8")
-theme_override_colors/font_pressed_color = Color("#A78BFA")
-theme_override_colors/font_hover_color = Color("#E0E7FF")
+theme_override_colors/font_color = Color(0.5804, 0.6392, 0.7216)
+theme_override_colors/font_pressed_color = Color(0.6549, 0.5451, 0.9804)
+theme_override_colors/font_hover_color = Color(0.8784, 0.9059, 1.0000)
 
 [node name="BtnRelacoes" type="Button" parent="MainVBox/TabBar"]
 unique_name_in_owner = true
@@ -434,9 +434,9 @@ theme_override_styles/normal = SubResource("7")
 theme_override_styles/pressed = SubResource("8")
 theme_override_styles/disabled = SubResource("9")
 theme_override_styles/hover = SubResource("10")
-theme_override_colors/font_color = Color("#94A3B8")
-theme_override_colors/font_pressed_color = Color("#A78BFA")
-theme_override_colors/font_hover_color = Color("#E0E7FF")
+theme_override_colors/font_color = Color(0.5804, 0.6392, 0.7216)
+theme_override_colors/font_pressed_color = Color(0.6549, 0.5451, 0.9804)
+theme_override_colors/font_hover_color = Color(0.8784, 0.9059, 1.0000)
 
 [node name="TabContent" type="MarginContainer" parent="MainVBox"]
 layout_mode = 2
@@ -460,7 +460,7 @@ layout_mode = 2
 text = "MEDIÇÕES"
 theme_override_fonts/font = SubResource("2")
 theme_override_font_sizes/font_size = 10
-theme_override_colors/font_color = Color("#A78BFA")
+theme_override_colors/font_color = Color(0.6549, 0.5451, 0.9804)
 
 [node name="HeightRow" type="HBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox"]
 layout_mode = 2
@@ -468,7 +468,7 @@ layout_mode = 2
 [node name="HeightLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/HeightRow"]
 layout_mode = 2
 text = "Altura"
-theme_override_colors/font_color = Color("#94A3B8")
+theme_override_colors/font_color = Color(0.5804, 0.6392, 0.7216)
 
 [node name="HeightFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/HeightRow"]
 layout_mode = 2
@@ -486,7 +486,7 @@ layout_mode = 2
 [node name="WeightLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/WeightRow"]
 layout_mode = 2
 text = "Peso"
-theme_override_colors/font_color = Color("#94A3B8")
+theme_override_colors/font_color = Color(0.5804, 0.6392, 0.7216)
 
 [node name="WeightFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/WeightRow"]
 layout_mode = 2
@@ -504,7 +504,7 @@ layout_mode = 2
 [node name="WingspanLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/WingspanRow"]
 layout_mode = 2
 text = "Envergadura"
-theme_override_colors/font_color = Color("#94A3B8")
+theme_override_colors/font_color = Color(0.5804, 0.6392, 0.7216)
 
 [node name="WingspanFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/WingspanRow"]
 layout_mode = 2
@@ -521,7 +521,7 @@ layout_mode = 2
 text = "FÍSICO"
 theme_override_fonts/font = SubResource("2")
 theme_override_font_sizes/font_size = 10
-theme_override_colors/font_color = Color("#A78BFA")
+theme_override_colors/font_color = Color(0.6549, 0.5451, 0.9804)
 
 [node name="FisicoContainer" type="VBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox"]
 unique_name_in_owner = true
@@ -538,7 +538,7 @@ layout_mode = 2
 [node name="SpeedLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/FisicoContainer/speed/SpeedRow"]
 layout_mode = 2
 text = "Velocidade"
-theme_override_colors/font_color = Color("#94A3B8")
+theme_override_colors/font_color = Color(0.5804, 0.6392, 0.7216)
 
 [node name="SpeedFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/FisicoContainer/speed/SpeedRow"]
 layout_mode = 2
@@ -568,7 +568,7 @@ layout_mode = 2
 [node name="StrengthLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/FisicoContainer/strength/StrengthRow"]
 layout_mode = 2
 text = "Força"
-theme_override_colors/font_color = Color("#94A3B8")
+theme_override_colors/font_color = Color(0.5804, 0.6392, 0.7216)
 
 [node name="StrengthFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/FisicoContainer/strength/StrengthRow"]
 layout_mode = 2
@@ -598,7 +598,7 @@ layout_mode = 2
 [node name="StaminaLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/FisicoContainer/stamina/StaminaRow"]
 layout_mode = 2
 text = "Stamina"
-theme_override_colors/font_color = Color("#94A3B8")
+theme_override_colors/font_color = Color(0.5804, 0.6392, 0.7216)
 
 [node name="StaminaFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/FisicoContainer/stamina/StaminaRow"]
 layout_mode = 2
@@ -628,7 +628,7 @@ layout_mode = 2
 [node name="JumpingLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/FisicoContainer/jumping/JumpingRow"]
 layout_mode = 2
 text = "Salto"
-theme_override_colors/font_color = Color("#94A3B8")
+theme_override_colors/font_color = Color(0.5804, 0.6392, 0.7216)
 
 [node name="JumpingFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/FisicoContainer/jumping/JumpingRow"]
 layout_mode = 2
@@ -653,7 +653,7 @@ layout_mode = 2
 text = "ARREMESSO"
 theme_override_fonts/font = SubResource("2")
 theme_override_font_sizes/font_size = 10
-theme_override_colors/font_color = Color("#A78BFA")
+theme_override_colors/font_color = Color(0.6549, 0.5451, 0.9804)
 
 [node name="ArremessoContainer" type="VBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox"]
 unique_name_in_owner = true
@@ -670,7 +670,7 @@ layout_mode = 2
 [node name="ThreePtLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/three_pt/ThreePtRow"]
 layout_mode = 2
 text = "3 Pontos"
-theme_override_colors/font_color = Color("#94A3B8")
+theme_override_colors/font_color = Color(0.5804, 0.6392, 0.7216)
 
 [node name="ThreePtFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/three_pt/ThreePtRow"]
 layout_mode = 2
@@ -700,7 +700,7 @@ layout_mode = 2
 [node name="MidRangeLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/mid_range/MidRangeRow"]
 layout_mode = 2
 text = "Médio Alcance"
-theme_override_colors/font_color = Color("#94A3B8")
+theme_override_colors/font_color = Color(0.5804, 0.6392, 0.7216)
 
 [node name="MidRangeFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/mid_range/MidRangeRow"]
 layout_mode = 2
@@ -730,7 +730,7 @@ layout_mode = 2
 [node name="CloseShotLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/close_shot/CloseShotRow"]
 layout_mode = 2
 text = "Arrem. Próximo"
-theme_override_colors/font_color = Color("#94A3B8")
+theme_override_colors/font_color = Color(0.5804, 0.6392, 0.7216)
 
 [node name="CloseShotFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/close_shot/CloseShotRow"]
 layout_mode = 2
@@ -760,7 +760,7 @@ layout_mode = 2
 [node name="DunkLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/dunk/DunkRow"]
 layout_mode = 2
 text = "Enterrada"
-theme_override_colors/font_color = Color("#94A3B8")
+theme_override_colors/font_color = Color(0.5804, 0.6392, 0.7216)
 
 [node name="DunkFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/dunk/DunkRow"]
 layout_mode = 2
@@ -790,7 +790,7 @@ layout_mode = 2
 [node name="LayupLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/layup/LayupRow"]
 layout_mode = 2
 text = "Bandeja"
-theme_override_colors/font_color = Color("#94A3B8")
+theme_override_colors/font_color = Color(0.5804, 0.6392, 0.7216)
 
 [node name="LayupFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/layup/LayupRow"]
 layout_mode = 2
@@ -820,7 +820,7 @@ layout_mode = 2
 [node name="FreeThrowLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/free_throw/FreeThrowRow"]
 layout_mode = 2
 text = "Lance Livre"
-theme_override_colors/font_color = Color("#94A3B8")
+theme_override_colors/font_color = Color(0.5804, 0.6392, 0.7216)
 
 [node name="FreeThrowFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/ArremessoContainer/free_throw/FreeThrowRow"]
 layout_mode = 2
@@ -845,7 +845,7 @@ layout_mode = 2
 text = "BOLA"
 theme_override_fonts/font = SubResource("2")
 theme_override_font_sizes/font_size = 10
-theme_override_colors/font_color = Color("#A78BFA")
+theme_override_colors/font_color = Color(0.6549, 0.5451, 0.9804)
 
 [node name="BolaContainer" type="VBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox"]
 unique_name_in_owner = true
@@ -862,7 +862,7 @@ layout_mode = 2
 [node name="BallHandleLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/BolaContainer/ball_handle/BallHandleRow"]
 layout_mode = 2
 text = "Drible"
-theme_override_colors/font_color = Color("#94A3B8")
+theme_override_colors/font_color = Color(0.5804, 0.6392, 0.7216)
 
 [node name="BallHandleFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/BolaContainer/ball_handle/BallHandleRow"]
 layout_mode = 2
@@ -892,7 +892,7 @@ layout_mode = 2
 [node name="PassingLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/BolaContainer/passing/PassingRow"]
 layout_mode = 2
 text = "Passe"
-theme_override_colors/font_color = Color("#94A3B8")
+theme_override_colors/font_color = Color(0.5804, 0.6392, 0.7216)
 
 [node name="PassingFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/BolaContainer/passing/PassingRow"]
 layout_mode = 2
@@ -917,7 +917,7 @@ layout_mode = 2
 text = "DEFESA"
 theme_override_fonts/font = SubResource("2")
 theme_override_font_sizes/font_size = 10
-theme_override_colors/font_color = Color("#A78BFA")
+theme_override_colors/font_color = Color(0.6549, 0.5451, 0.9804)
 
 [node name="DefesaContainer" type="VBoxContainer" parent="MainVBox/TabContent/TabAtrib/AtribVBox"]
 unique_name_in_owner = true
@@ -934,7 +934,7 @@ layout_mode = 2
 [node name="OffensiveReboundLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/offensive_rebound/OffensiveReboundRow"]
 layout_mode = 2
 text = "Reb. Ofensivo"
-theme_override_colors/font_color = Color("#94A3B8")
+theme_override_colors/font_color = Color(0.5804, 0.6392, 0.7216)
 
 [node name="OffensiveReboundFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/offensive_rebound/OffensiveReboundRow"]
 layout_mode = 2
@@ -964,7 +964,7 @@ layout_mode = 2
 [node name="PerimeterDefLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/perimeter_def/PerimeterDefRow"]
 layout_mode = 2
 text = "Def. Perímetro"
-theme_override_colors/font_color = Color("#94A3B8")
+theme_override_colors/font_color = Color(0.5804, 0.6392, 0.7216)
 
 [node name="PerimeterDefFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/perimeter_def/PerimeterDefRow"]
 layout_mode = 2
@@ -994,7 +994,7 @@ layout_mode = 2
 [node name="InteriorDefLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/interior_def/InteriorDefRow"]
 layout_mode = 2
 text = "Def. Interior"
-theme_override_colors/font_color = Color("#94A3B8")
+theme_override_colors/font_color = Color(0.5804, 0.6392, 0.7216)
 
 [node name="InteriorDefFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/interior_def/InteriorDefRow"]
 layout_mode = 2
@@ -1024,7 +1024,7 @@ layout_mode = 2
 [node name="StealLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/steal/StealRow"]
 layout_mode = 2
 text = "Roubo"
-theme_override_colors/font_color = Color("#94A3B8")
+theme_override_colors/font_color = Color(0.5804, 0.6392, 0.7216)
 
 [node name="StealFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/steal/StealRow"]
 layout_mode = 2
@@ -1054,7 +1054,7 @@ layout_mode = 2
 [node name="BlockLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/block/BlockRow"]
 layout_mode = 2
 text = "Toco"
-theme_override_colors/font_color = Color("#94A3B8")
+theme_override_colors/font_color = Color(0.5804, 0.6392, 0.7216)
 
 [node name="BlockFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/block/BlockRow"]
 layout_mode = 2
@@ -1084,7 +1084,7 @@ layout_mode = 2
 [node name="DefensiveReboundLabel" type="Label" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/defensive_rebound/DefensiveReboundRow"]
 layout_mode = 2
 text = "Reb. Defensivo"
-theme_override_colors/font_color = Color("#94A3B8")
+theme_override_colors/font_color = Color(0.5804, 0.6392, 0.7216)
 
 [node name="DefensiveReboundFiller" type="Control" parent="MainVBox/TabContent/TabAtrib/AtribVBox/DefesaContainer/defensive_rebound/DefensiveReboundRow"]
 layout_mode = 2
@@ -1120,7 +1120,7 @@ layout_mode = 2
 [node name="SalaryLabel" type="Label" parent="MainVBox/TabContent/TabContrato/ContratoVBox/SalaryRow"]
 layout_mode = 2
 text = "Salário"
-theme_override_colors/font_color = Color("#94A3B8")
+theme_override_colors/font_color = Color(0.5804, 0.6392, 0.7216)
 
 [node name="SalaryFiller" type="Control" parent="MainVBox/TabContent/TabContrato/ContratoVBox/SalaryRow"]
 layout_mode = 2
@@ -1139,7 +1139,7 @@ layout_mode = 2
 [node name="YearsLabel" type="Label" parent="MainVBox/TabContent/TabContrato/ContratoVBox/YearsRow"]
 layout_mode = 2
 text = "Anos Restantes"
-theme_override_colors/font_color = Color("#94A3B8")
+theme_override_colors/font_color = Color(0.5804, 0.6392, 0.7216)
 
 [node name="YearsFiller" type="Control" parent="MainVBox/TabContent/TabContrato/ContratoVBox/YearsRow"]
 layout_mode = 2
@@ -1158,7 +1158,7 @@ layout_mode = 2
 [node name="StatusLabel" type="Label" parent="MainVBox/TabContent/TabContrato/ContratoVBox/StatusRow"]
 layout_mode = 2
 text = "Situação"
-theme_override_colors/font_color = Color("#94A3B8")
+theme_override_colors/font_color = Color(0.5804, 0.6392, 0.7216)
 
 [node name="StatusFiller" type="Control" parent="MainVBox/TabContent/TabContrato/ContratoVBox/StatusRow"]
 layout_mode = 2
@@ -1169,7 +1169,7 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "ATIVO"
 theme_override_fonts/font = SubResource("2")
-theme_override_colors/font_color = Color("#10B981")
+theme_override_colors/font_color = Color(0.0627, 0.7255, 0.5059)
 
 [node name="ContractTypeRow" type="HBoxContainer" parent="MainVBox/TabContent/TabContrato/ContratoVBox"]
 layout_mode = 2
@@ -1177,7 +1177,7 @@ layout_mode = 2
 [node name="ContractTypeLabel" type="Label" parent="MainVBox/TabContent/TabContrato/ContratoVBox/ContractTypeRow"]
 layout_mode = 2
 text = "Tipo de Contrato"
-theme_override_colors/font_color = Color("#94A3B8")
+theme_override_colors/font_color = Color(0.5804, 0.6392, 0.7216)
 
 [node name="ContractTypeFiller" type="Control" parent="MainVBox/TabContent/TabContrato/ContratoVBox/ContractTypeRow"]
 layout_mode = 2
@@ -1194,7 +1194,7 @@ layout_mode = 2
 [node name="OptionLabel" type="Label" parent="MainVBox/TabContent/TabContrato/ContratoVBox/OptionRow"]
 layout_mode = 2
 text = "Opção do Jogador"
-theme_override_colors/font_color = Color("#94A3B8")
+theme_override_colors/font_color = Color(0.5804, 0.6392, 0.7216)
 
 [node name="OptionFiller" type="Control" parent="MainVBox/TabContent/TabContrato/ContratoVBox/OptionRow"]
 layout_mode = 2
@@ -1219,7 +1219,7 @@ size_flags_vertical = 3
 [node name="HistoricoPlaceholder" type="Label" parent="MainVBox/TabContent/TabHistorico/HistoricoCentering"]
 layout_mode = 2
 text = "Histórico do jogador em breve..."
-theme_override_colors/font_color = Color("#94A3B8")
+theme_override_colors/font_color = Color(0.5804, 0.6392, 0.7216)
 
 [node name="TabStats" type="ScrollContainer" parent="MainVBox/TabContent"]
 unique_name_in_owner = true
@@ -1235,7 +1235,7 @@ size_flags_vertical = 3
 [node name="StatsPlaceholder" type="Label" parent="MainVBox/TabContent/TabStats/StatsCentering"]
 layout_mode = 2
 text = "Estatísticas da temporada em breve..."
-theme_override_colors/font_color = Color("#94A3B8")
+theme_override_colors/font_color = Color(0.5804, 0.6392, 0.7216)
 
 [node name="TabLesoes" type="ScrollContainer" parent="MainVBox/TabContent"]
 unique_name_in_owner = true
@@ -1251,7 +1251,7 @@ size_flags_vertical = 3
 [node name="LesoesPlaceholder" type="Label" parent="MainVBox/TabContent/TabLesoes/LesoesCentering"]
 layout_mode = 2
 text = "Histórico de lesões em breve..."
-theme_override_colors/font_color = Color("#94A3B8")
+theme_override_colors/font_color = Color(0.5804, 0.6392, 0.7216)
 
 [node name="TabRelacoes" type="ScrollContainer" parent="MainVBox/TabContent"]
 unique_name_in_owner = true
@@ -1267,4 +1267,4 @@ size_flags_vertical = 3
 [node name="RelacoesPlaceholder" type="Label" parent="MainVBox/TabContent/TabRelacoes/RelacoesCentering"]
 layout_mode = 2
 text = "Relações e química em breve..."
-theme_override_colors/font_color = Color("#94A3B8")
+theme_override_colors/font_color = Color(0.5804, 0.6392, 0.7216)
